@@ -1,0 +1,63 @@
+set surround
+set lazyredraw
+
+imap jj <Esc>
+nmap ; :
+vmap ; :
+
+nmap vv ^vg_
+
+nmap H ^
+nmap L $
+" vmap L g_
+vmap L $
+vmap H ^
+
+vmap < <gv
+vmap > >gv
+
+nmap K :action NextTab<CR>
+nmap J :action PreviousTab<CR>
+
+nmap / :action Find<CR>
+nmap n :action FindNext<CR>
+nmap N :action FindPrevious<CR>
+
+nmap <S-q> :action CloseEditor<CR>
+nmap <C-S-q> :action ReopenClosedTab<CR>
+
+nmap <C-P> :action ParameterInfo<CR>
+imap <C-P> <Esc>l:action ParameterInfo<CR>i
+
+nmap <C-Q> :action QuickJavaDoc<CR>
+imap <C-Q> <Esc>l:action QuickJavaDoc<CR>i
+
+nmap gh <C-w>h
+nmap gj <C-w>j
+nmap gk <C-w>k
+nmap gl <C-w>l
+
+" nmap vv :action EditorSelectWord<CR>
+
+nmap ,r :action ReformatCode<CR>
+
+nmap <space> zo
+nmap za zc
+
+function! GetVisualSelection()
+    let [lnum1, col1] = getpos("'<")[1:2]
+    let [lnum2, col2] = getpos("'>")[1:2]
+    let lines = getline(lnum1, lnum2)
+    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][col1 - 1:]
+    return join(lines, "\\n")
+endfunction
+" Searching {{{
+	set ignorecase
+	set smartcase
+
+	" Makes search act like search in modern browsers
+	set incsearch
+" }}}
+
+set clipboard+=unnamed

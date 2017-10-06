@@ -1,0 +1,45 @@
+# vim: set ft=zsh
+
+alias ls='ls --color=auto'
+alias ll='ls -lh'
+alias la='ll -a'
+alias grep='grep --color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
+alias tree='tree -C'
+alias vi='nvim'
+alias vim='nvim'
+alias s='sudo'
+alias fuck='eval "sudo $(fc -ln -1)"'
+alias se='sudoedit'
+alias pac='pacaur'
+alias open='xdg-open'
+alias wget='wget -c'
+alias lynx='lynx -lss=~/.lynx.lss'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias info='info --vi-keys'      # GNU info act like man command
+alias emacs='emacs -nw'          # cli mode
+alias diffdb='meld <(sort csv_results/local.csv) <(sort csv_results/edge.csv)'
+alias py='ptpython2'
+alias cdtmp='cd $(mktemp -d)'
+alias tmux='tmux -2'
+alias raliases='source ~/.aliases'
+
+alias dad="curl -k https://icanhazdadjoke.com/ && echo"
+
+# Global aliases are a zsh-specific feature
+if [ -n "$ZSH_VERSION" ]; then
+	alias -g G='| grep'
+	alias -g L='| less'
+	alias -g H='| head'
+	alias -g T='| tail'
+
+	alias -g KLM='-keep_local_mapping'
+	alias -g AA='-additional_arguments'
+	alias -g D='--display --debug --debugger'
+	alias -g S='--engine=slimerjs'
+fi
+
+function mkcd() { mkdir -p "$@" && cd "$_"; }
