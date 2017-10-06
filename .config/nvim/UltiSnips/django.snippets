@@ -1,0 +1,8 @@
+priority -50
+
+snippet admin "Admin model class" b
+@admin.register(${1:Model})
+class $1Admin(admin.ModelAdmin):
+	"""Admin model class for $1"""
+	$0
+endsnippet
