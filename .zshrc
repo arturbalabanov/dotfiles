@@ -69,17 +69,12 @@ bindkey -M vicmd 'L' end-of-line
 bindkey -M vivis 'H' vi-visual-bol
 bindkey -M vivis 'L' vi-visual-eol
 
-# For the zsh theme -- if the user is DEFAULT_USER, it is not shown
-export DEFAULT_USER="cap"
-
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 # export DEFAULT_USER="artur"
 export EDITOR="nvim"
 # export BROWSER="vivaldi"
 export BROWSER="google-chrome-stable"
-
-source $HOME/.aliases
 
 eval $(dircolors ~/.dircolors)
 
@@ -103,6 +98,7 @@ bindkey '^E' push-line
 bindkey '^N' edit-command-line
 bindkey '^H' run-help 
 
+# Ctrl-z -> If there is a suspended process, bring it to foreground
 fancy-ctrl-z () {
   if [[ $#BUFFER -eq 0 ]]; then
     BUFFER="fg"
@@ -115,42 +111,30 @@ fancy-ctrl-z () {
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
 
+# Ctrl-S -> insert sudo at the beginning of the line
+function prepend-sudo {
+  if [[ $BUFFER != "sudo "* ]]; then
+    BUFFER="sudo $BUFFER"; CURSOR+=5
+  fi
+}
+zle -N prepend-sudo
+bindkey "^s" prepend-sudo
+
 export PATH=$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin
 
 # export PATH=$PATH:/home/artur/.gem/ruby/2.1.0/bin
 # export PATH="$PATH:/usr/local/share/npm/bin"
 # export PATH="$PATH:/usr/local/lib/node_modules/karma/bin"
- export PATH="$PATH:$HOME/node_modules/.bin"
+export PATH="$PATH:$HOME/node_modules/.bin"
 
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/projects
 # source /usr/bin/virtualenvwrapper.sh
 # source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 
-export CAP_tools_home=/home/cap/dev/cap
-export CDP_HOME=/home/cap/dev/cdp
-export CPY_HOME=/home/cap/dev/cpy
-export MY_UTILS=/home/cap/dev/my_utils
 
-export PATH=$PATH:$CAP_tools_home/bin:$CDP_HOME/bin:$CDP_HOME/lib:/home/cap/dev/casperjs/bin:/home/cap/dev/phantomjs/bin:/home/cap/dev/slimerjs-0.9.4:/home/cap/dev/cpy/bin:/home/cap/dev/local_cap:$MY_UTILS/bin
-export PYTHONPATH=/home/cap/dev/cpy
+source $HOME/.aliases
 
-export GPGKEY=7EEF6612
-
-PATH="/home/cap/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/cap/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/cap/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/home/cap/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/cap/perl5"; export PERL_MM_OPT;
-
-export NVM_DIR="/home/cap/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
-if [ -n "$ZSH_VERSION" ]; then
-else
-	eval "$(python $CPY_HOME/cpy/develop/runtime/autocomplete.py)"
+if [ "$_HOST_ALIAS" = "work" ]; then
+	source ~/.zshrc_work
 fi
- 
-export PATH="$HOME/neovim/bin:$PATH"
-
-export CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt

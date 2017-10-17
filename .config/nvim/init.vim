@@ -12,6 +12,8 @@
 	let mapleader=","
 	let maplocalleader="\\"
 
+	set nowrap
+
 	" Use the backspace key as expected
 	set backspace=2
 
@@ -104,6 +106,7 @@
 		" Just syntax highlighting for tmux.conf
 		Plugin 'keith/tmux.vim'
 		Plugin '907th/vim-auto-save'
+		Plugin 'ryanoasis/vim-devicons'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -132,7 +135,7 @@
 		let g:syntastic_warning_symbol = "∙∙"
 		let syntastic_style_warning_symbol = "∙∙"
 
-		let g:syntastic_python_flake8_args = '--max-line-length=120'
+		let g:syntastic_python_flake8_args = '--max-line-length=120 --ignore=F403'
 	" }}}
 	" Python mode {{{
 		" " Rope AutoComplete
@@ -341,10 +344,6 @@
 		nnoremap K :tabn<CR>
 		nnoremap J :tabp<CR>
 	" }}}
-	" Improve up/down movement on wrapped lines {{{
-		nnoremap j gj
-		nnoremap k gk
-	"}}}
 	" Reselect visual block after indent/outdent {{{
 		vnoremap < <gv
 		vnoremap > >gv
@@ -456,6 +455,7 @@
 	
 	" zsh
 	nnoremap <leader>ezr :tabedit ~/.zshrc<CR>
+	nnoremap <leader>ezp :tabedit ~/.zprofile<CR>
 	nnoremap <leader>eza :tabedit ~/.aliases<CR>
 	nnoremap <leader>ezt :tabedit ~/.oh-my-zsh/custom/themes/artur.zsh-theme<CR>
 

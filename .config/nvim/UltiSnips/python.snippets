@@ -580,4 +580,36 @@ snippet pr "print" b
 print($1)$0
 endsnippet
 
+####################
+#       CPY        #
+####################
+
+snippet rrr "RememberRowByRegex"
+RememberRowByRegex(${1:SUBDESCR_ROW}, ur'${2:regex}', match_count=${3:1})
+endsnippet
+
+snippet prm "@prdata method" b
+@prdata
+def ${1:rows}(self):
+    ${0}
+endsnippet
+
+snippet defpe "post_extract method" b
+@prdata
+def post_extract(self):
+    if not self.my_post_extract():
+        return False
+
+    ${0}
+
+    return True
+endsnippet
+
+snippet 100r "Get only the first 100 rows and collumns" b
+@prdata
+def rows(self):
+    return [row[:100] for row in super(${1:Table}, self).rows()[:100]]
+${0}
+endsnippet
+
 # vim:ft=snippets:

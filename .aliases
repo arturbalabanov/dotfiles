@@ -26,8 +26,12 @@ alias py='ptpython2'
 alias cdtmp='cd $(mktemp -d)'
 alias tmux='tmux -2'
 alias raliases='source ~/.aliases'
+alias rm='rm -rf'
 
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
+
+function agjs() { ag -r -C 20 -i "$@" ~/dev/yoshi_parsers/download/ --js; }
+function agpy() { ag -r -C 20 -i "$@" ~/dev/yoshi_parsers/cpy_processing/ --py; }
 
 # Global aliases are a zsh-specific feature
 if [ -n "$ZSH_VERSION" ]; then
