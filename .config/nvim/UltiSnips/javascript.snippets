@@ -112,9 +112,9 @@ this.evaluate(function (${1}) {
 endsnippet
 
 snippet teval "(genie) thenEvaluate" b
-this.thenEvaluate(function () {
+this.thenEvaluate(function (${1}) {
 	${VISUAL}$0
-});
+}${2:${1/(\S.*)/, $1/}});
 endsnippet
 
 snippet jxpath "(genie) jQuery XPath"

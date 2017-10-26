@@ -30,9 +30,6 @@ alias rm='rm -rf'
 
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
 
-function agjs() { ag -r -C 20 -i "$@" ~/dev/yoshi_parsers/download/ --js; }
-function agpy() { ag -r -C 20 -i "$@" ~/dev/yoshi_parsers/cpy_processing/ --py; }
-
 # Global aliases are a zsh-specific feature
 if [ -n "$ZSH_VERSION" ]; then
 	alias -g G='| grep'
@@ -44,6 +41,12 @@ if [ -n "$ZSH_VERSION" ]; then
 	alias -g AA='-additional_arguments'
 	alias -g D='--display --debug --debugger'
 	alias -g S='--engine=slimerjs'
+	alias -g P='--run_in_parallel'
 fi
 
 function mkcd() { mkdir -p "$@" && cd "$_"; }
+
+function test_cap () { cap download "$@" && cd "$_" && jq '.["'$_'"]' ~/all_metadata.json > metadata.json && cap run -cdp && cap run -p KLM AA D --autodate --metadata metadata.json; };
+
+function agjs() { ag -r -C 20 -i "$@" ~/dev/yoshi_parsers/download/ --js; }
+function agpy() { ag -r -C 20 -i "$@" ~/dev/yoshi_parsers/cpy_processing/ --py; }
