@@ -1,8 +1,11 @@
 from __future__ import unicode_literals
-from prompt_toolkit.filters import ViInsertMode
+import re
+
+from prompt_toolkit.filters import ViInsertMode, ViNavigationMode, ViSelectionMode, ViMode
 from prompt_toolkit.key_binding.input_processor import KeyPress
-from prompt_toolkit.keys import Keys
+from prompt_toolkit.keys import Keys, Key
 from pygments.token import Token
+from ptpython.repl import PythonRepl
 
 from ptpython.layout import CompletionVisualisation
 
@@ -10,11 +13,61 @@ __all__ = (
     'configure',
 )
 
+vim_mappings = """
+imap jj <Esc>
+"""
+
+# @repl.add_key_binding('j', 'j', filter=ViInsertMode())
+# def _(event):
+#     " Map 'jj' to Escape. "
+#     event.cli.input_processor.feed(KeyPress(Keys.Escape))
+
+KEY_REGEX = r'(?:[a-zA-Z]|<[A-Z][a-z]+>)'
+
+
+class VimMapping(object):
+    def __init__(self, input, output, mode=ViMode()):
+        self.input = [Key(match.group(0)) for match in re.finditer(KEY_REGEX, input)]
+        self.output = [Key(match.group(0)) for match in re.finditer(KEY_REGEX, output)]
+        self.mode = mode
+
+    def register_mapping(self, repl):
+        repl.key_bindings_registry.add_binding(*self.input, filter=self.mode)
+
+
+class VimScriptSyntaxError(Exception):
+    pass
+
+
+def parse_vim_mapping(vim_mapping):
+    """Parses a single mapping string"""
+    mapping_regex = r'^\s*(?P<mode>[inv])?map (?P<input>{key}+) (?P<output>{key}+)\s*$'.format(key=KEY_REGEX)
+
+    mapping_match = re.search(mapping_regex, vim_mapping)
+    if mapping_match is None:
+        raise VimScriptSyntaxError("The provided string is not a valid vim mapping")
+
+    mode_letter = mapping_match.group('mode')
+
+    if mode_letter == 'i':
+        mode = ViInsertMode()
+    elif mode_letter == 'n':
+        mode = ViNavigationMode()
+    elif mode_letter == 'v':
+        mode = ViSelectionMode()
+    else:
+        mode = ViMode()
+
+    input = mapping_match.group('input')
+    output = mapping_match.group('output')
+    return VimMapping(input, output, mode)
+
 
 def configure(repl):
     """
     Configuration method. This is called during the start-up of ptpython.
     :param repl: `PythonRepl` instance.
+    :type repl: PythonRepl
     """
     # Show docstring (bool).
     repl.show_docstring = True
