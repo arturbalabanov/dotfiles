@@ -51,7 +51,7 @@
 		Plugin 'mattn/emmet-vim'
 		" Plugin 'klen/python-mode'
 		Plugin 'sjl/gundo.vim'
-		Plugin 'kien/ctrlp.vim'
+		" Plugin 'kien/ctrlp.vim'
 		Plugin 'jiangmiao/auto-pairs'
 		Plugin 'xuhdev/SingleCompile'
 		Plugin 'jdevera/vim-stl-syntax'
@@ -110,6 +110,7 @@
 		Plugin 'ryanoasis/vim-devicons'
 		Plugin 'w0rp/ale'
 		Plugin 'sheerun/vim-polyglot'
+		Plugin 'Shougo/denite.nvim'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -288,10 +289,21 @@
 		" Auto select the first option
 		set completeopt+=noinsert
 	" }}}
-	" Echodoc {{
+	" Echodoc {{{
 		set noshowmode  " Don't show --INSERT-- in the command_line
 		let g:echodoc#enable_at_startup = 1
-	" }}
+	" }}}
+	" Denite {{{
+		call denite#custom#option('default', {
+			\ 'prompt': '❯'
+			\ })
+
+		call denite#custom#map('insert', '<Esc>', '<denite:enter_mode:normal>', 'noremap')
+		call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
+		call denite#custom#map('normal', '<Esc>', '<denite:quit>', 'noremap')
+
+		nnoremap <C-p> :<C-u>Denite file_rec<CR>
+	" }}}
 " }}}
 " Mappings {{{
 	" Easily scroll up/down in insert mode
