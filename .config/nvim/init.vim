@@ -295,7 +295,9 @@
 	" }}}
 	" Denite {{{
 		call denite#custom#option('default', {
-			\ 'prompt': '❯'
+			\ 'prompt': '❯',
+			\ 'highlight_matched_char': 'Underlined',
+			\ 'highlight_mode_normal': 'CursorLine',
 			\ })
 
 		call denite#custom#map('insert', '<Esc>', '<denite:enter_mode:normal>', 'noremap')
