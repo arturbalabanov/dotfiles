@@ -55,7 +55,6 @@
 		Plugin 'jiangmiao/auto-pairs'
 		Plugin 'xuhdev/SingleCompile'
 		Plugin 'jdevera/vim-stl-syntax'
-		Plugin 'scrooloose/syntastic'
 		Plugin 'regedarek/ZoomWin'
 		Plugin 'kchmck/vim-coffee-script'
 		Plugin 'tpope/vim-haml'
@@ -90,6 +89,8 @@
 		" Plugin 'Shougo/neocomplete.vim'
 		Plugin 'Shougo/deoplete.nvim'
 		Plugin 'zchee/deoplete-jedi'
+		Plugin 'Shougo/echodoc.vim'
+		Plugin 'Shougo/neco-vim'
 		Plugin 'davidhalter/jedi-vim'
 		Plugin 'vim-scripts/php.vim--Hodge'
 		Plugin 'evanmiller/nginx-vim-syntax'
@@ -107,6 +108,8 @@
 		Plugin 'keith/tmux.vim'
 		Plugin '907th/vim-auto-save'
 		Plugin 'ryanoasis/vim-devicons'
+		Plugin 'w0rp/ale'
+		Plugin 'sheerun/vim-polyglot'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -115,9 +118,12 @@
 
 		let g:airline_powerline_fonts = 1
 
-		let g:airline#extensions#syntastic#enabled = 1
+		let g:airline#extensions#ale#enabled = 1
+		let airline#extensions#ale#error_symbol = '✗'
+		let airline#extensions#ale#warning_symbol = ''
+
 		let g:airline#extensions#branch#enabled = 1
-        
+
 		let g:airline_theme = 'powerlineish'
 
 		if !exists('g:airline_symbols')
@@ -129,13 +135,16 @@
 	" Auto-pairs {{{
 		let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
 	" }}}
-	" Syntastic {{{
-		let g:syntastic_error_symbol = "✗"
-		let syntastic_style_error_symbol = "∙∙"
-		let g:syntastic_warning_symbol = "∙∙"
-		let syntastic_style_warning_symbol = "∙∙"
+	" Ale {{{
+		let g:ale_sign_column_always = 1
+		let g:ale_sign_error = '✗'
+		let g:ale_sign_warning = ''
 
-		let g:syntastic_python_flake8_args = '--max-line-length=120 --ignore=F403'
+		" For some reason nnoremap doesn't work
+		nmap <A-k> <Plug>(ale_previous_wrap)
+		nmap <A-j> <Plug>(ale_next_wrap)
+
+		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
 	" }}}
 	" Python mode {{{
 		" " Rope AutoComplete
@@ -266,11 +275,11 @@
 	" }}}
 	" Jedi-vim {{{
 		let g:jedi#use_tabs_not_buffers = 1
-		let g:jedi#show_call_signatures = "1"  " 1 -> Popup; 2 -> command line
+		let g:jedi#show_call_signatures = "0"  " 1 -> Popup; 2 -> command line
 		let g:jedi#completions_enabled = 0
 		let g:jedi#goto_command = "gd"
 		let g:jedi#documentation_command = "<C-d>"
-		let g:jedi#show_call_signatures_delay = 200
+		" let g:jedi#show_call_signatures_delay = 200
 		autocmd FileType python setlocal completeopt-=preview  " No auto docstring
 	" }}}
 	" Deoplete {{{
@@ -279,6 +288,10 @@
 		" Auto select the first option
 		set completeopt+=noinsert
 	" }}}
+	" Echodoc {{
+		set noshowmode  " Don't show --INSERT-- in the command_line
+		let g:echodoc#enable_at_startup = 1
+	" }}
 " }}}
 " Mappings {{{
 	" Easily scroll up/down in insert mode
@@ -370,20 +383,13 @@
 		" colorscheme solarized
 		set background=dark
 		colorscheme hybrid
-		highlight SyntasticErrorSign ctermfg=red ctermbg=234
-		highlight SyntasticWarnSign ctermfg=yellow ctermbg=234
+		highlight ALEErrorSign ctermfg=red ctermbg=234
+		highlight ALEWarningSign ctermfg=yellow ctermbg=234
 
 	" }}}
 	set number
 	set ruler
 	set cursorline
-
-	" Only show cursorline in the current window and in normal mode.
-	augroup cline "{{{
-		au!
-		au WinLeave,InsertEnter * set nocursorline
-		au WinEnter,InsertLeave * set cursorline
-	augroup END "}}}
 " }}}
 " Tabs and spaces {{{
     set smartindent
@@ -473,6 +479,20 @@
 
 	set splitbelow
 	set splitright
+
+	" Only show cursorline in the current buffer and in normal mode.
+	augroup cline "{{{
+		au!
+		au WinLeave,InsertEnter * set nocursorline
+		au WinEnter,InsertLeave * set cursorline
+	augroup END "}}}
+
+	" Only show line numbers numbers and the ALE gutter in the current buffer.
+	" augroup linenum "{{{
+	" 	au!
+	" 	au WinLeave * setlocal nonumber | :sign unplace *
+	" 	au WinEnter * setlocal number | :ALELint
+	" augroup END "}}}
 
 	" Resizing splits {{{
 		nnoremap <left>  <c-w><

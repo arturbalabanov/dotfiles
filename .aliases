@@ -8,7 +8,7 @@ alias tree='tree -C'
 alias vi='nvim'
 alias vim='nvim'
 alias s='sudo'
-alias fuck='eval "sudo $(fc -ln -1)"'
+# alias fuck='eval "sudo $(fc -ln -1)"'
 alias se='sudoedit'
 alias pac='pacaur'
 alias open='xdg-open'
@@ -22,7 +22,6 @@ alias ......='cd ../../../../..'
 alias info='info --vi-keys'      # GNU info act like man command
 alias emacs='emacs -nw'          # cli mode
 alias diffdb='meld <(sort csv_results/local.csv) <(sort csv_results/edge.csv)'
-alias py='ptpython2'
 alias cdtmp='cd $(mktemp -d)'
 alias tmux='tmux -2'
 alias raliases='source ~/.aliases'
@@ -46,7 +45,36 @@ fi
 
 function mkcd() { mkdir -p "$@" && cd "$_"; }
 
-function test_cap () { cap download "$@" && cd "$_" && jq '.["'$_'"]' ~/all_metadata.json > metadata.json && cap run -cdp && cap run -p KLM AA D --autodate --metadata metadata.json; };
+eval $(thefuck --alias)
 
-function agjs() { ag -r -C 20 -i "$@" ~/dev/yoshi_parsers/download/ --js; }
-function agpy() { ag -r -C 20 -i "$@" ~/dev/yoshi_parsers/cpy_processing/ --py; }
+
+# ptpython -> bpython -> ipython -> python
+if [ "$DEFAULT_PYTHON_VERSION" -eq "3" ]; then
+	if type ptpython > /dev/null; then
+		alias py='ptpython'
+	else
+		if type bpython3 > /dev/null; then
+			alias py='bpython3'
+		else
+			if type ipython3 > /dev/null; then
+				alias py='ipython3'
+			else
+				alias py='python3'
+			fi
+		fi
+	fi
+else
+	if type ptpython2 > /dev/null; then
+		alias py='ptpython2'
+	else
+		if type bpython > /dev/null; then
+			alias py='bpython'
+		else
+			if type ipython > /dev/null; then
+				alias py='ipython'
+			else
+				alias py='python2'
+			fi
+		fi
+	fi
+fi
