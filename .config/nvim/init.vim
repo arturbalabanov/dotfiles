@@ -300,8 +300,8 @@
 			\ 'highlight_mode_normal': 'CursorLine',
 			\ })
 
-		call denite#custom#map('insert', '<Esc>', '<denite:enter_mode:normal>', 'noremap')
 		call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
+		call denite#custom#map('insert', '<Esc>', '<denite:quit>', 'noremap')
 		call denite#custom#map('normal', '<Esc>', '<denite:quit>', 'noremap')
 
 		call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
