@@ -1,0 +1,39 @@
+# For the zsh theme -- if the user is DEFAULT_USER, it is not shown
+export DEFAULT_USER="cap"
+
+export CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+export CAP_tools_home=/home/cap/dev/cap
+export CDP_HOME=/home/cap/dev/cdp
+export CPY_HOME=/home/cap/dev/cpy
+export MY_UTILS=/home/cap/dev/my_utils
+
+export PATH=$PATH:$CAP_tools_home/bin:$CDP_HOME/bin:$CDP_HOME/lib:/home/cap/dev/casperjs/bin:/home/cap/dev/phantomjs/bin:/home/cap/dev/slimerjs-0.9.4:/home/cap/dev/cpy/bin:/home/cap/dev/local_cap:$MY_UTILS/bin
+export PYTHONPATH=/home/cap/dev/cpy
+
+export GPGKEY=7EEF6612
+
+PATH="/home/cap/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/cap/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/cap/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/cap/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/cap/perl5"; export PERL_MM_OPT;
+
+export NVM_DIR="/home/cap/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+if [ -n "$ZSH_VERSION" ]; then
+else
+	eval "$(python $CPY_HOME/cpy/develop/runtime/autocomplete.py)"
+fi
+ 
+export PATH="$HOME/neovim/bin:$PATH"
+
+alias pip='pip --proxy="http://10.55.20.201:3128"'
+alias pip3='pip3 --proxy="http://10.55.20.201:3128"'
+
+function test_cap () { cap download "$@" && cd "$_" && jq '.["'$_'"]' ~/all_metadata.json > metadata.json && cap run -cdp && cap run -p KLM AA D --autodate --metadata metadata.json; };
+
+# Only lines with < ~200 symbols
+function rgjs() { rg -C 20 -i -tjs "$@.{0,200}$" ~/dev/yoshi_parsers/download/; }
+function rgpy() { rg -C 20 -i -tpy "$@.{0,200}$" ~/dev/yoshi_parsers/cpy_processing/; }

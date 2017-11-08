@@ -135,7 +135,6 @@ export PROJECT_HOME=$HOME/projects
 DEFAULT_PYTHON_VERSION=$(python -c "import sys; print(sys.version_info[0])")
 
 source $HOME/.aliases
-
-if [ "$_HOST_ALIAS" = "work" ]; then
-	source ~/.zshrc_work
+if [[ -f "~/.zshrc_local" ]]; then
+	source ~/.zshrc_local
 fi

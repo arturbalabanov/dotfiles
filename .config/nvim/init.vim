@@ -500,6 +500,7 @@
 	
 	" zsh
 	nnoremap <leader>ezr :tabedit ~/.zshrc<CR>
+	nnoremap <leader>ezl :tabedit ~/.zshrc_local<CR>
 	nnoremap <leader>ezp :tabedit ~/.zprofile<CR>
 	nnoremap <leader>eza :tabedit ~/.aliases<CR>
 	nnoremap <leader>ezt :tabedit ~/.oh-my-zsh/custom/themes/artur.zsh-theme<CR>
