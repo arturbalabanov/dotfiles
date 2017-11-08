@@ -82,7 +82,6 @@
 		Plugin 'tpope/vim-endwise'
 		Plugin 'junegunn/goyo.vim'
 		Plugin 'junegunn/limelight.vim'
-		Plugin 'arturbalabanov/seoul256.vim'
 		" Plugin 'Valloric/YouCompleteMe'
 		" Plugin 'vim-scripts/AutoComplPop'
 		" Plugin 'Shougo/vimproc.vim'
@@ -92,8 +91,6 @@
 		Plugin 'Shougo/echodoc.vim'
 		Plugin 'Shougo/neco-vim'
 		Plugin 'davidhalter/jedi-vim'
-		Plugin 'vim-scripts/php.vim--Hodge'
-		Plugin 'evanmiller/nginx-vim-syntax'
 		Plugin 'vim-scripts/SyntaxComplete'
 		Plugin 'Rykka/InstantRst'
 		Plugin 'tommcdo/vim-exchange'
@@ -101,7 +98,7 @@
 		Plugin 'kana/vim-textobj-user'
 		Plugin 'beloglazov/vim-textobj-quotes'
 		Plugin 'Julian/vim-textobj-brace'
-		Plugin 'arturbalabanov/vim-conceal-rst'
+		" Plugin 'arturbalabanov/vim-conceal-rst'
 		Plugin 'w0ng/vim-hybrid'
 		Plugin 'rking/ag.vim'
 		" Just syntax highlighting for tmux.conf
@@ -111,6 +108,7 @@
 		Plugin 'w0rp/ale'
 		Plugin 'sheerun/vim-polyglot'
 		Plugin 'Shougo/denite.nvim'
+		Plugin 'python-mode/python-mode'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -310,6 +308,28 @@
 
 		nnoremap <C-p> :<C-u>Denite file_rec<CR>
 		nnoremap <C-h> :<C-u>Denite help<CR>
+		cnoremap <C-r> :<C-u>Denite command_history<CR>
+	" }}}
+	" Python-mode {{{
+		" Disable nearly all the functions of python-mode since I use other
+		" plugins for them. Ones far younger and more powerful!
+
+		call pymode#default('g:pymode_doc', 0)
+		call pymode#default("g:pymode_indent", 0)
+		call pymode#default("g:pymode_motion", 0)
+		call pymode#default("g:pymode_trim_whitespaces", 0)
+		call pymode#default("g:pymode_options", 0)
+		call pymode#default('g:pymode_virtualenv', 0)
+		call pymode#default('g:pymode_run', 0)
+		call pymode#default('g:pymode_lint', 0)
+		call pymode#default('g:pymode_breakpoint', 0)
+		call pymode#default('g:pymode_rope', 0)
+
+		" So far the only thing I'm interested in is the folding.
+
+		call pymode#default("g:pymode_folding", 1)
+		call pymode#default("g:pymode_folding_nest_limit", 1000)
+		call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
 	" }}}
 " }}}
 " Mappings {{{
@@ -595,17 +615,6 @@
 			au FileType python setlocal shiftround    " round indent to multiple of 'shiftwidth'
 			au FileType python setlocal autoindent    " align the new line indent with the previous line
 			au FileType python setlocal colorcolumn=121
-		augroup END
-	" }}}
-	" PHP {{{
-		augroup ft_php
-			au!
-			au FileType php setlocal shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
-			au FileType php setlocal tabstop=4     " an hard TAB displays as 4 columns
-			au FileType php setlocal expandtab     " insert spaces when hitting TABs
-			au FileType php setlocal softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
-			au FileType php setlocal shiftround    " round indent to multiple of 'shiftwidth'
-			au FileType php setlocal autoindent    " align the new line indent with the previous line
 		augroup END
 	" }}}
 	" CTP {{{
