@@ -29,9 +29,6 @@
 	" Set 5 lines to the cursor - when moving vertically using j/k
 	set so=5
 
-	" set list
-	" set list listchars=tab:▸\ ,trail:·
-
 	set nobackup                     " disable backups
 	set noswapfile                   " it's 2015, NeoVim.
 " }}}
@@ -82,10 +79,6 @@
 		Plugin 'tpope/vim-endwise'
 		Plugin 'junegunn/goyo.vim'
 		Plugin 'junegunn/limelight.vim'
-		" Plugin 'Valloric/YouCompleteMe'
-		" Plugin 'vim-scripts/AutoComplPop'
-		" Plugin 'Shougo/vimproc.vim'
-		" Plugin 'Shougo/neocomplete.vim'
 		Plugin 'Shougo/deoplete.nvim'
 		Plugin 'zchee/deoplete-jedi'
 		Plugin 'Shougo/echodoc.vim'
@@ -277,6 +270,12 @@
 			\ 'highlight_mode_normal': 'CursorLine',
 			\ })
 
+		call denite#custom#var('grep', 'command', ['rg'])
+		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading'])
+		call denite#custom#var('grep', 'recursive_opts', [])
+		call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+		call denite#custom#var('grep', 'separator', ['--'])
+
 		call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
 		call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabopen>', 'noremap')
 		call denite#custom#map('insert', '<Esc>', '<denite:quit>', 'noremap')
@@ -287,6 +286,7 @@
 
 		nnoremap <C-p> :<C-u>Denite file_rec<CR>
 		nnoremap <C-h> :<C-u>Denite help<CR>
+		nnoremap <C-g> :<C-u>Denite grep<CR>
 		cnoremap <C-r> :<C-u>Denite command_history<CR>
 	" }}}
 	" Python-mode {{{
