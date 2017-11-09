@@ -145,27 +145,6 @@
 
 		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
 	" }}}
-	" Python mode {{{
-		" " Rope AutoComplete
-		" let g:pymode_rope_completion = 0
-        "
-		" " Code checking
-		" let g:pymode_lint = 1
-		" let g:pymode_lint_unmodified = 1
-		" let g:pymode_lint_message = 1
-		" let g:pymode_lint_cwindow = 0
-		" let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
-		" let g:pymode_lint_ignore = "W0612"
-        "
-		" " Rope Menu
-		" menu Python.Create\ Package :RopeCreatePackage<CR>
-		" menu Python.Create\ Module :RopeCreateModule<CR>
-        "
-		" let g:pymode_syntax_print_as_function = 1
-		" let g:pymode_syntax_space_errors = 0
-        "
-		" let g:pymode_doc_bind = 'M'
-	" }}}
 	" Gundo {{{
 		nnoremap <F1> :GundoToggle<cr>
 		let g:gundo_tree_statusline = "Gundo"
@@ -334,6 +313,11 @@
 " }}}
 " Mappings {{{
 	" Easily scroll up/down in insert mode
+
+	" I'm mistyping this all the time...
+	nnoremap q: :q
+	nnoremap q; :q
+
 	inoremap <C-b> <C-x><C-y>
 	inoremap <C-f> <C-x><C-e>
 
