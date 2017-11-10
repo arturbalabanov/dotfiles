@@ -29,9 +29,6 @@
 	" Set 5 lines to the cursor - when moving vertically using j/k
 	set so=5
 
-	" set list
-	" set list listchars=tab:▸\ ,trail:·
-
 	set nobackup                     " disable backups
 	set noswapfile                   " it's 2015, NeoVim.
 " }}}
@@ -49,13 +46,10 @@
 		Plugin 'tomtom/tcomment_vim'
 		Plugin 'groenewege/vim-less'
 		Plugin 'mattn/emmet-vim'
-		" Plugin 'klen/python-mode'
 		Plugin 'sjl/gundo.vim'
-		Plugin 'kien/ctrlp.vim'
 		Plugin 'jiangmiao/auto-pairs'
 		Plugin 'xuhdev/SingleCompile'
 		Plugin 'jdevera/vim-stl-syntax'
-		Plugin 'scrooloose/syntastic'
 		Plugin 'regedarek/ZoomWin'
 		Plugin 'kchmck/vim-coffee-script'
 		Plugin 'tpope/vim-haml'
@@ -74,7 +68,6 @@
 		Plugin 'plasticboy/vim-markdown'
 		Plugin 'godlygeek/tabular'
 		Plugin 'SirVer/ultisnips'
-		" Plugin 'honza/vim-snippets'
 		Plugin 'mattn/webapi-vim'
 		Plugin 'mattn/gist-vim'
 		Plugin 'tpope/vim-dispatch'
@@ -83,16 +76,11 @@
 		Plugin 'tpope/vim-endwise'
 		Plugin 'junegunn/goyo.vim'
 		Plugin 'junegunn/limelight.vim'
-		Plugin 'arturbalabanov/seoul256.vim'
-		" Plugin 'Valloric/YouCompleteMe'
-		" Plugin 'vim-scripts/AutoComplPop'
-		" Plugin 'Shougo/vimproc.vim'
-		" Plugin 'Shougo/neocomplete.vim'
 		Plugin 'Shougo/deoplete.nvim'
 		Plugin 'zchee/deoplete-jedi'
+		Plugin 'Shougo/echodoc.vim'
+		Plugin 'Shougo/neco-vim'
 		Plugin 'davidhalter/jedi-vim'
-		Plugin 'vim-scripts/php.vim--Hodge'
-		Plugin 'evanmiller/nginx-vim-syntax'
 		Plugin 'vim-scripts/SyntaxComplete'
 		Plugin 'Rykka/InstantRst'
 		Plugin 'tommcdo/vim-exchange'
@@ -100,13 +88,15 @@
 		Plugin 'kana/vim-textobj-user'
 		Plugin 'beloglazov/vim-textobj-quotes'
 		Plugin 'Julian/vim-textobj-brace'
-		Plugin 'arturbalabanov/vim-conceal-rst'
 		Plugin 'w0ng/vim-hybrid'
 		Plugin 'rking/ag.vim'
-		" Just syntax highlighting for tmux.conf
 		Plugin 'keith/tmux.vim'
 		Plugin '907th/vim-auto-save'
 		Plugin 'ryanoasis/vim-devicons'
+		Plugin 'w0rp/ale'
+		Plugin 'sheerun/vim-polyglot'
+		Plugin 'Shougo/denite.nvim'
+		Plugin 'python-mode/python-mode'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -115,9 +105,12 @@
 
 		let g:airline_powerline_fonts = 1
 
-		let g:airline#extensions#syntastic#enabled = 1
+		let g:airline#extensions#ale#enabled = 1
+		let airline#extensions#ale#error_symbol = '✗'
+		let airline#extensions#ale#warning_symbol = ''
+
 		let g:airline#extensions#branch#enabled = 1
-        
+
 		let g:airline_theme = 'powerlineish'
 
 		if !exists('g:airline_symbols')
@@ -129,34 +122,16 @@
 	" Auto-pairs {{{
 		let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
 	" }}}
-	" Syntastic {{{
-		let g:syntastic_error_symbol = "✗"
-		let syntastic_style_error_symbol = "∙∙"
-		let g:syntastic_warning_symbol = "∙∙"
-		let syntastic_style_warning_symbol = "∙∙"
+	" Ale {{{
+		let g:ale_sign_column_always = 1
+		let g:ale_sign_error = '✗'
+		let g:ale_sign_warning = ''
 
-		let g:syntastic_python_flake8_args = '--max-line-length=120 --ignore=F403'
-	" }}}
-	" Python mode {{{
-		" " Rope AutoComplete
-		" let g:pymode_rope_completion = 0
-        "
-		" " Code checking
-		" let g:pymode_lint = 1
-		" let g:pymode_lint_unmodified = 1
-		" let g:pymode_lint_message = 1
-		" let g:pymode_lint_cwindow = 0
-		" let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
-		" let g:pymode_lint_ignore = "W0612"
-        "
-		" " Rope Menu
-		" menu Python.Create\ Package :RopeCreatePackage<CR>
-		" menu Python.Create\ Module :RopeCreateModule<CR>
-        "
-		" let g:pymode_syntax_print_as_function = 1
-		" let g:pymode_syntax_space_errors = 0
-        "
-		" let g:pymode_doc_bind = 'M'
+		" For some reason nnoremap doesn't work
+		nmap <A-k> <Plug>(ale_previous_wrap)
+		nmap <A-j> <Plug>(ale_next_wrap)
+
+		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
 	" }}}
 	" Gundo {{{
 		nnoremap <F1> :GundoToggle<cr>
@@ -266,11 +241,11 @@
 	" }}}
 	" Jedi-vim {{{
 		let g:jedi#use_tabs_not_buffers = 1
-		let g:jedi#show_call_signatures = "1"  " 1 -> Popup; 2 -> command line
+		let g:jedi#show_call_signatures = "0"  " 1 -> Popup; 2 -> command line
 		let g:jedi#completions_enabled = 0
 		let g:jedi#goto_command = "gd"
 		let g:jedi#documentation_command = "<C-d>"
-		let g:jedi#show_call_signatures_delay = 200
+		" let g:jedi#show_call_signatures_delay = 200
 		autocmd FileType python setlocal completeopt-=preview  " No auto docstring
 	" }}}
 	" Deoplete {{{
@@ -279,9 +254,66 @@
 		" Auto select the first option
 		set completeopt+=noinsert
 	" }}}
+	" Echodoc {{{
+		set noshowmode  " Don't show --INSERT-- in the command_line
+		let g:echodoc#enable_at_startup = 1
+	" }}}
+	" Denite {{{
+		call denite#custom#option('default', {
+			\ 'prompt': '❯',
+			\ 'highlight_matched_char': 'Underlined',
+			\ 'highlight_mode_normal': 'CursorLine',
+			\ })
+
+		call denite#custom#var('grep', 'command', ['rg'])
+		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case', '--max-columns=200'])
+		call denite#custom#var('grep', 'recursive_opts', [])
+		call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+		call denite#custom#var('grep', 'separator', ['--'])
+
+		call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
+		call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabopen>', 'noremap')
+		call denite#custom#map('insert', '<Esc>', '<denite:quit>', 'noremap')
+		call denite#custom#map('normal', '<Esc>', '<denite:quit>', 'noremap')
+
+		call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
+		call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+
+		nnoremap <C-p> :<C-u>Denite file_rec<CR>
+		nnoremap <C-h> :<C-u>Denite help<CR>
+		nnoremap <C-f> :<C-u>Denite grep:. -mode=normal<CR>
+		nnoremap <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
+		cnoremap <C-r> :<C-u>Denite command_history<CR>
+	" }}}
+	" Python-mode {{{
+		" Disable nearly all the functions of python-mode since I use other
+		" plugins for them. Ones far younger and more powerful!
+
+		call pymode#default('g:pymode_doc', 0)
+		call pymode#default("g:pymode_indent", 0)
+		call pymode#default("g:pymode_motion", 0)
+		call pymode#default("g:pymode_trim_whitespaces", 0)
+		call pymode#default("g:pymode_options", 0)
+		call pymode#default('g:pymode_virtualenv', 0)
+		call pymode#default('g:pymode_run', 0)
+		call pymode#default('g:pymode_lint', 0)
+		call pymode#default('g:pymode_breakpoint', 0)
+		call pymode#default('g:pymode_rope', 0)
+
+		" So far the only thing I'm interested in is the folding.
+
+		call pymode#default("g:pymode_folding", 1)
+		call pymode#default("g:pymode_folding_nest_limit", 1000)
+		call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
+	" }}}
 " }}}
 " Mappings {{{
 	" Easily scroll up/down in insert mode
+
+	" I'm mistyping this all the time...
+	nnoremap q: :q
+	nnoremap q; :q
+
 	inoremap <C-b> <C-x><C-y>
 	inoremap <C-f> <C-x><C-e>
 
@@ -292,10 +324,6 @@
 	" move the cursor at the end of the word
 	inoremap <c-u> <esc>viwUea
 	nnoremap <c-u> viwUe
-
-	" Quickly move lines up and down
-	nnoremap <C-f> ddp
-	nnoremap <C-b> ddkP
 
 	" It's easier - you don't need to use shift... Furthermore, there are no
 	" mistakes such as :W :)
@@ -370,20 +398,14 @@
 		" colorscheme solarized
 		set background=dark
 		colorscheme hybrid
-		highlight SyntasticErrorSign ctermfg=red ctermbg=234
-		highlight SyntasticWarnSign ctermfg=yellow ctermbg=234
+		highlight ALEErrorSign ctermfg=red ctermbg=234
+		highlight ALEWarningSign ctermfg=yellow ctermbg=234
 
 	" }}}
 	set number
 	set ruler
 	set cursorline
-
-	" Only show cursorline in the current window and in normal mode.
-	augroup cline "{{{
-		au!
-		au WinLeave,InsertEnter * set nocursorline
-		au WinEnter,InsertLeave * set cursorline
-	augroup END "}}}
+	set mouse=a
 " }}}
 " Tabs and spaces {{{
     set smartindent
@@ -455,6 +477,7 @@
 	
 	" zsh
 	nnoremap <leader>ezr :tabedit ~/.zshrc<CR>
+	nnoremap <leader>ezl :tabedit ~/.zshrc_local<CR>
 	nnoremap <leader>ezp :tabedit ~/.zprofile<CR>
 	nnoremap <leader>eza :tabedit ~/.aliases<CR>
 	nnoremap <leader>ezt :tabedit ~/.oh-my-zsh/custom/themes/artur.zsh-theme<CR>
@@ -473,6 +496,20 @@
 
 	set splitbelow
 	set splitright
+
+	" Only show cursorline in the current buffer and in normal mode.
+	augroup cline "{{{
+		au!
+		au WinLeave,InsertEnter * set nocursorline
+		au WinEnter,InsertLeave * set cursorline
+	augroup END "}}}
+
+	" Only show line numbers numbers and the ALE gutter in the current buffer.
+	" augroup linenum "{{{
+	" 	au!
+	" 	au WinLeave * setlocal nonumber | :sign unplace *
+	" 	au WinEnter * setlocal number | :ALELint
+	" augroup END "}}}
 
 	" Resizing splits {{{
 		nnoremap <left>  <c-w><
@@ -556,17 +593,6 @@
 			au FileType python setlocal shiftround    " round indent to multiple of 'shiftwidth'
 			au FileType python setlocal autoindent    " align the new line indent with the previous line
 			au FileType python setlocal colorcolumn=121
-		augroup END
-	" }}}
-	" PHP {{{
-		augroup ft_php
-			au!
-			au FileType php setlocal shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
-			au FileType php setlocal tabstop=4     " an hard TAB displays as 4 columns
-			au FileType php setlocal expandtab     " insert spaces when hitting TABs
-			au FileType php setlocal softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
-			au FileType php setlocal shiftround    " round indent to multiple of 'shiftwidth'
-			au FileType php setlocal autoindent    " align the new line indent with the previous line
 		augroup END
 	" }}}
 	" CTP {{{
@@ -686,19 +712,6 @@
 			au BufRead *.png,*.jpg,*.pdf,*.gif,*.scpt sil exe "!xdg-open " . shellescape(expand("%:p")) | bd | let &ft=&ft | redraw!
 		augroup END
 	" }}}
-" }}}
-" GUI settings {{{
-	if has('gui_running')
-		set guifont=Monaco\ for\ Powerline\ 10
-		set guioptions-=T
-		set guioptions-=m
-		set guioptions-=l
-		set guioptions-=L
-		set guioptions-=r
-		set guioptions-=R
-	else
-		set mouse=a
-	endif
 " }}}
 " Utils {{{
 	set t_ut=

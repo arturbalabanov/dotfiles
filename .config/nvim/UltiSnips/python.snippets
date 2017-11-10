@@ -580,6 +580,10 @@ snippet pr "print" b
 print($1)$0
 endsnippet
 
+snippet ref "regex flags"
+re.S | re.I | re.U
+endsnippet
+
 ####################
 #       CPY        #
 ####################
@@ -611,5 +615,4 @@ def rows(self):
     return [row[:100] for row in super(${1:Table}, self).rows()[:100]]
 ${0}
 endsnippet
-
 # vim:ft=snippets:
