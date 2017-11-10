@@ -266,7 +266,7 @@
 			\ })
 
 		call denite#custom#var('grep', 'command', ['rg'])
-		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
+		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case', '--max-columns=200'])
 		call denite#custom#var('grep', 'recursive_opts', [])
 		call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
 		call denite#custom#var('grep', 'separator', ['--'])
@@ -405,6 +405,7 @@
 	set number
 	set ruler
 	set cursorline
+	set mouse=a
 " }}}
 " Tabs and spaces {{{
     set smartindent

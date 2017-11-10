@@ -34,6 +34,5 @@ alias pip3='pip3 --proxy="http://10.55.20.201:3128"'
 
 function test_cap () { cap download "$@" && cd "$_" && jq '.["'$_'"]' ~/all_metadata.json > metadata.json && cap run -cdp && cap run -p KLM AA D --autodate --metadata metadata.json; };
 
-# Only lines with ~200 or less characters
-function rgjs() { rg -C 20 --smart-case -tjs "$@.{0,200}$" ~/dev/yoshi_parsers/download/; }
-function rgpy() { rg -C 20 --smart-case -tpy "$@.{0,200}$" ~/dev/yoshi_parsers/cpy_processing/; }
+function rgjs() { rg -C 10 --smart-case --max-columns=200 -tjs "$@" ~/dev/yoshi_parsers/download/; }
+function rgpy() { rg -C 10 --smart-case --max-columns=200 -tpy "$@" ~/dev/yoshi_parsers/cpy_processing/; }
