@@ -46,9 +46,7 @@
 		Plugin 'tomtom/tcomment_vim'
 		Plugin 'groenewege/vim-less'
 		Plugin 'mattn/emmet-vim'
-		" Plugin 'klen/python-mode'
 		Plugin 'sjl/gundo.vim'
-		" Plugin 'kien/ctrlp.vim'
 		Plugin 'jiangmiao/auto-pairs'
 		Plugin 'xuhdev/SingleCompile'
 		Plugin 'jdevera/vim-stl-syntax'
@@ -70,7 +68,6 @@
 		Plugin 'plasticboy/vim-markdown'
 		Plugin 'godlygeek/tabular'
 		Plugin 'SirVer/ultisnips'
-		" Plugin 'honza/vim-snippets'
 		Plugin 'mattn/webapi-vim'
 		Plugin 'mattn/gist-vim'
 		Plugin 'tpope/vim-dispatch'
@@ -91,10 +88,8 @@
 		Plugin 'kana/vim-textobj-user'
 		Plugin 'beloglazov/vim-textobj-quotes'
 		Plugin 'Julian/vim-textobj-brace'
-		" Plugin 'arturbalabanov/vim-conceal-rst'
 		Plugin 'w0ng/vim-hybrid'
 		Plugin 'rking/ag.vim'
-		" Just syntax highlighting for tmux.conf
 		Plugin 'keith/tmux.vim'
 		Plugin '907th/vim-auto-save'
 		Plugin 'ryanoasis/vim-devicons'
@@ -716,19 +711,6 @@
 			au BufRead *.png,*.jpg,*.pdf,*.gif,*.scpt sil exe "!xdg-open " . shellescape(expand("%:p")) | bd | let &ft=&ft | redraw!
 		augroup END
 	" }}}
-" }}}
-" GUI settings {{{
-	if has('gui_running')
-		set guifont=Monaco\ for\ Powerline\ 10
-		set guioptions-=T
-		set guioptions-=m
-		set guioptions-=l
-		set guioptions-=L
-		set guioptions-=r
-		set guioptions-=R
-	else
-		set mouse=a
-	endif
 " }}}
 " Utils {{{
 	set t_ut=
