@@ -271,7 +271,7 @@
 			\ })
 
 		call denite#custom#var('grep', 'command', ['rg'])
-		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading'])
+		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
 		call denite#custom#var('grep', 'recursive_opts', [])
 		call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
 		call denite#custom#var('grep', 'separator', ['--'])
@@ -286,7 +286,8 @@
 
 		nnoremap <C-p> :<C-u>Denite file_rec<CR>
 		nnoremap <C-h> :<C-u>Denite help<CR>
-		nnoremap <C-g> :<C-u>Denite grep<CR>
+		nnoremap <C-f> :<C-u>Denite grep:. -mode=normal<CR>
+		nnoremap <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
 		cnoremap <C-r> :<C-u>Denite command_history<CR>
 	" }}}
 	" Python-mode {{{
@@ -328,10 +329,6 @@
 	" move the cursor at the end of the word
 	inoremap <c-u> <esc>viwUea
 	nnoremap <c-u> viwUe
-
-	" Quickly move lines up and down
-	nnoremap <C-f> ddp
-	nnoremap <C-b> ddkP
 
 	" It's easier - you don't need to use shift... Furthermore, there are no
 	" mistakes such as :W :)
