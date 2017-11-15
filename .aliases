@@ -44,9 +44,9 @@ if [ -n "$ZSH_VERSION" ]; then
 fi
 
 function mkcd() { mkdir -p "$@" && cd "$_"; }
+function yadm_update() { yadm commit -am "Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z')" && yadm push; }
 
 eval $(thefuck --alias)
-
 
 # ptpython -> bpython -> ipython -> python
 if [ "$DEFAULT_PYTHON_VERSION" -eq "3" ]; then
