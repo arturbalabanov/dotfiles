@@ -148,8 +148,8 @@
 		let NERDTreeShowBookmarks=1
 	" }}}
 	" SingleCompile {{{
-		nnoremap <F8> :SCCompile<cr>
-		nnoremap <F9> :SCCompileRun<cr>
+		" nnoremap <F8> :SCCompile<cr>
+		" nnoremap <F9> :SCCompileRun<cr>
 	" }}}
 	" TComment {{{
 		let g:tcommentMaps=0
