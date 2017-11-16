@@ -21,7 +21,6 @@ alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 alias info='info --vi-keys'      # GNU info act like man command
 alias emacs='emacs -nw'          # cli mode
-alias diffdb='meld <(sort csv_results/local.csv) <(sort csv_results/edge.csv)'
 alias cdtmp='cd $(mktemp -d)'
 alias tmux='tmux -2'
 alias raliases='source ~/.aliases'

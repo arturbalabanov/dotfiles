@@ -26,8 +26,10 @@ if [ -n "$ZSH_VERSION" ]; then
 else
 	eval "$(python $CPY_HOME/cpy/develop/runtime/autocomplete.py)"
 fi
- 
+
 export PATH="$HOME/neovim/bin:$PATH"
+
+alias diffdb='nvim -d <(sort csv_results/local.csv) <(sort csv_results/edge.csv)'
 
 alias pip='pip --proxy="http://10.55.20.201:3128"'
 alias pip3='pip3 --proxy="http://10.55.20.201:3128"'
