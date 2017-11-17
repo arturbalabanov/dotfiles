@@ -104,6 +104,8 @@ prompt_git() {
     ref=$(git tag --points-at HEAD 2> /dev/null)
 		if [[ -z $ref ]]; then
 			ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
+		else
+			ref=" $ref"
 		fi
 
     dirty=$(parse_git_dirty)
