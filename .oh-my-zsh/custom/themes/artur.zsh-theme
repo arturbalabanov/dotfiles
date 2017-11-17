@@ -64,6 +64,10 @@ prompt_segment() {
   [[ -n $3 ]] && echo -n $3
 }
 
+prompt_subsegment() {
+  [[ -n $1 ]] && echo -n "$SUBSEGMENT_FORWARD_SEPERATOR $1"
+}
+
 # End the prompt, closing any open segments
 prompt_end() {
   if [[ -n $CURRENT_BG ]]; then
@@ -98,7 +102,7 @@ prompt_git() {
 
   if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
     dirty=$(parse_git_dirty)
-    ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
+    ref=$(git tag --points-at HEAD 2> /dev/null) || ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
     if [[ -n $dirty ]]; then
       prompt_segment yellow black
     else
