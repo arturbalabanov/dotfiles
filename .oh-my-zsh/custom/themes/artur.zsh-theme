@@ -101,8 +101,12 @@ prompt_git() {
   repo_path=$(git rev-parse --git-dir 2>/dev/null)
 
   if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
+    ref=$(git tag --points-at HEAD 2> /dev/null)
+		if [[ -z $ref ]]; then
+			ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
+		fi
+
     dirty=$(parse_git_dirty)
-    ref=$(git tag --points-at HEAD 2> /dev/null) || ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
     if [[ -n $dirty ]]; then
       prompt_segment yellow black
     else
