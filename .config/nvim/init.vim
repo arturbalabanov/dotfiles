@@ -404,6 +404,12 @@
 	" }}}
 	set number
 	set relativenumber
+	augroup numbertoggle
+		autocmd!
+		autocmd BufEnter,FocusGained * set relativenumber
+		autocmd BufLeave,FocusLost * set norelativenumber
+	augroup END
+
 	set ruler
 	set cursorline
 	set mouse=a
