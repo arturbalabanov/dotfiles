@@ -66,8 +66,8 @@ if [ "$DEFAULT_PYTHON_VERSION" -eq "3" ]; then
 		fi
 	fi
 else
-	if type ptpython2 > /dev/null; then
-		alias py='ptpython2'
+	if type ptpython > /dev/null; then
+		alias py='ptpython'
 	else
 		if type bpython > /dev/null; then
 			alias py='bpython'

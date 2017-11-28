@@ -132,6 +132,10 @@ export PROJECT_HOME=$HOME/projects
 # source /usr/bin/virtualenvwrapper.sh
 # source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 
+if [[ -f "$HOME/.local/share/z/z.sh" ]]; then
+	source "$HOME/.local/share/z/z.sh"
+fi
+
 DEFAULT_PYTHON_VERSION=$(python -c "import sys; print(sys.version_info[0])")
 
 source $HOME/.aliases

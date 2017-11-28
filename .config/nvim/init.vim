@@ -308,7 +308,6 @@
 		call pymode#default('g:pymode_virtualenv', 0)
 		call pymode#default('g:pymode_run', 0)
 		call pymode#default('g:pymode_lint', 0)
-		call pymode#default('g:pymode_breakpoint', 0)
 		call pymode#default('g:pymode_rope', 0)
 
 		" So far the only thing I'm interested in is the folding.
@@ -316,6 +315,10 @@
 		call pymode#default("g:pymode_folding", 1)
 		call pymode#default("g:pymode_folding_nest_limit", 1000)
 		call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
+
+		call pymode#default('g:pymode_breakpoint', 1)
+		call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
+		call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
 	" }}}
 " }}}
 " Mappings {{{
