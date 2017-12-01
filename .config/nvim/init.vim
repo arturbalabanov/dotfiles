@@ -146,6 +146,7 @@
 	" NerdTreeTabs {{{
 		map <F2> :NERDTreeTabsToggle<CR>
 		let NERDTreeShowBookmarks=1
+		let NERDTreeIgnore=['\.pyc$']
 	" }}}
 	" SingleCompile {{{
 		" nnoremap <F8> :SCCompile<cr>
@@ -420,8 +421,8 @@
 	set relativenumber
 	augroup numbertoggle
 		autocmd!
-		autocmd BufEnter,FocusGained * set relativenumber
-		autocmd BufLeave,FocusLost * set norelativenumber
+		autocmd BufEnter,FocusGained * setlocal number | setlocal relativenumber
+		autocmd BufLeave,FocusLost * setlocal nonumber | setlocal norelativenumber
 	augroup END
 
 	set ruler
