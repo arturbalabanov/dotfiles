@@ -34,6 +34,8 @@ alias diffdb='nvim -d <(sort csv_results/local.csv) <(sort csv_results/edge.csv)
 alias s_pip='sudo /home/cap/.local/bin/pip --proxy="http://10.55.20.201:3128"'
 alias s_pip3='sudo /home/cap/.local/bin/pip3 --proxy="http://10.55.20.201:3128"'
 
+export WORKON_HOME=$HOME/.virtualenvs
+source /usr/local/bin/virtualenvwrapper.sh
 
 function test_cap () { cap download "$@" && cd "$_" && jq '.["'$_'"]' ~/all_metadata.json > metadata.json && cap run -cdp && cap run -p KLM AA D --autodate --metadata metadata.json; };
 

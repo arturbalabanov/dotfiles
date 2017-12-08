@@ -321,6 +321,12 @@
 		call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
 		call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
 	" }}}
+	" Exchange {{{
+		nmap X <Plug>(Exchange)
+		xmap X <Plug>(Exchange)
+		nmap cX <Plug>(ExchangeClear)
+		nmap XX <Plug>(ExchangeLine)
+	" }}}
 " }}}
 " Mappings {{{
 	" Easily scroll up/down in insert mode
