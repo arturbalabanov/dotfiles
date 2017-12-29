@@ -339,6 +339,8 @@
 		let g:startify_list_order = ['dir', 'files', 'bookmarks', 'sessions', 'commands']
 	" }}}
 	" Multiple cursors {{{
+		let g:multi_cursor_insert_maps = { 'j': 1 }
+
 		function! Multiple_cursors_before()
 			let b:deoplete_disable_auto_complete = 1
 		endfunction
@@ -511,7 +513,7 @@
 	set foldtext=CustomFoldText()
 	set foldmethod=indent
 
-	let javaScript_fold=1 
+	let javaScript_fold=1
 
 	" It's easier to use space...
 	nnoremap <space> za
@@ -522,7 +524,7 @@
 " Quick editing {{{
 	nnoremap <leader>ev :tabedit $MYVIMRC<CR>
 	nnoremap <leader>eb :tabedit ~/.bashrc<CR>
-	
+
 	" zsh
 	nnoremap <leader>ezr :tabedit ~/.zshrc<CR>
 	nnoremap <leader>ezl :tabedit ~/.zshrc_local<CR>
