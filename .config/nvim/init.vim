@@ -97,6 +97,10 @@
 		Plugin 'sheerun/vim-polyglot'
 		Plugin 'Shougo/denite.nvim'
 		Plugin 'python-mode/python-mode'
+		Plugin 'mhinz/vim-startify'
+		Plugin 'itchyny/vim-cursorword'
+		Plugin 'kana/vim-operator-user'
+		Plugin 'haya14busa/vim-operator-flashy'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -326,6 +330,13 @@
 		xmap X <Plug>(Exchange)
 		nmap cX <Plug>(ExchangeClear)
 		nmap XX <Plug>(ExchangeLine)
+	" }}}
+	" vim-operator-flashy {{{
+		map y <Plug>(operator-flashy)
+		nmap Y <Plug>(operator-flashy)$
+	" }}}
+	" Startify {{{
+		let g:startify_list_order = ['dir', 'files', 'bookmarks', 'sessions', 'commands']
 	" }}}
 " }}}
 " Mappings {{{
