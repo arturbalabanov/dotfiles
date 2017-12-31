@@ -609,10 +609,19 @@ def post_extract(self):
     return True
 endsnippet
 
-snippet 100r "Get only the first 100 rows and collumns" b
+snippet tpr "table.prdata"
+table.prdata['${1:rows}']
+endsnippet
+
+snippet spr "self.prdata"
+self.prdata['${1:rows}']
+endsnippet
+
+snippet ddate "Dummy date" b
 @prdata
-def rows(self):
-    return [row[:100] for row in super(${1:Table}, self).rows()[:100]]
+def date(self):
+    return "2000-01-01"
 ${0}
 endsnippet
+
 # vim:ft=snippets:

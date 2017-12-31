@@ -123,6 +123,15 @@ export PATH=$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin
 # export PATH="$PATH:/usr/local/lib/node_modules/karma/bin"
 export PATH="$PATH:$HOME/node_modules/.bin"
 
+# export WORKON_HOME=$HOME/.virtualenvs
+# export PROJECT_HOME=$HOME/projects
+source /usr/bin/virtualenvwrapper.sh
+source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
+
+if [[ -f "$HOME/.local/share/z/z.sh" ]]; then
+	source "$HOME/.local/share/z/z.sh"
+fi
+
 DEFAULT_PYTHON_VERSION=$(python -c "import sys; print(sys.version_info[0])")
 
 source $HOME/.aliases

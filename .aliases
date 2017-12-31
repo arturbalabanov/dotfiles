@@ -21,11 +21,10 @@ alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 alias info='info --vi-keys'      # GNU info act like man command
 alias emacs='emacs -nw'          # cli mode
-alias diffdb='meld <(sort csv_results/local.csv) <(sort csv_results/edge.csv)'
 alias cdtmp='cd $(mktemp -d)'
-alias tmux='tmux -2'
 alias raliases='source ~/.aliases'
 alias rm='rm -rf'
+alias tmux='tmux -2'
 
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
 
@@ -44,9 +43,12 @@ if [ -n "$ZSH_VERSION" ]; then
 fi
 
 function mkcd() { mkdir -p "$@" && cd "$_"; }
+function yadm_update() {
+	local commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
+	yadm commit -am "$commit_msg" && yadm push;
+}
 
 eval $(thefuck --alias)
-
 
 # ptpython -> bpython -> ipython -> python
 if [ "$DEFAULT_PYTHON_VERSION" -eq "3" ]; then
@@ -64,8 +66,8 @@ if [ "$DEFAULT_PYTHON_VERSION" -eq "3" ]; then
 		fi
 	fi
 else
-	if type ptpython2 > /dev/null; then
-		alias py='ptpython2'
+	if type ptpython > /dev/null; then
+		alias py='ptpython'
 	else
 		if type bpython > /dev/null; then
 			alias py='bpython'

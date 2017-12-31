@@ -97,6 +97,10 @@
 		Plugin 'sheerun/vim-polyglot'
 		Plugin 'Shougo/denite.nvim'
 		Plugin 'python-mode/python-mode'
+		Plugin 'mhinz/vim-startify'
+		Plugin 'itchyny/vim-cursorword'
+		Plugin 'kana/vim-operator-user'
+		Plugin 'haya14busa/vim-operator-flashy'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -146,10 +150,11 @@
 	" NerdTreeTabs {{{
 		map <F2> :NERDTreeTabsToggle<CR>
 		let NERDTreeShowBookmarks=1
+		let NERDTreeIgnore=['\.pyc$']
 	" }}}
 	" SingleCompile {{{
-		nnoremap <F8> :SCCompile<cr>
-		nnoremap <F9> :SCCompileRun<cr>
+		" nnoremap <F8> :SCCompile<cr>
+		" nnoremap <F9> :SCCompileRun<cr>
 	" }}}
 	" TComment {{{
 		let g:tcommentMaps=0
@@ -253,6 +258,17 @@
 		let g:deoplete#max_menu_width = 60
 		" Auto select the first option
 		set completeopt+=noinsert
+
+
+		inoremap <silent><expr> <TAB>
+				\ pumvisible() ? "\<C-n>" :
+				\ <SID>check_back_space() ? "\<TAB>" :
+				\ deoplete#mappings#manual_complete()
+
+		function! s:check_back_space() abort "{{{
+			let col = col('.') - 1
+			return !col || getline('.')[col - 1]  =~ '\s'
+		endfunction"}}}
 	" }}}
 	" Echodoc {{{
 		set noshowmode  " Don't show --INSERT-- in the command_line
@@ -297,7 +313,6 @@
 		call pymode#default('g:pymode_virtualenv', 0)
 		call pymode#default('g:pymode_run', 0)
 		call pymode#default('g:pymode_lint', 0)
-		call pymode#default('g:pymode_breakpoint', 0)
 		call pymode#default('g:pymode_rope', 0)
 
 		" So far the only thing I'm interested in is the folding.
@@ -305,6 +320,34 @@
 		call pymode#default("g:pymode_folding", 1)
 		call pymode#default("g:pymode_folding_nest_limit", 1000)
 		call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
+
+		call pymode#default('g:pymode_breakpoint', 1)
+		call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
+		call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
+	" }}}
+	" Exchange {{{
+		nmap X <Plug>(Exchange)
+		xmap X <Plug>(Exchange)
+		nmap cX <Plug>(ExchangeClear)
+		nmap XX <Plug>(ExchangeLine)
+	" }}}
+	" vim-operator-flashy {{{
+		map y <Plug>(operator-flashy)
+		nmap Y <Plug>(operator-flashy)$
+	" }}}
+	" Startify {{{
+		let g:startify_list_order = ['dir', 'files', 'bookmarks', 'sessions', 'commands']
+	" }}}
+	" Multiple cursors {{{
+		let g:multi_cursor_insert_maps = { 'j': 1 }
+
+		function! Multiple_cursors_before()
+			let b:deoplete_disable_auto_complete = 1
+		endfunction
+
+		function! Multiple_cursors_after()
+			let b:deoplete_disable_auto_complete = 0
+		endfunction
 	" }}}
 " }}}
 " Mappings {{{
@@ -403,6 +446,13 @@
 
 	" }}}
 	set number
+	set relativenumber
+	augroup numbertoggle
+		autocmd!
+		autocmd BufEnter,FocusGained * setlocal number | setlocal relativenumber
+		autocmd BufLeave,FocusLost * setlocal nonumber | setlocal norelativenumber
+	augroup END
+
 	set ruler
 	set cursorline
 	set mouse=a
@@ -463,7 +513,7 @@
 	set foldtext=CustomFoldText()
 	set foldmethod=indent
 
-	let javaScript_fold=1 
+	let javaScript_fold=1
 
 	" It's easier to use space...
 	nnoremap <space> za
@@ -474,7 +524,7 @@
 " Quick editing {{{
 	nnoremap <leader>ev :tabedit $MYVIMRC<CR>
 	nnoremap <leader>eb :tabedit ~/.bashrc<CR>
-	
+
 	" zsh
 	nnoremap <leader>ezr :tabedit ~/.zshrc<CR>
 	nnoremap <leader>ezl :tabedit ~/.zshrc_local<CR>
