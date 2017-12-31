@@ -5,7 +5,7 @@ export ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="agnoster" 
+ZSH_THEME="artur" 
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true" 
@@ -44,7 +44,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git git-extras npm zsh-syntax-highlighting vi-mode zle-vi-visual tmuxinator) # zsh-autosuggestions
+plugins=(git git-extras npm zsh-syntax-highlighting vi-mode zle-vi-visual virtualenvwrapper tmuxinator) # zsh-autosuggestions
 
 source $ZSH/oh-my-zsh.sh
 
@@ -69,11 +69,7 @@ bindkey -M vicmd 'L' end-of-line
 bindkey -M vivis 'H' vi-visual-bol
 bindkey -M vivis 'L' vi-visual-eol
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-# export DEFAULT_USER="artur"
 export EDITOR="nvim"
-# export BROWSER="vivaldi"
 export BROWSER="google-chrome-stable"
 
 eval $(dircolors ~/.dircolors)
@@ -90,7 +86,7 @@ export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
 export LESS_TERMCAP_ue=$'\E[0m'           # end underline 
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
-PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
+# PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
 
 bindkey '\e[3~' delete-char
 bindkey '^R' history-incremental-search-backward
@@ -126,11 +122,6 @@ export PATH=$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin
 # export PATH="$PATH:/usr/local/share/npm/bin"
 # export PATH="$PATH:/usr/local/lib/node_modules/karma/bin"
 export PATH="$PATH:$HOME/node_modules/.bin"
-
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/projects
-# source /usr/bin/virtualenvwrapper.sh
-# source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 
 DEFAULT_PYTHON_VERSION=$(python -c "import sys; print(sys.version_info[0])")
 

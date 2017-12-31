@@ -53,7 +53,7 @@ prompt_segment() {
   local bg fg
   [[ -n $1 ]] && bg="%K{$1}" || bg="%k"
   [[ -n $2 ]] && fg="%F{$2}" || fg="%f"
-	
+
   if [[ $CURRENT_BG != 'NONE' && $1 != $CURRENT_BG ]]; then
     echo -n " %{$bg%F{$CURRENT_BG}%}$SEGMENT_FORWARD_SEPERATOR%{$fg%} "
   else
@@ -194,8 +194,9 @@ prompt_dir() {
 # Virtualenv: current working virtualenv
 prompt_virtualenv() {
   local virtualenv_path="$VIRTUAL_ENV"
+
   if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
-    prompt_segment blue black "(`basename $virtualenv_path`)"
+    prompt_segment cyan black "`basename $virtualenv_path`"
   fi
 }
 
@@ -217,8 +218,8 @@ prompt_status() {
 build_prompt() {
   RETVAL=$?
   prompt_status
-  prompt_virtualenv
   prompt_context
+  prompt_virtualenv
   prompt_dir
   prompt_git
   prompt_bzr
@@ -237,19 +238,19 @@ VISUAL_LINE_MODE_INDICATOR="%{$fg_bold[magenta]%}-%{$fg[magenta]%}- V-LINE --%{$
 DEFAULT_MODE_INDICATOR="$INSERT_MODE_INDICATOR"
 
 vim_mode_prompt_info() {
-	if [[ -z "$KEYMAP" ]]; then
-		echo "$DEFAULT_MODE_INDICATOR"
-	else
-		if [[ "$KEYMAP" == "vicmd" ]]; then
-			echo "$NORMAL_MODE_INDICATOR"
-		elif [[ "$KEYMAP" == "viins" || "$KEYMAP" == "main" ]]; then
-			echo "$INSERT_MODE_INDICATOR"
-		elif [[ "$KEYMAP" == "vivis" ]]; then
-			echo "$VISUAL_MODE_INDICATOR"
-		elif [[ "$KEYMAP" == "vivli" ]]; then
-			echo "$VISUAL_LINE_MODE_INDICATOR"
-		fi
-	fi
+  if [[ -z "$KEYMAP" ]]; then
+    echo "$DEFAULT_MODE_INDICATOR"
+  else
+    if [[ "$KEYMAP" == "vicmd" ]]; then
+      echo "$NORMAL_MODE_INDICATOR"
+    elif [[ "$KEYMAP" == "viins" || "$KEYMAP" == "main" ]]; then
+      echo "$INSERT_MODE_INDICATOR"
+    elif [[ "$KEYMAP" == "vivis" ]]; then
+      echo "$VISUAL_MODE_INDICATOR"
+    elif [[ "$KEYMAP" == "vivli" ]]; then
+      echo "$VISUAL_LINE_MODE_INDICATOR"
+    fi
+  fi
 }
 
 RPS1='$(vim_mode_prompt_info)'
