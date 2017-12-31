@@ -101,6 +101,7 @@
 		Plugin 'itchyny/vim-cursorword'
 		Plugin 'kana/vim-operator-user'
 		Plugin 'haya14busa/vim-operator-flashy'
+		Plugin 'tmhedberg/SimpylFold'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -317,9 +318,10 @@
 
 		" So far the only thing I'm interested in is the folding.
 
-		call pymode#default("g:pymode_folding", 1)
-		call pymode#default("g:pymode_folding_nest_limit", 1000)
-		call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
+		call pymode#default("g:pymode_folding", 0)
+		" call pymode#default("g:pymode_folding", 1)
+		" call pymode#default("g:pymode_folding_nest_limit", 1000)
+		" call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
 
 		call pymode#default('g:pymode_breakpoint', 1)
 		call pymode#default('g:pymode_breakpoint_bind', '<C-b>')

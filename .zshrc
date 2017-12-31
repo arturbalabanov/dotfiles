@@ -118,15 +118,7 @@ bindkey "^s" prepend-sudo
 
 export PATH=$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin
 
-# export PATH=$PATH:/home/artur/.gem/ruby/2.1.0/bin
-# export PATH="$PATH:/usr/local/share/npm/bin"
-# export PATH="$PATH:/usr/local/lib/node_modules/karma/bin"
 export PATH="$PATH:$HOME/node_modules/.bin"
-
-# export WORKON_HOME=$HOME/.virtualenvs
-# export PROJECT_HOME=$HOME/projects
-source /usr/bin/virtualenvwrapper.sh
-source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 
 if [[ -f "$HOME/.local/share/z/z.sh" ]]; then
 	source "$HOME/.local/share/z/z.sh"
