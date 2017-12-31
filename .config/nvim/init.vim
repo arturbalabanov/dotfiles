@@ -102,6 +102,7 @@
 		Plugin 'kana/vim-operator-user'
 		Plugin 'haya14busa/vim-operator-flashy'
 		Plugin 'tmhedberg/SimpylFold'
+		Plugin 'guns/xterm-color-table.vim'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -443,9 +444,11 @@
 		" colorscheme solarized
 		set background=dark
 		colorscheme hybrid
+
 		highlight ALEErrorSign ctermfg=red ctermbg=234
 		highlight ALEWarningSign ctermfg=yellow ctermbg=234
 
+		highlight Flashy ctermbg=239
 	" }}}
 	set number
 	set relativenumber
