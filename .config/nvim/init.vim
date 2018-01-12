@@ -1,9 +1,6 @@
 " Basic options {{{
 	filetype off
 
-	set rtp+=~/.config/nvim/bundle/Vundle.vim
-	call vundle#begin()
-
 	" Python support
 	let g:python_host_prog='/usr/bin/python2'
 	let g:python3_host_prog='/usr/bin/python3'
@@ -33,78 +30,124 @@
 	set noswapfile                   " it's 2015, NeoVim.
 " }}}
 " Plugin settings {{{
-	" Vundle {{{
-		Plugin 'VundleVim/Vundle.vim'
-		Plugin 'scrooloose/nerdtree'
-		Plugin 'jistr/vim-nerdtree-tabs'
-		Plugin 'MarcWeber/vim-addon-mw-utils'
-		Plugin 'tomtom/tlib_vim'
-		Plugin 'hail2u/vim-css3-syntax'
-		Plugin 'terryma/vim-multiple-cursors'
-		Plugin 'tpope/vim-surround'
-		Plugin 'tpope/vim-fugitive'
-		Plugin 'tomtom/tcomment_vim'
-		Plugin 'groenewege/vim-less'
-		Plugin 'mattn/emmet-vim'
-		Plugin 'sjl/gundo.vim'
-		Plugin 'jiangmiao/auto-pairs'
-		Plugin 'xuhdev/SingleCompile'
-		Plugin 'jdevera/vim-stl-syntax'
-		Plugin 'regedarek/ZoomWin'
-		Plugin 'kchmck/vim-coffee-script'
-		Plugin 'tpope/vim-haml'
-		Plugin 'vim-airline/vim-airline'
-		Plugin 'vim-airline/vim-airline-themes'
-		Plugin 'xolox/vim-misc'
-		Plugin 'xolox/vim-session'
-		Plugin 'altercation/vim-colors-solarized'
-		Plugin 'xolox/vim-lua-ftplugin'
-		Plugin 'gkz/vim-ls'
-		Plugin 'goatslacker/mango.vim'
-		Plugin 'digitaltoad/vim-jade'
-		Plugin 'curist/vim-angular-template'
-		Plugin 'othree/yajs.vim'
-		Plugin 'trapd00r/neverland-vim-theme'
-		Plugin 'plasticboy/vim-markdown'
-		Plugin 'godlygeek/tabular'
-		Plugin 'SirVer/ultisnips'
-		Plugin 'mattn/webapi-vim'
-		Plugin 'mattn/gist-vim'
-		Plugin 'tpope/vim-dispatch'
-		Plugin 'cakebaker/scss-syntax.vim'
-		Plugin 'vim-ruby/vim-ruby'
-		Plugin 'tpope/vim-endwise'
-		Plugin 'junegunn/goyo.vim'
-		Plugin 'junegunn/limelight.vim'
-		Plugin 'Shougo/deoplete.nvim'
-		Plugin 'zchee/deoplete-jedi'
-		Plugin 'Shougo/echodoc.vim'
-		Plugin 'Shougo/neco-vim'
-		Plugin 'davidhalter/jedi-vim'
-		Plugin 'vim-scripts/SyntaxComplete'
-		Plugin 'Rykka/InstantRst'
-		Plugin 'tommcdo/vim-exchange'
-		Plugin 'reedes/vim-thematic'
-		Plugin 'kana/vim-textobj-user'
-		Plugin 'beloglazov/vim-textobj-quotes'
-		Plugin 'Julian/vim-textobj-brace'
-		Plugin 'w0ng/vim-hybrid'
-		Plugin 'rking/ag.vim'
-		Plugin 'keith/tmux.vim'
-		Plugin '907th/vim-auto-save'
-		Plugin 'ryanoasis/vim-devicons'
-		Plugin 'w0rp/ale'
-		Plugin 'sheerun/vim-polyglot'
-		Plugin 'Shougo/denite.nvim'
-		Plugin 'python-mode/python-mode'
-		Plugin 'mhinz/vim-startify'
-		Plugin 'itchyny/vim-cursorword'
-		Plugin 'kana/vim-operator-user'
-		Plugin 'haya14busa/vim-operator-flashy'
-		Plugin 'tmhedberg/SimpylFold'
-		call vundle#end()
+	" dein.vim {{{
+		if (!isdirectory(expand("$HOME/.cache/dein/repos/github.com/Shougo/dein.vim")))
+			call system(expand("mkdir -p $HOME/.cache/dein/repos/github.com"))
+	  		call system(expand("git clone https://github.com/Shougo/dein.vim $HOME/.cache/dein/repos/github.com/Shougo/dein.vim"))
+		endif
+
+		set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
+
+		if dein#load_state('~/.cache/dein')
+			call dein#begin('~/.cache/dein')
+
+			" Non-lazy loaded :(
+			call dein#add('itchyny/vim-cursorword')
+			call dein#add('vim-airline/vim-airline')
+			call dein#add('vim-airline/vim-airline-themes')
+			call dein#add('w0ng/vim-hybrid')
+
+			" Dependancies
+			call dein#add('kana/vim-operator-user', {'lazy': 1})
+			call dein#add('xolox/vim-misc', {'lazy': 1})
+			call dein#add('kana/vim-textobj-user', {'lazy': 1})
+			
+			" TODO: See which plugins require these two
+			call dein#add('MarcWeber/vim-addon-mw-utils', {'lazy': 1})
+			call dein#add('tomtom/tlib_vim', {'lazy': 1})
+
+			" Lazy loaded
+			call dein#add('scrooloose/nerdtree', {'on_cmd': 'NERDTreeToggle'})
+			call dein#add('hail2u/vim-css3-syntax', {'on_ft': 'css'})
+			call dein#add('groenewege/vim-less', {'on_ft': 'less'})
+			call dein#add('cakebaker/scss-syntax.vim', {'on_ft': ['scss', 'sass']})
+
+			call dein#add('haya14busa/vim-operator-flashy', {
+				\ 'depends': 'vim-operator-user',
+				\ 'on_map': {'nx': '<Plug>(operator-flashy)'}
+				\ })
+
+			call dein#add('beloglazov/vim-textobj-quotes', {
+				\ 'depends': 'vim-textobj-user',
+				\ 'on_map': {'ox': '<Plug>'}
+				\ })
+			call dein#add('Julian/vim-textobj-brace', {
+				\ 'depends': 'vim-textobj-user',
+				\ 'on_map': {'ox': '<Plug>'}
+				\ })
+
+			call dein#add('tmhedberg/SimpylFold', {'on_ft': 'python'}) 
+			call dein#add('tpope/vim-haml', {'on_ft': 'haml'})
+			call dein#add('kchmck/vim-coffee-script', {'on_ft': 'coffee'})
+			call dein#add('sjl/gundo.vim', {'on_cmd': 'GundoToggle'})
+			call dein#add('xolox/vim-lua-ftplugin', {
+				\ 'depends': 'vim-misc',
+				\ 'on_ft': 'lua'
+				\ })
+			call dein#add('plasticboy/vim-markdown', {'on_ft': 'markdown'})
+			call dein#add('vim-ruby/vim-ruby', {'on_ft': 'ruby'})
+			call dein#add('keith/tmux.vim', {'on_ft': 'tmux'})
+			call dein#add('python-mode/python-mode')
+
+			call dein#add('junegunn/limelight.vim', {'on_cmd': 'Limelight'})
+			call dein#add('junegunn/goyo.vim', {
+				\ 'depends': 'limelight.vim',
+				\ 'on_cmd': 'Goyo'
+				\ })
+
+			" Not yet migrated
+			call dein#add('terryma/vim-multiple-cursors')
+			" TODO: Replace with vim-operator-surround?
+			call dein#add('tpope/vim-surround')
+			call dein#add('tpope/vim-fugitive')
+			call dein#add('tomtom/tcomment_vim')
+			call dein#add('mattn/emmet-vim')
+			call dein#add('jiangmiao/auto-pairs')
+			call dein#add('SirVer/ultisnips')
+			call dein#add('tpope/vim-endwise')
+			call dein#add('tommcdo/vim-exchange')
+			call dein#add('ryanoasis/vim-devicons')
+			call dein#add('w0rp/ale')
+			call dein#add('mhinz/vim-startify')
+
+			" Shougo's glorious plugins {{{
+				call dein#add('Shougo/dein.vim')
+				call dein#add('Shougo/denite.nvim')
+				call dein#add('Shougo/context_filetype.vim', {'lazy': 1})
+				call dein#add('Shougo/deoplete.nvim', {
+					\ 'depends': 'context_filetype.vim',
+					\ 'on_i': 1
+					\ })
+				call dein#add('zchee/deoplete-jedi', {
+					\ 'depends': 'deoplete.nvim',
+					\ 'on_ft': 'python',
+					\ 'on_i': 1
+					\ })
+				call dein#add('Shougo/echodoc.vim', {
+					\ 'on_event': 'CompleteDone'
+					\ })
+				call dein#add('Shougo/neco-vim', {
+					\ 'on_ft': 'vim'
+					\ })
+
+				call dein#add('davidhalter/jedi-vim', {
+					\ 'on_ft': 'python'
+					\ })
+			" }}}
+
+			" TODO: Add build instructions
+			call dein#add('Rykka/InstantRst', {
+				\ 'on_ft': 'rst'
+				\ })
+			call dein#add('guns/xterm-color-table.vim', {
+				\ 'on_cmd': 'XtermColorTable'
+				\ })
+
+			call dein#end()
+			call dein#save_state()
+		endif
 	" }}}
-	" Airline {{{
+	" vim-airline {{{
 		set laststatus=2   " Always show the statusline
 		let g:airline#extensions#tabline#enabled = 1
 
@@ -124,10 +167,10 @@
 
 		let g:airline_exclude_preview = 1
 	" }}}
-	" Auto-pairs {{{
+	" auto-pairs {{{
 		let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
 	" }}}
-	" Ale {{{
+	" ale {{{
 		let g:ale_sign_column_always = 1
 		let g:ale_sign_error = '✗'
 		let g:ale_sign_warning = ''
@@ -138,26 +181,18 @@
 
 		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
 	" }}}
-	" Gundo {{{
+	" gundo.vim {{{
 		nnoremap <F1> :GundoToggle<cr>
 		let g:gundo_tree_statusline = "Gundo"
 		let g:gundo_preview_statusline = "Gundo Preview"
 		let g:gundo_right = 1
 	" }}}
-	" Taglist {{{
-		nnoremap <F3> :TlistToggle<cr>
-		let Tlist_Use_Right_Window = 1
-	" }}}
-	" NerdTreeTabs {{{
-		map <F2> :NERDTreeTabsToggle<CR>
+	" nerdtree {{{
+		noremap <F2> :NERDTreeToggle<CR>
 		let NERDTreeShowBookmarks=1
 		let NERDTreeIgnore=['\.pyc$']
 	" }}}
-	" SingleCompile {{{
-		" nnoremap <F8> :SCCompile<cr>
-		" nnoremap <F9> :SCCompileRun<cr>
-	" }}}
-	" TComment {{{
+	" tcomment_vim {{{
 		let g:tcommentMaps=0
 		
 		" Ctrl-/ for comment/uncomment
@@ -165,7 +200,7 @@
 		vnoremap <C-_> :TComment<CR>
 		inoremap <C-_> <Esc>:TComment<CR>i
 	" }}}
-	" Emmet {{{
+	" emmet {{{
 		let g:user_emmet_install_global = 0
 		autocmd FileType html,css EmmetInstall
 		let g:user_emmet_expandabbr_key = '``'
@@ -173,17 +208,13 @@
 		let g:user_emmet_prev_key = '`k'
 		let g:use_emmet_complete_tag = 1
 	" }}}
-	" Session {{{
-		let g:session_autosave = 'no'
-		let g:session_autoload = 'no'
-	" }}}
-	" UltiSnips {{{
+	" ultisnips {{{
 		let g:UltiSnipsEditSplit="vertical"
 		let g:UltiSnipsExpandTrigger = "<C-j>"
 		let g:UltiSnipsJumpForwardTrigger = "<C-j>"
 		let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
 	" }}}
-	" Surround {{{
+	" vim-surround {{{
 		autocmd FileType htmldjango let b:surround_{char2nr("v")} = "{{ \r }}"
 		autocmd FileType htmldjango let b:surround_{char2nr("t")} = "{% \r %}"
 
@@ -200,12 +231,13 @@
 		autocmd FileType rst let b:surround_{char2nr("b")} = "**\r**"
 		autocmd FileType rst let b:surround_{char2nr("i")} = "*\r*"
 	" }}}
-	" Goyo and Limelight {{{
+	" limelight.vim {{{
+		let g:limelight_conceal_ctermfg = 'black'
+	" }}}
+	" goyo.vim {{{
 		let g:goyo_margin_top=0
 		let g:goyo_margin_bottom=0
 		let g:goyo_linenr=2
-
-		let g:limelight_conceal_ctermfg = 'black'
 
 		function! GoyoBefore()
 			silent !tmux set status off
@@ -225,27 +257,7 @@
 	" InstantRst {{{
 		let g:instant_rst_browser = "google-chrome-stable"
 	" }}}
-    " Riv {{{
-        let g:riv_fold_auto_update = 0
-		let g:riv_i_tab_pum_next = 0
-		let g:riv_i_tab_user_cmd = "\<c-g>u\<c-r>=UltiSnips#ExpandSnippet()\<cr>"
-    " }}}
-	" Thematic {{{
-		let g:thematic#themes = {
-			\ 'solarized_dark': {
-			\ 	'colorscheme': 'solarized',
-			\   'background': 'dark',
-			\ },
-			\ 'solarized_light': {
-			\ 	'colorscheme': 'solarized',
-			\   'background': 'light',
-			\ },
-		\ }
-	" }}}
-	" Auto Save {{{
-		let g:auto_save = 0
-	" }}}
-	" Jedi-vim {{{
+	" jedi-vim {{{
 		let g:jedi#use_tabs_not_buffers = 1
 		let g:jedi#show_call_signatures = "0"  " 1 -> Popup; 2 -> command line
 		let g:jedi#completions_enabled = 0
@@ -254,7 +266,7 @@
 		" let g:jedi#show_call_signatures_delay = 200
 		autocmd FileType python setlocal completeopt-=preview  " No auto docstring
 	" }}}
-	" Deoplete {{{
+	" deoplete.nvim {{{
 		let g:deoplete#enable_at_startup = 1
 		let g:deoplete#max_menu_width = 60
 		" Auto select the first option
@@ -271,11 +283,11 @@
 			return !col || getline('.')[col - 1]  =~ '\s'
 		endfunction"}}}
 	" }}}
-	" Echodoc {{{
+	" echodoc.vim {{{
 		set noshowmode  " Don't show --INSERT-- in the command_line
 		let g:echodoc#enable_at_startup = 1
 	" }}}
-	" Denite {{{
+	" denite.nvim {{{
 		call denite#custom#option('default', {
 			\ 'prompt': '❯',
 			\ 'highlight_matched_char': 'Underlined',
@@ -302,7 +314,7 @@
 		nnoremap <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
 		cnoremap <C-r> :<C-u>Denite command_history<CR>
 	" }}}
-	" Python-mode {{{
+	" python-mode {{{
 		" Disable nearly all the functions of python-mode since I use other
 		" plugins for them. Ones far younger and more powerful!
 
@@ -316,32 +328,32 @@
 		call pymode#default('g:pymode_lint', 0)
 		call pymode#default('g:pymode_rope', 0)
 
-		" So far the only thing I'm interested in is the folding.
-
 		call pymode#default("g:pymode_folding", 0)
-
 		" call pymode#default("g:pymode_folding", 1)
 		" call pymode#default("g:pymode_folding_nest_limit", 1000)
 		" call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
-        "
-		" call pymode#default('g:pymode_breakpoint', 1)
-		" call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
-		" call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
+
+		" I'm using it only for the breakpoints. For now.
+
+		call pymode#default('g:pymode_breakpoint', 1)
+		call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
+		call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
 	" }}}
-	" Exchange {{{
+	" vim-exchange {{{
 		nmap X <Plug>(Exchange)
 		xmap X <Plug>(Exchange)
 		nmap cX <Plug>(ExchangeClear)
 		nmap XX <Plug>(ExchangeLine)
 	" }}}
 	" vim-operator-flashy {{{
-		map y <Plug>(operator-flashy)
-		nmap Y <Plug>(operator-flashy)$
+	    map y <Plug>(operator-flashy)
+	    nmap Y <Plug>(operator-flashy)$
 	" }}}
-	" Startify {{{
+	" vim-startify {{{
 		let g:startify_list_order = ['dir', 'files', 'bookmarks', 'sessions', 'commands']
+		let g:startify_custom_header = []
 	" }}}
-	" Multiple cursors {{{
+	" vim-multiple-cursors {{{
 		let g:multi_cursor_insert_maps = { 'j': 1 }
 
 		function! Multiple_cursors_before()
@@ -450,9 +462,11 @@
 		" colorscheme solarized
 		set background=dark
 		colorscheme hybrid
+
 		highlight ALEErrorSign ctermfg=red ctermbg=234
 		highlight ALEWarningSign ctermfg=yellow ctermbg=234
 
+		highlight Flashy ctermbg=239
 	" }}}
 	set number
 	set relativenumber

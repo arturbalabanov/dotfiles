@@ -44,7 +44,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git git-extras npm zsh-syntax-highlighting vi-mode zle-vi-visual tmuxinator) # zsh-autosuggestions
+plugins=(git git-extras npm zsh-syntax-highlighting vi-mode zle-vi-visual virtualenvwrapper tmuxinator) # zsh-autosuggestions
 
 source $ZSH/oh-my-zsh.sh
 
@@ -69,11 +69,7 @@ bindkey -M vicmd 'L' end-of-line
 bindkey -M vivis 'H' vi-visual-bol
 bindkey -M vivis 'L' vi-visual-eol
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-# export DEFAULT_USER="artur"
 export EDITOR="nvim"
-# export BROWSER="vivaldi"
 export BROWSER="google-chrome-stable"
 
 eval $(dircolors ~/.dircolors)
@@ -122,15 +118,7 @@ bindkey "^s" prepend-sudo
 
 export PATH=$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin
 
-# export PATH=$PATH:/home/artur/.gem/ruby/2.1.0/bin
-# export PATH="$PATH:/usr/local/share/npm/bin"
-# export PATH="$PATH:/usr/local/lib/node_modules/karma/bin"
 export PATH="$PATH:$HOME/node_modules/.bin"
-
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/projects
-# source /usr/bin/virtualenvwrapper.sh
-# source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 
 if [[ -f "$HOME/.local/share/z/z.sh" ]]; then
 	source "$HOME/.local/share/z/z.sh"
