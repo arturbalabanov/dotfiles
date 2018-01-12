@@ -24,7 +24,6 @@ alias emacs='emacs -nw'          # cli mode
 alias cdtmp='cd $(mktemp -d)'
 alias raliases='source ~/.aliases'
 alias rm='rm -rf'
-alias tmux='tmux -2'
 
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
 

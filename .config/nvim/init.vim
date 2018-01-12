@@ -101,6 +101,7 @@
 		Plugin 'itchyny/vim-cursorword'
 		Plugin 'kana/vim-operator-user'
 		Plugin 'haya14busa/vim-operator-flashy'
+		Plugin 'tmhedberg/SimpylFold'
 		call vundle#end()
 	" }}}
 	" Airline {{{
@@ -317,13 +318,15 @@
 
 		" So far the only thing I'm interested in is the folding.
 
-		call pymode#default("g:pymode_folding", 1)
-		call pymode#default("g:pymode_folding_nest_limit", 1000)
-		call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
+		call pymode#default("g:pymode_folding", 0)
 
-		call pymode#default('g:pymode_breakpoint', 1)
-		call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
-		call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
+		" call pymode#default("g:pymode_folding", 1)
+		" call pymode#default("g:pymode_folding_nest_limit", 1000)
+		" call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
+        "
+		" call pymode#default('g:pymode_breakpoint', 1)
+		" call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
+		" call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
 	" }}}
 	" Exchange {{{
 		nmap X <Plug>(Exchange)
@@ -423,6 +426,12 @@
 		noremap H ^
 		noremap L $
 		vnoremap L g_
+	" }}}
+	" Difftool mappings {{{
+		nnoremap <leader>dl :diffget LOCAL<CR>
+		nnoremap <leader>db :diffget BASE<CR>
+		nnoremap <leader>dr :diffget REMOTE<CR>
+		nnoremap <leader>du :diffupdate<CR>
 	" }}}
 " }}}
 " Interface {{{
