@@ -64,7 +64,7 @@
 
 			call dein#add('haya14busa/vim-operator-flashy', {
 				\ 'depends': 'vim-operator-user',
-				\ 'on_map': {'nx': '<Plug>(operator-flashy)'}
+				\ 'on_map': {'nx': '<Plug>'}
 				\ })
 
 			call dein#add('beloglazov/vim-textobj-quotes', {
@@ -114,6 +114,7 @@
 			call dein#add('w0rp/ale')
 			call dein#add('mhinz/vim-startify')
 			call dein#add('othree/eregex.vim')
+			call dein#add('jpalardy/vim-slime')
 
 			" Shougo's glorious plugins (and their extensions) {{{
 				call dein#add('Shougo/dein.vim')
@@ -364,6 +365,13 @@
 		function! Multiple_cursors_after()
 			let b:deoplete_disable_auto_complete = 0
 		endfunction
+	" }}}
+	" vim-slime {{{
+		let g:slime_target = "tmux"	
+
+		let g:slime_no_mappings = 1
+		xmap <C-c> <Plug>SlimeRegionSend
+		nmap <C-c> <Plug>SlimeLineSend
 	" }}}
 " }}}
 " Mappings {{{
