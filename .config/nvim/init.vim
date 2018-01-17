@@ -115,6 +115,7 @@
 			call dein#add('mhinz/vim-startify')
 			call dein#add('othree/eregex.vim')
 			call dein#add('jpalardy/vim-slime')
+			call dein#add('AndrewRadev/splitjoin.vim')
 
 			" Shougo's glorious plugins (and their extensions) {{{
 				call dein#add('Shougo/dein.vim')
@@ -372,6 +373,13 @@
 		let g:slime_no_mappings = 1
 		xmap <C-c> <Plug>SlimeRegionSend
 		nmap <C-c> <Plug>SlimeLineSend
+	" }}}
+	" splitjoin.vim {{{
+		let g:splitjoin_join_mapping = ''
+		let g:splitjoin_split_mapping = ''
+
+		nnoremap sj :SplitjoinJoin<CR>
+		nnoremap sk :SplitjoinSplit<CR>
 	" }}}
 " }}}
 " Mappings {{{
