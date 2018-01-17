@@ -95,6 +95,10 @@
 				\ 'on_cmd': 'Goyo'
 				\ })
 
+			call dein#add('davidhalter/jedi-vim', {
+				\ 'on_ft': 'python'
+				\ })
+
 			" Not yet migrated
 			call dein#add('terryma/vim-multiple-cursors')
 			" TODO: Replace with vim-operator-surround?
@@ -109,8 +113,9 @@
 			call dein#add('ryanoasis/vim-devicons')
 			call dein#add('w0rp/ale')
 			call dein#add('mhinz/vim-startify')
+			call dein#add('othree/eregex.vim')
 
-			" Shougo's glorious plugins {{{
+			" Shougo's glorious plugins (and their extensions) {{{
 				call dein#add('Shougo/dein.vim')
 				call dein#add('Shougo/denite.nvim')
 				call dein#add('Shougo/context_filetype.vim', {'lazy': 1})
@@ -128,10 +133,6 @@
 					\ })
 				call dein#add('Shougo/neco-vim', {
 					\ 'on_ft': 'vim'
-					\ })
-
-				call dein#add('davidhalter/jedi-vim', {
-					\ 'on_ft': 'python'
 					\ })
 			" }}}
 
@@ -487,10 +488,6 @@
     set shiftround    " round indent to multiple of 'shiftwidth'
 " }}}
 " Searching {{{
-	" Use sane regexes.
-	nnoremap / /\v
-	vnoremap / /\v
-
 	set ignorecase
 	set smartcase
 
