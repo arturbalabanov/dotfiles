@@ -175,7 +175,6 @@
 		let g:ale_sign_error = '✗'
 		let g:ale_sign_warning = ''
 
-		" For some reason nnoremap doesn't work
 		nmap <A-k> <Plug>(ale_previous_wrap)
 		nmap <A-j> <Plug>(ale_next_wrap)
 
@@ -292,6 +291,7 @@
 			\ 'prompt': '❯',
 			\ 'highlight_matched_char': 'Underlined',
 			\ 'highlight_mode_normal': 'CursorLine',
+			\ 'vertical_preview': 1,
 			\ })
 
 		call denite#custom#var('grep', 'command', ['rg'])
@@ -347,7 +347,7 @@
 	" }}}
 	" vim-operator-flashy {{{
 	    map y <Plug>(operator-flashy)
-	    nmap Y <Plug>(operator-flashy)$
+	    nmap Y ^<Plug>(operator-flashy)g_
 	" }}}
 	" vim-startify {{{
 		let g:startify_list_order = ['dir', 'files', 'bookmarks', 'sessions', 'commands']
