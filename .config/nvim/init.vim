@@ -486,11 +486,10 @@
 		highlight Flashy ctermbg=239
 	" }}}
 	set number
-	set relativenumber
 	augroup numbertoggle
 		autocmd!
-		autocmd BufEnter,FocusGained * setlocal number | setlocal relativenumber
-		autocmd BufLeave,FocusLost * setlocal nonumber | setlocal norelativenumber
+		autocmd BufEnter,FocusGained * setlocal number
+		autocmd BufLeave,FocusLost * setlocal nonumber
 	augroup END
 
 	set ruler
