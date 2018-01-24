@@ -51,7 +51,7 @@
 			call dein#add('kana/vim-operator-user', {'lazy': 1})
 			call dein#add('xolox/vim-misc', {'lazy': 1})
 			call dein#add('kana/vim-textobj-user', {'lazy': 1})
-			
+
 			" TODO: See which plugins require these two
 			call dein#add('MarcWeber/vim-addon-mw-utils', {'lazy': 1})
 			call dein#add('tomtom/tlib_vim', {'lazy': 1})
@@ -118,6 +118,8 @@
 			call dein#add('AndrewRadev/splitjoin.vim')
 			call dein#add('tpope/vim-projectionist')
 			call dein#add('tpope/vim-dispatch')
+			call dein#add('tommcdo/vim-lion')
+
 
 			" Shougo's glorious plugins (and their extensions) {{{
 				call dein#add('Shougo/dein.vim')
@@ -452,6 +454,9 @@
 
 	" Sudo to write
 	cnoremap w!! w !sudo tee % >/dev/null
+
+	" Close the QuckFix
+	nnoremap <leader>q :cclose<CR>
 
 	" Switching between tabs {{{
 		nnoremap K :tabn<CR>
