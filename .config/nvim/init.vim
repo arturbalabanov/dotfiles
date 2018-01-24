@@ -112,7 +112,6 @@
 			call dein#add('tommcdo/vim-exchange')
 			call dein#add('ryanoasis/vim-devicons')
 			call dein#add('w0rp/ale')
-			call dein#add('mhinz/vim-startify')
 			call dein#add('othree/eregex.vim')
 			call dein#add('jpalardy/vim-slime')
 			call dein#add('AndrewRadev/splitjoin.vim')
@@ -355,10 +354,6 @@
 	" vim-operator-flashy {{{
 	    map y <Plug>(operator-flashy)
 	    nmap Y ^<Plug>(operator-flashy)g_
-	" }}}
-	" vim-startify {{{
-		let g:startify_list_order = ['dir', 'files', 'bookmarks', 'sessions', 'commands']
-		let g:startify_custom_header = []
 	" }}}
 	" vim-multiple-cursors {{{
 		let g:multi_cursor_insert_maps = { 'j': 1 }
