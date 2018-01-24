@@ -117,6 +117,7 @@
 			call dein#add('jpalardy/vim-slime')
 			call dein#add('AndrewRadev/splitjoin.vim')
 			call dein#add('tpope/vim-projectionist')
+			call dein#add('tpope/vim-dispatch')
 
 			" Shougo's glorious plugins (and their extensions) {{{
 				call dein#add('Shougo/dein.vim')
@@ -381,6 +382,14 @@
 
 		nnoremap sj :SplitjoinJoin<CR>
 		nnoremap sk :SplitjoinSplit<CR>
+	" }}}
+	" vim-projectionist {{{
+		" Jump to the alternate file
+		nnoremap <leader>a :A<CR>
+	" }}}
+	" vim-dispatch {{{
+		nnoremap <F9> :Dispatch<CR>
+		inoremap <F9> <Esc>:Dispatch<CR>a
 	" }}}
 " }}}
 " Mappings {{{
