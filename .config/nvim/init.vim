@@ -116,6 +116,7 @@
 			call dein#add('othree/eregex.vim')
 			call dein#add('jpalardy/vim-slime')
 			call dein#add('AndrewRadev/splitjoin.vim')
+			call dein#add('tpope/vim-projectionist')
 
 			" Shougo's glorious plugins (and their extensions) {{{
 				call dein#add('Shougo/dein.vim')
