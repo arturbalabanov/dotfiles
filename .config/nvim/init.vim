@@ -118,6 +118,7 @@
 			call dein#add('tpope/vim-projectionist')
 			call dein#add('tpope/vim-dispatch')
 			call dein#add('tommcdo/vim-lion')
+			call dein#add('tpope/vim-abolish')
 
 
 			" Shougo's glorious plugins (and their extensions) {{{
@@ -195,6 +196,7 @@
 	" nerdtree {{{
 		noremap <F2> :NERDTreeToggle<CR>
 		let NERDTreeShowBookmarks=1
+		let NERDTreeMapOpenSplit='v'
 		let NERDTreeIgnore=['\.pyc$']
 	" }}}
 	" tcomment_vim {{{
@@ -307,7 +309,12 @@
 		call denite#custom#var('grep', 'separator', ['--'])
 
 		call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
-		call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabopen>', 'noremap')
+		call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabswitch>', 'noremap')
+		call denite#custom#map('insert', '<C-s>', '<denite:do_action:splitswitch>', 'noremap')
+		call denite#custom#map('insert', '<C-v>', '<denite:do_action:vsplitswitch>', 'noremap')
+		call denite#custom#map('normal', 't', '<denite:do_action:tabswitch>', 'noremap')
+		call denite#custom#map('normal', 's', '<denite:do_action:splitswitch>', 'noremap')
+		call denite#custom#map('normal', 'v', '<denite:do_action:vsplitswitch>', 'noremap')
 		call denite#custom#map('insert', '<Esc>', '<denite:quit>', 'noremap')
 		call denite#custom#map('normal', '<Esc>', '<denite:quit>', 'noremap')
 
