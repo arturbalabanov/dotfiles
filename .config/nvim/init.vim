@@ -631,7 +631,10 @@
 " }}}
 " Filetype specific settings {{{
 	" Automaticlly set filetypes {{{
-		au BufRead,BufNewFile /etc/nginx/*,/usr/local/nginx/conf/* if &ft == '' | setfiletype nginx | endif
+		augroup auto_ft
+			au!
+			au BufRead, BufNewFile /etc/nginx/*,/usr/local/nginx/conf/* if &ft == '' | setfiletype nginx | endif
+		augroup END
 		let g:tex_flavor = "latex"
 	" }}}
 	" C {{{
@@ -814,6 +817,7 @@
 	" }}}
 	" Nonvim {{{
 		augroup nonvim
+			au!
 			au BufRead *.png,*.jpg,*.pdf,*.gif,*.scpt sil exe "!xdg-open " . shellescape(expand("%:p")) | bd | let &ft=&ft | redraw!
 		augroup END
 	" }}}
