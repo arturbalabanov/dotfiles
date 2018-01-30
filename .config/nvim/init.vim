@@ -534,10 +534,9 @@
 	" Don't jump to the next match when * is pressed
 	nnoremap * *``
 
-	" Centers the screen on searching {{{
-		nnoremap n nzzzv
-		nnoremap N Nzzzv
-	" }}}
+	" Centers the screen on searching
+	nnoremap n nzzzv
+	nnoremap N Nzzzv
 " }}}
 " Folding {{{
 	set foldlevelstart=0
@@ -573,23 +572,27 @@
 	nnoremap <leader>z zMzvzz
 " }}}
 " Quick editing {{{
-	nnoremap <leader>ev :tabedit $MYVIMRC<CR>
-	nnoremap <leader>eb :tabedit ~/.bashrc<CR>
-
-	" zsh
-	nnoremap <leader>ezr :tabedit ~/.zshrc<CR>
-	nnoremap <leader>ezl :tabedit ~/.zshrc_local<CR>
-	nnoremap <leader>ezp :tabedit ~/.zprofile<CR>
-	nnoremap <leader>eza :tabedit ~/.aliases<CR>
-	nnoremap <leader>ezt :tabedit ~/.oh-my-zsh/custom/themes/artur.zsh-theme<CR>
-
-	" tmux
-	nnoremap <leader>etr :tabedit ~/.tmux.conf<CR>
-	nnoremap <leader>etc :tabedit ~/.tmux-powerlinerc<CR>
-
+	" TODO: Try to simulate denite's tabswitch
 	let tmux_theme_name = system('grep "TMUX_POWERLINE_THEME" ~/.tmux-powerlinerc | sed -r "s/^.*?([\"''])(.*?)\1\s*$/\2/"')
     let tmux_theme_name = substitute(tmux_theme_name, '\n$', '', '')
-	execute 'nnoremap <leader>ett :tabedit ~/.tmux/tmux-powerline/themes/' . tmux_theme_name . '.sh<CR>'
+
+	let quick_edit_prefix = '<leader>e'
+	let quick_edit_files = {
+		\ 'v': "$MYVIMRC",
+		\ 'b': "~/.bashrc",
+		\ 'zr': "~/.zshrc",
+		\ 'zl': "~/.zshrc_local",
+		\ 'zp': "~/.zprofile",
+		\ 'za': "~/.aliases",
+		\ 'zt': "~/.oh-my-zsh/custom/themes/artur.zsh-theme",
+		\ 'tr': "~/.tmux.conf",
+		\ 'tc': "~/.tmux-powerlinerc",
+		\ 'tt': "~/.tmux/tmux-powerline/themes/" . tmux_theme_name . ".sh",
+		\ }
+	
+	for [mapping, file_path] in items(quick_edit_files)
+		execute 'nnoremap ' . quick_edit_prefix . mapping . ' :tabedit ' . file_path . '<CR>'
+	endfor
 " }}}
 " Splits {{{
 	" Resize splits when the window is resized
