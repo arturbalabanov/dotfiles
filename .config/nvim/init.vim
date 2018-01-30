@@ -397,12 +397,11 @@
 	" }}}
 " }}}
 " Mappings {{{
-	" Easily scroll up/down in insert mode
-
 	" I'm mistyping this all the time...
 	nnoremap q: :q
 	nnoremap q; :q
 
+	" Easily scroll up/down in insert mode
 	inoremap <C-b> <C-x><C-y>
 	inoremap <C-f> <C-x><C-e>
 
@@ -460,25 +459,25 @@
 	" Close the QuckFix
 	nnoremap <leader>q :cclose<CR>
 
-	" Switching between tabs {{{
-		nnoremap K :tabn<CR>
-		nnoremap J :tabp<CR>
-	" }}}
-	" Reselect visual block after indent/outdent {{{
-		vnoremap < <gv
-		vnoremap > >gv
-	" }}}
-	" Eazily go to the beginning/end of the line {{{
-		noremap H ^
-		noremap L $
-		vnoremap L g_
-	" }}}
-	" Difftool mappings {{{
-		nnoremap <leader>dl :diffget LOCAL<CR>
-		nnoremap <leader>db :diffget BASE<CR>
-		nnoremap <leader>dr :diffget REMOTE<CR>
-		nnoremap <leader>du :diffupdate<CR>
-	" }}}
+	" Switching between tabs
+	nnoremap K :tabn<CR>
+	nnoremap J :tabp<CR>
+
+	" Reselect visual block after indent/outdent
+	vnoremap < <gv
+	vnoremap > >gv
+
+	" Eazily go to the beginning/end of the line
+	noremap H ^
+	noremap L $
+	vnoremap L g_
+
+	" TODO: Should these be global?
+	" Difftool mappings
+	nnoremap <leader>dl :diffget LOCAL<CR>
+	nnoremap <leader>db :diffget BASE<CR>
+	nnoremap <leader>dr :diffget REMOTE<CR>
+	nnoremap <leader>du :diffupdate<CR>
 " }}}
 " Interface {{{
     " Colors {{{
