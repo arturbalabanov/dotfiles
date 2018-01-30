@@ -577,6 +577,9 @@
 	let tmux_theme_name = system('grep "TMUX_POWERLINE_THEME" ~/.tmux-powerlinerc | sed -r "s/^.*?([\"''])(.*?)\1\s*$/\2/"')
     let tmux_theme_name = substitute(tmux_theme_name, '\n$', '', '')
 
+	let zsh_theme_name = system('grep "ZSH_THEME" ~/.zshrc | sed -r "s/^.*?([\"''])(.*?)\1\s*$/\2/"')
+    let zsh_theme_name = substitute(zsh_theme_name, '\n$', '', '')
+
 	let quick_edit_prefix = '<leader>e'
 	let quick_edit_files = {
 		\ 'v': "$MYVIMRC",
@@ -585,7 +588,7 @@
 		\ 'zl': "~/.zshrc_local",
 		\ 'zp': "~/.zprofile",
 		\ 'za': "~/.aliases",
-		\ 'zt': "~/.oh-my-zsh/custom/themes/artur.zsh-theme",
+		\ 'zt': "~/.oh-my-zsh/custom/themes/" . zsh_theme_name . ".zsh-theme",
 		\ 'tr': "~/.tmux.conf",
 		\ 'tc': "~/.tmux-powerlinerc",
 		\ 'tt': "~/.tmux/tmux-powerline/themes/" . tmux_theme_name . ".sh",
