@@ -140,6 +140,7 @@
 				call dein#add('Shougo/neco-vim', {
 					\ 'on_ft': 'vim'
 					\ })
+				call dein#add('Shougo/context_filetype.vim')
 			" }}}
 
 			" TODO: Add build instructions
