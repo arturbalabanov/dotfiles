@@ -1,216 +1,277 @@
 # Non-lazy-loaded... Yet {{{
-[[plugins]]
-repo = 'itchyny/vim-cursorword'
+    [[plugins]]
+    repo = 'itchyny/vim-cursorword'
 
-[[plugins]]
-repo = 'vim-airline/vim-airline'
+    [[plugins]]
+    repo = 'vim-airline/vim-airline'
 
-[[plugins]]
-repo = 'vim-airline/vim-airline-themes'
+    [[plugins]]
+    repo = 'vim-airline/vim-airline-themes'
+    depends = 'vim-airline'
 
-[[plugins]]
-repo = 'w0ng/vim-hybrid'
+    [[plugins]]
+    repo = 'w0ng/vim-hybrid'
 
-[[plugins]]
-repo = 'python-mode/python-mode'
+    [[plugins]]
+    repo = 'python-mode/python-mode'
 
-[[plugins]]
-repo = 'terryma/vim-multiple-cursors'
+    [[plugins]]
+    repo = 'terryma/vim-multiple-cursors'
 
-[[plugins]]
-repo = 'tpope/vim-surround'
+    [[plugins]]
+    repo = 'tpope/vim-surround'
 
-[[plugins]]
-repo = 'tpope/vim-fugitive'
+    [[plugins]]
+    repo = 'tpope/vim-fugitive'
 
-[[plugins]]
-repo = 'tomtom/tcomment_vim'
+    [[plugins]]
+    repo = 'tomtom/tcomment_vim'
 
-[[plugins]]
-repo = 'mattn/emmet-vim'
+    [[plugins]]
+    repo = 'mattn/emmet-vim'
 
-[[plugins]]
-repo = 'jiangmiao/auto-pairs'
+    [[plugins]]
+    repo = 'jiangmiao/auto-pairs'
 
-[[plugins]]
-repo = 'SirVer/ultisnips'
+    [[plugins]]
+    repo = 'SirVer/ultisnips'
+    on_i = 1
+    on_cmd = ['UltiSnipsEdit', 'UltiSnipsAddFiletypes']
+    hook_source = '''
+		let g:UltiSnipsEditSplit="vertical"
+		let g:UltiSnipsExpandTrigger = "<C-j>"
+		let g:UltiSnipsJumpForwardTrigger = "<C-j>"
+		let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
+    '''
 
-[[plugins]]
-repo = 'tpope/vim-endwise'
+    [[plugins]]
+    repo = 'tpope/vim-endwise'
 
-[[plugins]]
-repo = 'tommcdo/vim-exchange'
+    [[plugins]]
+    repo = 'tommcdo/vim-exchange'
 
-[[plugins]]
-repo = 'ryanoasis/vim-devicons'
+    [[plugins]]
+    repo = 'ryanoasis/vim-devicons'
 
-[[plugins]]
-repo = 'w0rp/ale'
+    [[plugins]]
+    repo = 'w0rp/ale'
 
-[[plugins]]
-repo = 'othree/eregex.vim'
+    [[plugins]]
+    repo = 'othree/eregex.vim'
 
-[[plugins]]
-repo = 'jpalardy/vim-slime'
+    [[plugins]]
+    repo = 'jpalardy/vim-slime'
 
-[[plugins]]
-repo = 'tpope/vim-projectionist'
+    [[plugins]]
+    repo = 'tpope/vim-projectionist'
 
-[[plugins]]
-repo = 'tpope/vim-dispatch'
+    [[plugins]]
+    repo = 'tpope/vim-dispatch'
 
-[[plugins]]
-repo = 'tommcdo/vim-lion'
+    [[plugins]]
+    repo = 'tommcdo/vim-lion'
 
-[[plugins]]
-repo = 'tpope/vim-abolish'
-
+    [[plugins]]
+    repo = 'tpope/vim-abolish'
 # }}}
 # Dependancies {{{
-[[plugins]]
-repo = 'kana/vim-operator-user'
-lazy = 1
+    [[plugins]]
+    repo = 'kana/vim-operator-user'
+    lazy = 1
 
-[[plugins]]
-repo = 'kana/vim-textobj-user'
-lazy = 1
+    [[plugins]]
+    repo = 'kana/vim-textobj-user'
+    lazy = 1
 
-[[plugins]]
-repo = 'xolox/vim-misc'
-lazy = 1
+    [[plugins]]
+    repo = 'xolox/vim-misc'
+    lazy = 1
 
-# TODO: See which plugins require these two
-[[plugins]]
-repo = 'MarcWeber/vim-addon-mw-utils'
-lazy = 1
+    # TODO: See which plugins require these two
+    [[plugins]]
+    repo = 'MarcWeber/vim-addon-mw-utils'
+    lazy = 1
 
-[[plugins]]
-repo = 'tomtom/tlib_vim'
-lazy = 1
+    [[plugins]]
+    repo = 'tomtom/tlib_vim'
+    lazy = 1
 # }}}
 # Lazy-loaded {{{
-[[plugins]]
-repo = 'scrooloose/nerdtree'
-on_cmd = 'NERDTreeToggle'
+    [[plugins]]
+    repo = 'scrooloose/nerdtree'
+    on_cmd = ['NERDTree', 'NERDTreeClose', 'NERDTreeFocus', 
+              'NERDTreeMirror', 'NERDTreeCWD', 'NERDTreeFind', 
+              'NERDTreeFromBookmark', 'NERDTreeToggle']
+    hook_add = '''
+		noremap <F2> :NERDTreeToggle<CR>
+    '''
+    hook_source = '''
+		let g:NERDTreeShowBookmarks=1
+		let g:NERDTreeMapOpenSplit='v'
+		let g:NERDTreeIgnore=['\.pyc$']
+    '''
 
-[[plugins]]
-repo = 'hail2u/vim-css3-syntax'
-on_ft = 'css'
+    [[plugins]]
+    repo = 'hail2u/vim-css3-syntax'
+    on_ft = 'css'
 
-[[plugins]]
-repo = 'groenewege/vim-less'
-on_ft = 'less'
+    [[plugins]]
+    repo = 'groenewege/vim-less'
+    on_ft = 'less'
 
-[[plugins]]
-repo = 'cakebaker/scss-syntax.vim'
-on_ft = ['scss', 'sass']
+    [[plugins]]
+    repo = 'cakebaker/scss-syntax.vim'
+    on_ft = ['scss', 'sass']
 
-[[plugins]]
-repo = 'tmhedberg/SimpylFold'
-on_ft = 'python'
+    [[plugins]]
+    repo = 'tmhedberg/SimpylFold'
+    on_ft = 'python'
 
-[[plugins]]
-repo = 'tpope/vim-haml'
-on_ft = 'haml'
+    [[plugins]]
+    repo = 'tpope/vim-haml'
+    on_ft = 'haml'
 
-[[plugins]]
-repo = 'cespare/vim-toml'
-on_ft = 'toml'
+    [[plugins]]
+    repo = 'cespare/vim-toml'
+    on_ft = 'toml'
 
-[[plugins]]
-repo = 'kchmck/vim-coffee-script'
-on_ft = 'coffee'
+    [[plugins]]
+    repo = 'kchmck/vim-coffee-script'
+    on_ft = 'coffee'
 
-[[plugins]]
-repo = 'sjl/gundo.vim'
-on_cmd = 'GundoToggle'
+    [[plugins]]
+    repo = 'sjl/gundo.vim'
+    on_cmd = 'GundoToggle'
+    hook_add = '''
+		nnoremap <F1> :GundoToggle<cr>
+    '''
+    hook_source = '''
+		let g:gundo_tree_statusline = "Gundo"
+		let g:gundo_preview_statusline = "Gundo Preview"
+		let g:gundo_right = 1
+    '''
 
-[[plugins]]
-repo = 'plasticboy/vim-markdown'
-on_ft = 'markdown'
+    [[plugins]]
+    repo = 'plasticboy/vim-markdown'
+    on_ft = 'markdown'
 
-[[plugins]]
-repo = 'vim-ruby/vim-ruby'
-on_ft = 'ruby'
+    [[plugins]]
+    repo = 'vim-ruby/vim-ruby'
+    on_ft = 'ruby'
 
-[[plugins]]
-repo = 'keith/tmux.vim'
-on_ft = 'tmux'
+    [[plugins]]
+    repo = 'keith/tmux.vim'
+    on_ft = 'tmux'
 
-[[plugins]]
-repo = 'junegunn/limelight.vim'
-on_cmd = 'Limelight'
+    [[plugins]]
+    repo = 'junegunn/limelight.vim'
+    on_cmd = 'Limelight'
 
-[[plugin]]
-repo = 'xolox/vim-lua-ftplugin'
-depends = 'vim-misc'
-on_ft = 'lua'
+    [[plugin]]
+    repo = 'xolox/vim-lua-ftplugin'
+    depends = 'vim-misc'
+    on_ft = 'lua'
 
-[[plugins]]
-repo = 'junegunn/goyo.vim'
-depends = 'limelight.vim'
-on_cmd = 'Goyo'
+    [[plugins]]
+    repo = 'junegunn/goyo.vim'
+    depends = 'limelight.vim'
+    on_cmd = 'Goyo'
 
-[[plugins]]
-repo = 'davidhalter/jedi-vim'
-on_ft = 'python'
+    [[plugins]]
+    repo = 'davidhalter/jedi-vim'
+    on_ft = 'python'
 
-[[plugins]]
-repo = 'haya14busa/vim-operator-flashy'
-depends = 'vim-operator-user'
-on_map = [['nx', '<Plug>']]
+    [[plugins]]
+    repo = 'haya14busa/vim-operator-flashy'
+    depends = 'vim-operator-user'
+    on_map = [['nx', '<Plug>']]
 
-[[plugins]]
-repo = 'beloglazov/vim-textobj-quotes'
-depends = 'vim-textobj-user'
-on_map = [['ox', '<Plug>']]
+    [[plugins]]
+    repo = 'beloglazov/vim-textobj-quotes'
+    depends = 'vim-textobj-user'
+    on_map = [['ox', '<Plug>']]
 
-[[plugins]]
-repo = 'Julian/vim-textobj-brace'
-depends = 'vim-textobj-user'
-on_map = [['ox', '<Plug>']]
+    [[plugins]]
+    repo = 'Julian/vim-textobj-brace'
+    depends = 'vim-textobj-user'
+    on_map = [['ox', '<Plug>']]
 
-# TODO: Add build instructions
-[[plugins]]
-repo = 'Rykka/InstantRst'
-on_ft = 'rst'
+    # TODO: Add build instructions
+    [[plugins]]
+    repo = 'Rykka/InstantRst'
+    on_ft = 'rst'
 
-[[plugins]]
-repo = 'guns/xterm-color-table.vim'
-on_cmd = 'XtermColorTable'
+    [[plugins]]
+    repo = 'guns/xterm-color-table.vim'
+    on_cmd = 'XtermColorTable'
 # }}}
 # Shougo's glorious plugins (and their extensions) {{{
-[[plugins]]
-repo = 'Shougo/dein.vim'
+    [[plugins]]
+    repo = 'Shougo/dein.vim'
 
-[[plugins]]
-repo = 'Shougo/denite.nvim'
+    [[plugins]]
+    repo = 'Shougo/denite.nvim'
+    on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord', 'DeniteProjectDir']
+    hook_source = '''
+		call denite#custom#option('default', {
+			\ 'prompt': '❯',
+			\ 'highlight_matched_char': 'Underlined',
+			\ 'highlight_mode_normal': 'CursorLine',
+			\ 'vertical_preview': 1,
+			\ })
 
-[[plugins]]
-repo = 'Shougo/context_filetype.vim'
+		call denite#custom#var('grep', 'command', ['rg'])
+		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case', '--max-columns=200'])
+		call denite#custom#var('grep', 'recursive_opts', [])
+		call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+		call denite#custom#var('grep', 'separator', ['--'])
 
-[[plugins]]
-repo = 'Shougo/deoplete.nvim'
-depends = 'context_filetype.vim'
-on_i = 1
+		call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
+		call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabswitch>', 'noremap')
+		call denite#custom#map('insert', '<C-s>', '<denite:do_action:splitswitch>', 'noremap')
+		call denite#custom#map('insert', '<C-v>', '<denite:do_action:vsplitswitch>', 'noremap')
+		call denite#custom#map('normal', 't', '<denite:do_action:tabswitch>', 'noremap')
+		call denite#custom#map('normal', 's', '<denite:do_action:splitswitch>', 'noremap')
+		call denite#custom#map('normal', 'v', '<denite:do_action:vsplitswitch>', 'noremap')
+		call denite#custom#map('insert', '<Esc>', '<denite:quit>', 'noremap')
+		call denite#custom#map('normal', '<Esc>', '<denite:quit>', 'noremap')
 
-[[plugins]]
-repo = 'zchee/deoplete-jedi'
-depends = 'deoplete.nvim'
-on_ft = 'python'
-on_i = 1
+		call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
+		call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+    '''
+    hook_add = '''
+		nnoremap <C-p> :<C-u>Denite file_rec<CR>
+		nnoremap <C-h> :<C-u>Denite help<CR>
+		nnoremap <C-f> :<C-u>Denite grep:. -mode=normal<CR>
+		nnoremap <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
+		cnoremap <C-r> :<C-u>Denite command_history<CR>
+    '''
 
-[[plugins]]
-repo = 'zchee/deoplete-zsh'
-depends = 'deoplete.nvim'
-on_ft = 'zsh'
-on_i = 1
+    [[plugins]]
+    repo = 'Shougo/context_filetype.vim'
 
-[[plugins]]
-repo = 'Shougo/echodoc.vim'
-on_event = 'CompleteDone'
+    [[plugins]]
+    repo = 'Shougo/deoplete.nvim'
+    depends = 'context_filetype.vim'
+    on_i = 1
 
-[[plugins]]
-repo = 'Shougo/neco-vim'
-on_ft = 'vim'
+    [[plugins]]
+    repo = 'zchee/deoplete-jedi'
+    depends = 'deoplete.nvim'
+    on_ft = 'python'
+    on_i = 1
+
+    [[plugins]]
+    repo = 'zchee/deoplete-zsh'
+    depends = 'deoplete.nvim'
+    on_ft = 'zsh'
+    on_i = 1
+
+    [[plugins]]
+    repo = 'Shougo/echodoc.vim'
+    on_event = 'CompleteDone'
+
+    [[plugins]]
+    repo = 'Shougo/neco-vim'
+    on_ft = 'vim'
 # }}}

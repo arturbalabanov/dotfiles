@@ -33,22 +33,20 @@
 	set noswapfile                   " it's 2015, NeoVim.
 " }}}
 " Plugin settings {{{
-	" dein.vim {{{
-		if (!isdirectory(expand("$HOME/.cache/dein/repos/github.com/Shougo/dein.vim")))
-			call system(expand("mkdir -p $HOME/.cache/dein/repos/github.com"))
-	  		call system(expand("git clone https://github.com/Shougo/dein.vim $HOME/.cache/dein/repos/github.com/Shougo/dein.vim"))
-		endif
+	if (!isdirectory(expand("$HOME/.cache/dein/repos/github.com/Shougo/dein.vim")))
+		call system(expand("mkdir -p $HOME/.cache/dein/repos/github.com"))
+		call system(expand("git clone https://github.com/Shougo/dein.vim $HOME/.cache/dein/repos/github.com/Shougo/dein.vim"))
+	endif
 
-		set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
+	set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
-		if dein#load_state('~/.cache/dein')
-			call dein#begin('~/.cache/dein')
-			" TODO: Extract that into a variable
-			call dein#load_toml(expand('~/.config/nvim/plugins.toml'))
-			call dein#end()
-			call dein#save_state()
-		endif
-	" }}}
+	if dein#load_state('~/.cache/dein')
+		call dein#begin('~/.cache/dein')
+		" TODO: Extract that into a variable
+		call dein#load_toml(expand('~/.config/nvim/plugins.toml'))
+		call dein#end()
+		call dein#save_state()
+	endif
 	" vim-airline {{{
 		set laststatus=2   " Always show the statusline
 		let g:airline#extensions#tabline#enabled = 1
@@ -82,18 +80,6 @@
 
 		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
 	" }}}
-	" gundo.vim {{{
-		nnoremap <F1> :GundoToggle<cr>
-		let g:gundo_tree_statusline = "Gundo"
-		let g:gundo_preview_statusline = "Gundo Preview"
-		let g:gundo_right = 1
-	" }}}
-	" nerdtree {{{
-		noremap <F2> :NERDTreeToggle<CR>
-		let NERDTreeShowBookmarks=1
-		let NERDTreeMapOpenSplit='v'
-		let NERDTreeIgnore=['\.pyc$']
-	" }}}
 	" tcomment_vim {{{
 		let g:tcommentMaps=0
 		
@@ -109,12 +95,6 @@
 		let g:user_emmet_next_key = '`j'
 		let g:user_emmet_prev_key = '`k'
 		let g:use_emmet_complete_tag = 1
-	" }}}
-	" ultisnips {{{
-		let g:UltiSnipsEditSplit="vertical"
-		let g:UltiSnipsExpandTrigger = "<C-j>"
-		let g:UltiSnipsJumpForwardTrigger = "<C-j>"
-		let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
 	" }}}
 	" vim-surround {{{
 		autocmd FileType htmldjango let b:surround_{char2nr("v")} = "{{ \r }}"
@@ -189,39 +169,6 @@
 		set noshowmode  " Don't show --INSERT-- in the command_line
 		let g:echodoc#enable_at_startup = 1
 	" }}}
-	" denite.nvim {{{
-		call denite#custom#option('default', {
-			\ 'prompt': '❯',
-			\ 'highlight_matched_char': 'Underlined',
-			\ 'highlight_mode_normal': 'CursorLine',
-			\ 'vertical_preview': 1,
-			\ })
-
-		call denite#custom#var('grep', 'command', ['rg'])
-		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case', '--max-columns=200'])
-		call denite#custom#var('grep', 'recursive_opts', [])
-		call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
-		call denite#custom#var('grep', 'separator', ['--'])
-
-		call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
-		call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabswitch>', 'noremap')
-		call denite#custom#map('insert', '<C-s>', '<denite:do_action:splitswitch>', 'noremap')
-		call denite#custom#map('insert', '<C-v>', '<denite:do_action:vsplitswitch>', 'noremap')
-		call denite#custom#map('normal', 't', '<denite:do_action:tabswitch>', 'noremap')
-		call denite#custom#map('normal', 's', '<denite:do_action:splitswitch>', 'noremap')
-		call denite#custom#map('normal', 'v', '<denite:do_action:vsplitswitch>', 'noremap')
-		call denite#custom#map('insert', '<Esc>', '<denite:quit>', 'noremap')
-		call denite#custom#map('normal', '<Esc>', '<denite:quit>', 'noremap')
-
-		call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
-		call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
-
-		nnoremap <C-p> :<C-u>Denite file_rec<CR>
-		nnoremap <C-h> :<C-u>Denite help<CR>
-		nnoremap <C-f> :<C-u>Denite grep:. -mode=normal<CR>
-		nnoremap <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
-		cnoremap <C-r> :<C-u>Denite command_history<CR>
-	" }}}
 	" python-mode {{{
 		" Disable nearly all the functions of python-mode since I use other
 		" plugins for them. Ones far younger and more powerful!
@@ -245,7 +192,6 @@
 		call pymode#default('g:pymode_breakpoint', 1)
 		call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
 		call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
-
 
 		call pymode#default("g:pymode_trim_whitespaces", 1)
 	" }}}
@@ -594,6 +540,16 @@
 			au FileType python setlocal shiftround    " round indent to multiple of 'shiftwidth'
 			au FileType python setlocal autoindent    " align the new line indent with the previous line
 			au FileType python setlocal colorcolumn=121
+		augroup END
+	" }}}
+	" TOML {{{
+		augroup ft_toml
+			au!
+			au FileType toml setlocal shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
+			au FileType toml setlocal tabstop=4     " an hard TAB displays as 4 columns
+			au FileType toml setlocal expandtab     " insert spaces when hitting TABs
+			au FileType toml setlocal softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
+			au FileType toml setlocal foldmethod=marker
 		augroup END
 	" }}}
 	" CTP {{{
