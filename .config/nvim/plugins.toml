@@ -1,2 +1,216 @@
+# Non-lazy-loaded... Yet {{{
+[[plugins]]
+repo = 'itchyny/vim-cursorword'
+
+[[plugins]]
+repo = 'vim-airline/vim-airline'
+
+[[plugins]]
+repo = 'vim-airline/vim-airline-themes'
+
+[[plugins]]
+repo = 'w0ng/vim-hybrid'
+
+[[plugins]]
+repo = 'python-mode/python-mode'
+
+[[plugins]]
+repo = 'terryma/vim-multiple-cursors'
+
+[[plugins]]
+repo = 'tpope/vim-surround'
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
+[[plugins]]
+repo = 'tomtom/tcomment_vim'
+
+[[plugins]]
+repo = 'mattn/emmet-vim'
+
+[[plugins]]
+repo = 'jiangmiao/auto-pairs'
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+
+[[plugins]]
+repo = 'tpope/vim-endwise'
+
+[[plugins]]
+repo = 'tommcdo/vim-exchange'
+
+[[plugins]]
+repo = 'ryanoasis/vim-devicons'
+
+[[plugins]]
+repo = 'w0rp/ale'
+
+[[plugins]]
+repo = 'othree/eregex.vim'
+
+[[plugins]]
+repo = 'jpalardy/vim-slime'
+
+[[plugins]]
+repo = 'tpope/vim-projectionist'
+
+[[plugins]]
+repo = 'tpope/vim-dispatch'
+
+[[plugins]]
+repo = 'tommcdo/vim-lion'
+
+[[plugins]]
+repo = 'tpope/vim-abolish'
+
+# }}}
+# Dependancies {{{
+[[plugins]]
+repo = 'kana/vim-operator-user'
+lazy = 1
+
+[[plugins]]
+repo = 'kana/vim-textobj-user'
+lazy = 1
+
+[[plugins]]
+repo = 'xolox/vim-misc'
+lazy = 1
+
+# TODO: See which plugins require these two
+[[plugins]]
+repo = 'MarcWeber/vim-addon-mw-utils'
+lazy = 1
+
+[[plugins]]
+repo = 'tomtom/tlib_vim'
+lazy = 1
+# }}}
+# Lazy-loaded {{{
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+on_cmd = 'NERDTreeToggle'
+
+[[plugins]]
+repo = 'hail2u/vim-css3-syntax'
+on_ft = 'css'
+
+[[plugins]]
+repo = 'groenewege/vim-less'
+on_ft = 'less'
+
+[[plugins]]
+repo = 'cakebaker/scss-syntax.vim'
+on_ft = ['scss', 'sass']
+
+[[plugins]]
+repo = 'tmhedberg/SimpylFold'
+on_ft = 'python'
+
+[[plugins]]
+repo = 'tpope/vim-haml'
+on_ft = 'haml'
+
+[[plugins]]
+repo = 'cespare/vim-toml'
+on_ft = 'toml'
+
+[[plugins]]
+repo = 'kchmck/vim-coffee-script'
+on_ft = 'coffee'
+
+[[plugins]]
+repo = 'sjl/gundo.vim'
+on_cmd = 'GundoToggle'
+
+[[plugins]]
+repo = 'plasticboy/vim-markdown'
+on_ft = 'markdown'
+
+[[plugins]]
+repo = 'vim-ruby/vim-ruby'
+on_ft = 'ruby'
+
+[[plugins]]
+repo = 'keith/tmux.vim'
+on_ft = 'tmux'
+
+[[plugins]]
+repo = 'junegunn/limelight.vim'
+on_cmd = 'Limelight'
+
+[[plugin]]
+repo = 'xolox/vim-lua-ftplugin'
+depends = 'vim-misc'
+on_ft = 'lua'
+
+[[plugins]]
+repo = 'junegunn/goyo.vim'
+depends = 'limelight.vim'
+on_cmd = 'Goyo'
+
+[[plugins]]
+repo = 'davidhalter/jedi-vim'
+on_ft = 'python'
+
+[[plugins]]
+repo = 'haya14busa/vim-operator-flashy'
+depends = 'vim-operator-user'
+on_map = [['nx', '<Plug>']]
+
+[[plugins]]
+repo = 'beloglazov/vim-textobj-quotes'
+depends = 'vim-textobj-user'
+on_map = [['ox', '<Plug>']]
+
+[[plugins]]
+repo = 'Julian/vim-textobj-brace'
+depends = 'vim-textobj-user'
+on_map = [['ox', '<Plug>']]
+
+# TODO: Add build instructions
+[[plugins]]
+repo = 'Rykka/InstantRst'
+on_ft = 'rst'
+
+[[plugins]]
+repo = 'guns/xterm-color-table.vim'
+on_cmd = 'XtermColorTable'
+# }}}
+# Shougo's glorious plugins (and their extensions) {{{
 [[plugins]]
 repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'Shougo/denite.nvim'
+
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
+depends = 'context_filetype.vim'
+on_i = 1
+
+[[plugins]]
+repo = 'zchee/deoplete-jedi'
+depends = 'deoplete.nvim'
+on_ft = 'python'
+on_i = 1
+
+[[plugins]]
+repo = 'zchee/deoplete-zsh'
+depends = 'deoplete.nvim'
+on_ft = 'zsh'
+on_i = 1
+
+[[plugins]]
+repo = 'Shougo/echodoc.vim'
+on_event = 'CompleteDone'
+
+[[plugins]]
+repo = 'Shougo/neco-vim'
+on_ft = 'vim'
+# }}}
