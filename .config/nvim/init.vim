@@ -17,6 +17,9 @@
 	" Copy/paste from the clipboard. For Windows/Mac use: set clipboard=unnamed
 	set clipboard+=unnamedplus
 
+	" Don't set the GUI settings as I unly use terminal NeoVim
+	set guioptions=M
+
  	" Don't try to highlight lines longer than 800 characters.
 	set synmaxcol=800
 
@@ -24,7 +27,7 @@
 	set lazyredraw
 
 	" Set 5 lines to the cursor - when moving vertically using j/k
-	set so=5
+	set scrolloff=5
 
 	set nobackup                     " disable backups
 	set noswapfile                   " it's 2015, NeoVim.
