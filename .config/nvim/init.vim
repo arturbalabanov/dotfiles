@@ -120,7 +120,6 @@
 			call dein#add('tommcdo/vim-lion')
 			call dein#add('tpope/vim-abolish')
 
-
 			" Shougo's glorious plugins (and their extensions) {{{
 				call dein#add('Shougo/dein.vim')
 				call dein#add('Shougo/denite.nvim')
