@@ -117,7 +117,6 @@
 			call dein#add('w0rp/ale')
 			call dein#add('othree/eregex.vim')
 			call dein#add('jpalardy/vim-slime')
-			call dein#add('AndrewRadev/splitjoin.vim')
 			call dein#add('tpope/vim-projectionist')
 			call dein#add('tpope/vim-dispatch')
 			call dein#add('tommcdo/vim-lion')
@@ -134,6 +133,11 @@
 				call dein#add('zchee/deoplete-jedi', {
 					\ 'depends': 'deoplete.nvim',
 					\ 'on_ft': 'python',
+					\ 'on_i': 1
+					\ })
+				call dein#add('zchee/deoplete-zsh', {
+					\ 'depends': 'deoplete.nvim',
+					\ 'on_ft': 'zsh',
 					\ 'on_i': 1
 					\ })
 				call dein#add('Shougo/echodoc.vim', {
@@ -337,7 +341,6 @@
 		call pymode#default('g:pymode_doc', 0)
 		call pymode#default("g:pymode_indent", 0)
 		call pymode#default("g:pymode_motion", 0)
-		call pymode#default("g:pymode_trim_whitespaces", 0)
 		call pymode#default("g:pymode_options", 0)
 		call pymode#default('g:pymode_virtualenv', 0)
 		call pymode#default('g:pymode_run', 0)
@@ -354,6 +357,9 @@
 		call pymode#default('g:pymode_breakpoint', 1)
 		call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
 		call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
+
+
+		call pymode#default("g:pymode_trim_whitespaces", 1)
 	" }}}
 	" vim-exchange {{{
 		nmap X <Plug>(Exchange)
@@ -382,13 +388,6 @@
 		let g:slime_no_mappings = 1
 		xmap <C-c> <Plug>SlimeRegionSend
 		nmap <C-c> <Plug>SlimeLineSend
-	" }}}
-	" splitjoin.vim {{{
-		let g:splitjoin_join_mapping = ''
-		let g:splitjoin_split_mapping = ''
-
-		nnoremap sj :SplitjoinJoin<CR>
-		nnoremap sk :SplitjoinSplit<CR>
 	" }}}
 	" vim-projectionist {{{
 		" Jump to the alternate file
