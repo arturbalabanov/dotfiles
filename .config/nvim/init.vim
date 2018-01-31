@@ -583,7 +583,8 @@
 
 	let quick_edit_prefix = '<leader>e'
 	let quick_edit_files = {
-		\ 'v': "$MYVIMRC",
+		\ 'vr': "$MYVIMRC",
+		\ 'vp': "~/.config/nvim/plugins.toml",
 		\ 'b': "~/.bashrc",
 		\ 'zr': "~/.zshrc",
 		\ 'zl': "~/.zshrc_local",
