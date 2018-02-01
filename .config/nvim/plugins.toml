@@ -4,10 +4,34 @@
 
     [[plugins]]
     repo = 'vim-airline/vim-airline'
+    hook_add = '''
+		set laststatus=2   " Always show the statusline
+
+		let g:airline_powerline_fonts = 1
+
+        let g:airline#extensions#whitespace#enabled = 0
+
+		let g:airline#extensions#tabline#enabled = 1
+
+		let g:airline#extensions#ale#enabled = 1
+		let g:airline#extensions#ale#error_symbol = '✗'
+		let g:airline#extensions#ale#warning_symbol = ''
+
+		let g:airline#extensions#branch#enabled = 1
+
+		if !exists('g:airline_symbols')
+			let g:airline_symbols = {}
+		endif
+
+		let g:airline_exclude_preview = 1
+    '''
 
     [[plugins]]
     repo = 'vim-airline/vim-airline-themes'
     depends = 'vim-airline'
+    hook_add = '''
+		let g:airline_theme = 'powerlineish'
+    '''
 
     [[plugins]]
     repo = 'w0ng/vim-hybrid'
@@ -67,9 +91,6 @@
 
     [[plugins]]
     repo = 'tpope/vim-dispatch'
-
-    [[plugins]]
-    repo = 'tommcdo/vim-lion'
 
     [[plugins]]
     repo = 'tpope/vim-abolish'

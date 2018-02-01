@@ -47,26 +47,6 @@
 		call dein#end()
 		call dein#save_state()
 	endif
-	" vim-airline {{{
-		set laststatus=2   " Always show the statusline
-		let g:airline#extensions#tabline#enabled = 1
-
-		let g:airline_powerline_fonts = 1
-
-		let g:airline#extensions#ale#enabled = 1
-		let airline#extensions#ale#error_symbol = '✗'
-		let airline#extensions#ale#warning_symbol = ''
-
-		let g:airline#extensions#branch#enabled = 1
-
-		let g:airline_theme = 'powerlineish'
-
-		if !exists('g:airline_symbols')
-			let g:airline_symbols = {}
-		endif
-
-		let g:airline_exclude_preview = 1
-	" }}}
 	" auto-pairs {{{
 		let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
 	" }}}
@@ -261,6 +241,7 @@
 	cnoremap <C-z> <C-^>
 
 	" Select the whole line without the identation. Useful for python code...
+	" TODO: Don't enable this in NERD Tree
 	nnoremap vv ^vg_
 
 	" Paste in the next line.
