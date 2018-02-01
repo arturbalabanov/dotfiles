@@ -47,9 +47,6 @@
 		call dein#end()
 		call dein#save_state()
 	endif
-	" auto-pairs {{{
-		let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
-	" }}}
 	" ale {{{
 		let g:ale_sign_column_always = 1
 		let g:ale_sign_error = '✗'
@@ -59,14 +56,6 @@
 		nmap <A-j> <Plug>(ale_next_wrap)
 
 		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
-	" }}}
-	" tcomment_vim {{{
-		let g:tcommentMaps=0
-		
-		" Ctrl-/ for comment/uncomment
-		nnoremap <C-_> :TComment<CR>
-		vnoremap <C-_> :TComment<CR>
-		inoremap <C-_> <Esc>:TComment<CR>i
 	" }}}
 	" emmet {{{
 		let g:user_emmet_install_global = 0
@@ -118,36 +107,6 @@
 	" }}}
 	" InstantRst {{{
 		let g:instant_rst_browser = "google-chrome-stable"
-	" }}}
-	" jedi-vim {{{
-		let g:jedi#use_tabs_not_buffers = 1
-		let g:jedi#show_call_signatures = "0"  " 1 -> Popup; 2 -> command line
-		let g:jedi#completions_enabled = 0
-		let g:jedi#goto_command = "gd"
-		let g:jedi#documentation_command = "<C-d>"
-		" let g:jedi#show_call_signatures_delay = 200
-		autocmd FileType python setlocal completeopt-=preview  " No auto docstring
-	" }}}
-	" deoplete.nvim {{{
-		let g:deoplete#enable_at_startup = 1
-		let g:deoplete#max_menu_width = 60
-		" Auto select the first option
-		set completeopt+=noinsert
-
-
-		inoremap <silent><expr> <TAB>
-				\ pumvisible() ? "\<C-n>" :
-				\ <SID>check_back_space() ? "\<TAB>" :
-				\ deoplete#mappings#manual_complete()
-
-		function! s:check_back_space() abort "{{{
-			let col = col('.') - 1
-			return !col || getline('.')[col - 1]  =~ '\s'
-		endfunction"}}}
-	" }}}
-	" echodoc.vim {{{
-		set noshowmode  " Don't show --INSERT-- in the command_line
-		let g:echodoc#enable_at_startup = 1
 	" }}}
 	" python-mode {{{
 		" Disable nearly all the functions of python-mode since I use other

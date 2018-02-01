@@ -50,12 +50,26 @@
 
     [[plugins]]
     repo = 'tomtom/tcomment_vim'
+    on_cmd = "TComment"
+    hook_add = '''
+		let g:tcommentMaps=0
+		
+		" Ctrl-/ for comment/uncomment
+		nnoremap <C-_> :TComment<CR>
+		vnoremap <C-_> :TComment<CR>
+		inoremap <C-_> <Esc>:TComment<CR>i
+    '''
 
     [[plugins]]
     repo = 'mattn/emmet-vim'
 
     [[plugins]]
     repo = 'jiangmiao/auto-pairs'
+    on_i = 1
+    hook_source = '''
+		let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
+    '''
+
 
     [[plugins]]
     repo = 'SirVer/ultisnips'
@@ -128,7 +142,8 @@
     '''
     hook_source = '''
 		let g:NERDTreeShowBookmarks=1
-		let g:NERDTreeMapOpenSplit='v'
+		let g:NERDTreeMapOpenSplit='s'
+		let g:NERDTreeMapOpenVSplit='v'
 		let g:NERDTreeIgnore=['\.pyc$']
     '''
 
@@ -201,6 +216,17 @@
     [[plugins]]
     repo = 'davidhalter/jedi-vim'
     on_ft = 'python'
+    hook_source = '''
+		let g:jedi#use_tabs_not_buffers = 1
+		let g:jedi#show_call_signatures = "0"  " 1 -> Popup; 2 -> command line
+		let g:jedi#completions_enabled = 0
+		let g:jedi#goto_command = "gd"
+		let g:jedi#documentation_command = "<C-d>"
+
+		" let g:jedi#show_call_signatures_delay = 200
+		autocmd FileType python setlocal completeopt-=preview  " No auto docstring
+    '''
+
 
     [[plugins]]
     repo = 'haya14busa/vim-operator-flashy'
@@ -232,12 +258,13 @@
 
     [[plugins]]
     repo = 'Shougo/denite.nvim'
-    on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord', 'DeniteProjectDir']
+    on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
     hook_source = '''
 		call denite#custom#option('default', {
 			\ 'prompt': '❯',
 			\ 'highlight_matched_char': 'Underlined',
 			\ 'highlight_mode_normal': 'CursorLine',
+            \ 'statusline': 0,
 			\ 'vertical_preview': 1,
 			\ })
 
@@ -261,11 +288,11 @@
 		call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
     '''
     hook_add = '''
-		nnoremap <C-p> :<C-u>Denite file_rec<CR>
-		nnoremap <C-h> :<C-u>Denite help<CR>
-		nnoremap <C-f> :<C-u>Denite grep:. -mode=normal<CR>
-		nnoremap <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
-		cnoremap <C-r> :<C-u>Denite command_history<CR>
+		nnoremap <silent> <C-p> :<C-u>Denite file_rec<CR>
+		nnoremap <silent> <C-h> :<C-u>Denite help<CR>
+		nnoremap <silent> <C-f> :<C-u>Denite grep:. -mode=normal<CR>
+		nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
+		cnoremap <silent> <C-r> :<C-u>Denite command_history<CR>
     '''
 
     [[plugins]]
@@ -275,6 +302,22 @@
     repo = 'Shougo/deoplete.nvim'
     depends = 'context_filetype.vim'
     on_i = 1
+    hook_source = '''
+		let g:deoplete#enable_at_startup = 1
+		let g:deoplete#max_menu_width = 60
+		" Auto select the first option
+		set completeopt+=noinsert
+
+		inoremap <silent><expr> <TAB>
+				\ pumvisible() ? "\<C-n>" :
+				\ <SID>check_back_space() ? "\<TAB>" :
+				\ deoplete#mappings#manual_complete()
+
+		function! s:check_back_space() abort "{{{
+			let col = col('.') - 1
+			return !col || getline('.')[col - 1]  =~ '\s'
+		endfunction "}}}
+    '''
 
     [[plugins]]
     repo = 'zchee/deoplete-jedi'
@@ -291,6 +334,10 @@
     [[plugins]]
     repo = 'Shougo/echodoc.vim'
     on_event = 'CompleteDone'
+    on_source = '''
+		set noshowmode  " Don't show --INSERT-- in the command_line
+		let g:echodoc#enable_at_startup = 1
+    '''
 
     [[plugins]]
     repo = 'Shougo/neco-vim'
