@@ -29,6 +29,8 @@
 	" Set 5 lines to the cursor - when moving vertically using j/k
 	set scrolloff=5
 
+	set wildignore+=*.pyc,*.pyo,*.so,*.o,__pycache__
+
 	set nobackup                     " disable backups
 	set noswapfile                   " it's 2015, NeoVim.
 " }}}

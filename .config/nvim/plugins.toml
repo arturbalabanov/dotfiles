@@ -144,7 +144,7 @@
 		let g:NERDTreeShowBookmarks=1
 		let g:NERDTreeMapOpenSplit='s'
 		let g:NERDTreeMapOpenVSplit='v'
-		let g:NERDTreeIgnore=['\.pyc$']
+		let g:NERDTreeRespectWildIgnore=1
     '''
 
     [[plugins]]
@@ -267,6 +267,9 @@
             \ 'statusline': 0,
 			\ 'vertical_preview': 1,
 			\ })
+
+        call denite#custom#var('file_rec', 'command',
+            \ ['scantree.py', '--ignore', &wildignore])
 
 		call denite#custom#var('grep', 'command', ['rg'])
 		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case', '--max-columns=200'])
