@@ -64,6 +64,9 @@
     repo = 'mattn/emmet-vim'
 
     [[plugins]]
+    repo = 'inkarkat/vim-SyntaxRange'
+
+    [[plugins]]
     repo = 'jiangmiao/auto-pairs'
     on_i = 1
     hook_source = '''
