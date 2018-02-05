@@ -41,3 +41,5 @@ function test_cap () { cap download "$@" && cd "$_" && jq '.["'$_'"]' ~/all_meta
 
 function rgjs() { rg -C 10 --smart-case --max-columns=200 -tjs "$@" ~/dev/yoshi_parsers/download/; }
 function rgpy() { rg -C 10 --smart-case --max-columns=200 -tpy "$@" ~/dev/yoshi_parsers/cpy_processing/; }
+
+function ssh-ec2() { ssh -i ~/dani-ceic.pem "ubuntu@$@"; }

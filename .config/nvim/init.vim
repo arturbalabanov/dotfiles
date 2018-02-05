@@ -29,6 +29,7 @@
 	" Set 5 lines to the cursor - when moving vertically using j/k
 	set scrolloff=5
 
+	" Ignore these files in autocomplition, NERDTree and Denite
 	set wildignore+=*.pyc,*.pyo,*.so,*.o,__pycache__
 
 	set nobackup                     " disable backups

@@ -108,6 +108,11 @@
 
     [[plugins]]
     repo = 'tpope/vim-dispatch'
+    on_cmd = ['Make', 'Copen', 'Dispatch', 'FocusDispatch', 'Start', 'Spawn']
+    hook_add = '''
+		nnoremap <F9> :Dispatch<CR>
+		inoremap <F9> <Esc>:Dispatch<CR>a
+    '''
 
     [[plugins]]
     repo = 'tpope/vim-abolish'
