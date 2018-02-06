@@ -240,6 +240,10 @@
     repo = 'haya14busa/vim-operator-flashy'
     depends = 'vim-operator-user'
     on_map = [['nx', '<Plug>']]
+    on_add = '''
+	    map y <Plug>(operator-flashy)
+	    nmap Y ^<Plug>(operator-flashy)g_
+    '''
 
     [[plugins]]
     repo = 'beloglazov/vim-textobj-quotes'

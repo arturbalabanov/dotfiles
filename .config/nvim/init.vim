@@ -61,6 +61,7 @@
 		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
 	" }}}
 	" emmet {{{
+		" TODO: Use SuperTab. `` is actually quite useful
 		let g:user_emmet_install_global = 0
 		autocmd FileType html,css EmmetInstall
 		let g:user_emmet_expandabbr_key = '``'
@@ -143,10 +144,6 @@
 		nmap cX <Plug>(ExchangeClear)
 		nmap XX <Plug>(ExchangeLine)
 	" }}}
-	" vim-operator-flashy {{{
-	    map y <Plug>(operator-flashy)
-	    nmap Y ^<Plug>(operator-flashy)g_
-	" }}}
 	" vim-multiple-cursors {{{
 		let g:multi_cursor_insert_maps = { 'j': 1 }
 
@@ -168,10 +165,6 @@
 	" vim-projectionist {{{
 		" Jump to the alternate file
 		nnoremap <leader>a :A<CR>
-	" }}}
-	" vim-dispatch {{{
-		nnoremap <F9> :Dispatch<CR>
-		inoremap <F9> <Esc>:Dispatch<CR>a
 	" }}}
 " }}}
 " Mappings {{{
