@@ -44,7 +44,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git git-extras npm zsh-syntax-highlighting vi-mode zle-vi-visual virtualenvwrapper tmuxinator) # zsh-autosuggestions
+plugins=(git git-extras npm zsh-syntax-highlighting vi-mode zle-vi-visual tmuxinator) # zsh-autosuggestions
 
 source $ZSH/oh-my-zsh.sh
 
@@ -66,8 +66,31 @@ bindkey -M viins 'jj' vi-cmd-mode
 bindkey -M vicmd 'H' beginning-of-line
 bindkey -M vicmd 'L' end-of-line
 
-bindkey -M vivis 'H' vi-visual-bol
-bindkey -M vivis 'L' vi-visual-eol
+bindkey -M vicmd 'L' end-of-line
+
+tmux-select-pane-up () {
+	tmux select-pane -U
+}
+zle -N tmux-select-pane-up
+bindkey -M vicmd 'gk' tmux-select-pane-up
+
+tmux-select-pane-down () {
+	tmux select-pane -D
+}
+zle -N tmux-select-pane-down
+bindkey -M vicmd 'gj' tmux-select-pane-down
+
+tmux-select-pane-left () {
+	tmux select-pane -L
+}
+zle -N tmux-select-pane-left
+bindkey -M vicmd 'gh' tmux-select-pane-left
+
+tmux-select-pane-right () {
+	tmux select-pane -R
+}
+zle -N tmux-select-pane-right
+bindkey -M vicmd 'gl' tmux-select-pane-right
 
 export EDITOR="nvim"
 export BROWSER="google-chrome-stable"

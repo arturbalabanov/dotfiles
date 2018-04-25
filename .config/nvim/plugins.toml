@@ -49,6 +49,9 @@
     repo = 'tpope/vim-fugitive'
 
     [[plugins]]
+    repo = 'embear/vim-localvimrc'
+
+    [[plugins]]
     repo = 'tomtom/tcomment_vim'
     on_cmd = "TComment"
     hook_add = '''
@@ -73,6 +76,8 @@
 		let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
     '''
 
+    [[plugins]]
+    repo = 'plytophogy/vim-virtualenv'
 
     [[plugins]]
     repo = 'SirVer/ultisnips'
@@ -96,6 +101,13 @@
 
     [[plugins]]
     repo = 'w0rp/ale'
+    hook_add = '''
+    if &diff
+        let g:ale_enabled = 0
+    else
+        let g:ale_enabled = 1
+    endif
+    '''
 
     [[plugins]]
     repo = 'othree/eregex.vim'
@@ -116,6 +128,9 @@
 
     [[plugins]]
     repo = 'tpope/vim-abolish'
+
+    [[plugins]]
+    repo = 'djoshea/vim-autoread'
 # }}}
 # Dependancies {{{
     [[plugins]]
@@ -156,6 +171,20 @@
     '''
 
     [[plugins]]
+    repo = 'christoomey/vim-tmux-navigator'
+    on_cmd = ['TmuxNavigateLeft', 'TmuxNavigateRight', 'TmuxNavigateUp',
+              'TmuxNavigateDown', 'TmuxNavigatePrevious']
+    hook_add = '''
+        nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
+        nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
+        nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
+        nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
+    '''
+    hook_source = '''
+        let g:tmux_navigator_no_mappings = 1
+    '''
+
+    [[plugins]]
     repo = 'hail2u/vim-css3-syntax'
     on_ft = 'css'
 
@@ -167,9 +196,9 @@
     repo = 'cakebaker/scss-syntax.vim'
     on_ft = ['scss', 'sass']
 
-    [[plugins]]
-    repo = 'tmhedberg/SimpylFold'
-    on_ft = 'python'
+    # [[plugins]]
+    # repo = 'tmhedberg/SimpylFold'
+    # on_ft = 'python'
 
     [[plugins]]
     repo = 'tpope/vim-haml'
@@ -187,12 +216,19 @@
     repo = 'sjl/gundo.vim'
     on_cmd = 'GundoToggle'
     hook_add = '''
-		nnoremap <F1> :GundoToggle<cr>
+		nnoremap <F1> :GundoToggle<CR>
     '''
     hook_source = '''
 		let g:gundo_tree_statusline = "Gundo"
 		let g:gundo_preview_statusline = "Gundo Preview"
 		let g:gundo_right = 1
+    '''
+
+    [[plugins]]
+    repo = 'majutsushi/tagbar'
+    on_cmd = 'TagbarToggle'
+    hook_add = '''
+        nnoremap <F3> :TagbarToggle<CR>
     '''
 
     [[plugins]]
@@ -284,7 +320,7 @@
             \ ['scantree.py', '--ignore', &wildignore])
 
 		call denite#custom#var('grep', 'command', ['rg'])
-		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case', '--max-columns=200'])
+		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
 		call denite#custom#var('grep', 'recursive_opts', [])
 		call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
 		call denite#custom#var('grep', 'separator', ['--'])
@@ -309,6 +345,15 @@
 		nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
 		cnoremap <silent> <C-r> :<C-u>Denite command_history<CR>
     '''
+
+    # [[plugins]]
+    # repo = 'rafi/vim-denite-z'
+    # depends = 'denite.nvim'
+    # # On plugin load ?
+    # on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
+    # hook_source = '''
+    #     call denite#custom#source('file_rec', 'sorters', ['sorter_z'])
+    # '''
 
     [[plugins]]
     repo = 'Shougo/context_filetype.vim'

@@ -7,7 +7,8 @@ URxvt.keysym.Shift-Control-C: eval:selection_to_clipboard
 URxvt.keysym.Shift-Control-V: eval:paste_clipboard
  
 ! Font
-URxvt.font: xft:Hack NF:size=11
+URxvt*font: xft:Hack NF:size=11
+URxvt*letterSpace: -1
 
 Xft*antialias:  true
 Xft*hinting:    true

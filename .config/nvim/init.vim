@@ -55,8 +55,8 @@
 		let g:ale_sign_error = '✗'
 		let g:ale_sign_warning = ''
 
-		nmap <A-k> <Plug>(ale_previous_wrap)
-		nmap <A-j> <Plug>(ale_next_wrap)
+		" nmap <A-k> <Plug>(ale_previous_wrap)
+		" nmap <A-j> <Plug>(ale_next_wrap)
 
 		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
 	" }}}
@@ -166,6 +166,10 @@
 		" Jump to the alternate file
 		nnoremap <leader>a :A<CR>
 	" }}}
+	" vim-localvimrc {{{
+		let g:localvimrc_whitelist = [expand('$HOME/dev/colin')]
+		let g:localvimrc_sandbox=0
+	" }}}
 " }}}
 " Mappings {{{
 	" I'm mistyping this all the time...
@@ -244,12 +248,13 @@
 	noremap L $
 	vnoremap L g_
 
-	" TODO: Should these be global?
 	" Difftool mappings
-	nnoremap <leader>dl :diffget LOCAL<CR>
-	nnoremap <leader>db :diffget BASE<CR>
-	nnoremap <leader>dr :diffget REMOTE<CR>
-	nnoremap <leader>du :diffupdate<CR>
+	if &diff
+		nnoremap <leader>dl :diffget LOCAL<CR>
+		nnoremap <leader>db :diffget BASE<CR>
+		nnoremap <leader>dr :diffget REMOTE<CR>
+		nnoremap <leader>du :diffupdate<CR>
+	endif
 " }}}
 " Interface {{{
     " Colors {{{
@@ -276,7 +281,7 @@
 	set number
 	augroup numbertoggle
 		autocmd!
-		autocmd BufEnter,FocusGained * setlocal number
+		autocmd BufEnter,FocusGained * if expand('%:t:r') !~ '^_*\(NERD_tree\|Tagbar\|Gundo\)' | setlocal number | endif
 		autocmd BufLeave,FocusLost * setlocal nonumber
 	augroup END
 
@@ -398,10 +403,10 @@
 		nnoremap <down>  <c-w>+
 	" }}}
 	" Splits navigation {{{
-		nnoremap gh <C-w>h
-		nnoremap gj <C-w>j
-		nnoremap gk <C-w>k
-		nnoremap gl <C-w>l
+		" nnoremap gh <C-w>h
+		" nnoremap gj <C-w>j
+		" nnoremap gk <C-w>k
+		" nnoremap gl <C-w>l
 	" }}}
 " }}}
 " Filetype specific settings {{{

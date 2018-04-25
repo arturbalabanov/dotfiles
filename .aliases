@@ -1,4 +1,4 @@
-# vim: set ft=zsh
+# vim: ft=zsh
 
 alias ls='ls --color=auto'
 alias ll='ls -lh'
@@ -8,7 +8,6 @@ alias tree='tree -C'
 alias vi='nvim'
 alias vim='nvim'
 alias s='sudo'
-# alias fuck='eval "sudo $(fc -ln -1)"'
 alias se='sudoedit'
 alias pac='pacaur'
 alias open='xdg-open'
@@ -24,8 +23,13 @@ alias emacs='emacs -nw'          # cli mode
 alias cdtmp='cd $(mktemp -d)'
 alias raliases='source ~/.aliases'
 alias rm='rm -rf'
-
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
+
+if type thefuck > /dev/null; then
+	eval $(thefuck --alias)
+else
+	alias fuck='eval "sudo $(fc -ln -1)"'
+fi
 
 # Global aliases are a zsh-specific feature
 if [ -n "$ZSH_VERSION" ]; then
@@ -33,12 +37,6 @@ if [ -n "$ZSH_VERSION" ]; then
 	alias -g L='| less'
 	alias -g H='| head'
 	alias -g T='| tail'
-
-	alias -g KLM='-keep_local_mapping'
-	alias -g AA='-additional_arguments'
-	alias -g D='--display --debug --debugger'
-	alias -g S='--engine=slimerjs'
-	alias -g P='--run_in_parallel'
 fi
 
 function mkcd() { mkdir -p "$@" && cd "$_"; }
@@ -46,8 +44,6 @@ function yadm_update() {
 	local commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
 	yadm commit -am "$commit_msg" && yadm push;
 }
-
-eval $(thefuck --alias)
 
 # ptpython -> bpython -> ipython -> python
 if [ "$DEFAULT_PYTHON_VERSION" -eq "3" ]; then

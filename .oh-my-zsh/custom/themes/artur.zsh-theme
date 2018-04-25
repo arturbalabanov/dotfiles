@@ -106,6 +106,11 @@ prompt_git() {
 			ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
 		else
 			ref=" $ref"
+
+			branch=$(git symbolic-ref HEAD --short 2> /dev/null)
+			if [[ ! -z $branch ]]; then
+				ref="$PL_BRANCH_CHAR $branch $SUBSEGMENT_FORWARD_SEPARATOR $ref"
+			fi
 		fi
 
     dirty=$(parse_git_dirty)
