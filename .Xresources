@@ -1,3 +1,6 @@
+! Perl extensions
+URxvt.perl-ext-common: default,tabbed,matcher,resize-font,-tabbed
+
 ! disable ctrl-shift
 URxvt*iso14755_52: false
 URxvt*iso14755: false
@@ -5,6 +8,10 @@ URxvt*iso14755: false
 ! Normal Copy/paste
 URxvt.keysym.Shift-Control-C: eval:selection_to_clipboard
 URxvt.keysym.Shift-Control-V: eval:paste_clipboard
+
+! Clickable URLs
+URxvt.url-launcher: /usr/bin/xdg-open
+URxvt.matcher.button: 1
  
 ! Font
 URxvt*font: xft:Hack NF:size=11
@@ -16,6 +23,14 @@ Xft*rgba:       rgb
 Xft*autohint:   false
 Xft*hintstyle:  hintfull
 Xft*lcdfilter:  lcddefault
+
+! Increase/decrease font size
+URxvt.keysym.C-S-plus: resize-font:bigger
+URxvt.keysym.C-KP_Add: resize-font:bigger
+URxvt.keysym.C-S-underscore: resize-font:smaller
+URxvt.keysym.C-KP_Subtract:  resize-font:smaller
+URxvt.keysym.C-0:    resize-font:reset
+URxvt.keysym.C-KP_0: resize-font:reset
 
 ! Scrollbar
 URxvt.scrollBar: False
