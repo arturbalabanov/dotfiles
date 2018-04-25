@@ -149,6 +149,10 @@ fi
 
 DEFAULT_PYTHON_VERSION=$(python -c "import sys; print(sys.version_info[0])")
 
+# Disable the default (virtualenv) in front of the prompt
+# This will enable it as a seperate sector which is way more beautiful
+VIRTUAL_ENV_DISABLE_PROMPT=1
+
 source $HOME/.aliases
 if [[ -f "$HOME/.zshrc_local" ]]; then
 	source "$HOME/.zshrc_local"
