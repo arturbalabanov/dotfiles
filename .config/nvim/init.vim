@@ -63,7 +63,7 @@
 	" emmet {{{
 		" TODO: Use SuperTab. `` is actually quite useful
 		let g:user_emmet_install_global = 0
-		autocmd FileType html,css EmmetInstall
+		autocmd FileType html,css,xml EmmetInstall
 		let g:user_emmet_expandabbr_key = '``'
 		let g:user_emmet_next_key = '`j'
 		let g:user_emmet_prev_key = '`k'
@@ -167,7 +167,7 @@
 		nnoremap <leader>a :A<CR>
 	" }}}
 	" vim-localvimrc {{{
-		let g:localvimrc_whitelist = [expand('$HOME/dev/colin')]
+		let g:localvimrc_whitelist = [expand('$HOME/dev/colinbet'), expand('$HOME/side/pgcli')]
 		let g:localvimrc_sandbox=0
 	" }}}
 " }}}
@@ -255,6 +255,13 @@
 		nnoremap <leader>dr :diffget REMOTE<CR>
 		nnoremap <leader>du :diffupdate<CR>
 	endif
+
+	" Increment/decrement numbers with +/-
+	nnoremap + <C-a>
+	nnoremap - <C-x>
+
+	" Fix broken syntax highlighting
+	nnoremap <F12> :syntax sync fromstart<CR>
 " }}}
 " Interface {{{
     " Colors {{{
@@ -276,7 +283,8 @@
 		highlight ALEErrorSign ctermfg=red ctermbg=234
 		highlight ALEWarningSign ctermfg=yellow ctermbg=234
 
-		highlight Flashy ctermbg=239
+		" highlight Flashy ctermbg=239
+		highlight Flashy ctermbg=red
 	" }}}
 	set number
 	augroup numbertoggle
@@ -304,6 +312,9 @@
 
 	" Makes search act like search in modern browsers
 	set incsearch
+
+	" Visual :%s substitution
+	set inccommand=nosplit
 
 	" Clear search highlights
 	noremap <silent><Leader>/ :nohls<CR>
@@ -339,6 +350,7 @@
 	endf "}}}
 	set foldtext=CustomFoldText()
 	set foldmethod=indent
+	set foldignore=
 
 	let javaScript_fold=1
 
@@ -374,6 +386,13 @@
 	for [mapping, file_path] in items(quick_edit_files)
 		execute 'nnoremap ' . quick_edit_prefix . mapping . ' :tabedit ' . file_path . '<CR>'
 	endfor
+
+	function! TabEditLvimrc() " {{{
+		let l:file = fnameescape(b:localvimrc_sourced_files[0])
+		execute 'tabedit ' . l:file
+	endfunction " }}}
+
+	execute 'nnoremap ' . quick_edit_prefix . 'vl' . ' :call TabEditLvimrc()<CR>'
 " }}}
 " Splits {{{
 	" Resize splits when the window is resized

@@ -109,6 +109,8 @@ export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
 export LESS_TERMCAP_ue=$'\E[0m'           # end underline 
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
+export LESS="$LESS -x4"  # less uses 4 space tab witdh
+
 # PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
 
 bindkey '\e[3~' delete-char

@@ -586,51 +586,22 @@ endsnippet
 
 snippet debug "simple pring debug"
 print('\n' * 10)
-print('*' * 20)
+print('@' * 20)
 print($1)
-print('*' * 20)
+print('@' * 20)
 print('\n' * 10)
 $0
 endsnippet
 
-####################
-#       CPY        #
-####################
-
-snippet rrr "RememberRowByRegex"
-RememberRowByRegex(${1:SUBDESCR_ROW}, ur'${2:regex}', match_count=${3:1})
+snippet bp "Breakpoint"
+import pdb; pdb.set_trace()
 endsnippet
 
-snippet prm "@prdata method" b
-@prdata
-def ${1:rows}(self):
-    ${0}
+
+snippet cur "DB cursor" b
+with ${1:db_ctx}.cursor() as cur:
+	$0
 endsnippet
 
-snippet defpe "post_extract method" b
-@prdata
-def post_extract(self):
-    if not self.my_post_extract():
-        return False
-
-    ${0}
-
-    return True
-endsnippet
-
-snippet tpr "table.prdata"
-table.prdata['${1:rows}']
-endsnippet
-
-snippet spr "self.prdata"
-self.prdata['${1:rows}']
-endsnippet
-
-snippet ddate "Dummy date" b
-@prdata
-def date(self):
-    return "2000-01-01"
-${0}
-endsnippet
 
 # vim:ft=snippets:
