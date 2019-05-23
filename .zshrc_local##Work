@@ -1,6 +1,9 @@
 # For the zsh theme -- if the user is DEFAULT_USER, it is not shown
 export DEFAULT_USER="arturb"
 
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
+
 alias pgcli='~/side/pgcli/venv/bin/pgcli'
 
 export NVM_DIR="$HOME/.nvm"
@@ -19,8 +22,17 @@ function pgssh {
 	container="$1"
 	db_name="$2"
 
-	export PGPASSWORD="c0l1n"
-	pgcli -h $container -U "colin" $db_name
+	if [[ $container == 'live' ]]; then
+		container="${db_name}db"
+		username='readonly'
+		password='r3ad0nly'
+	else
+		username='colin'
+		password='c0l1n'
+	fi
+
+	export PGPASSWORD="$password"
+	pgcli -h $container -U "$username" $db_name
 }
 
 function logssh {
@@ -57,4 +69,36 @@ function logssh {
 
 	$editor $combined_log
 	rm $combined_log
+}
+
+function jira-links {
+	MAIN_GITLAB='https://gitlab.mustardsystems.com/mustard'
+	MAIN_PHABRICATOR='https://phabricator.mustardsystems.com'
+
+	DEFAULT_REPO='colinbet'
+
+	for handle in ${(z)1}; do
+		if [[ $handle =~ '^(\w{1,})?\!([0-9]{1,})$' ]]; then
+			repo=${match[1]:-$DEFAULT_REPO}
+			mr_id=$match[2]
+
+			gitlab_url="$MAIN_GITLAB/$repo/merge_requests/$mr_id"
+			echo "[$repo!$mr_id|$gitlab_url]"
+		elif [[ $handle =~ '^(\w{1,})?\#([0-9]{1,})$' ]]; then
+			repo=${match[1]:-$DEFAULT_REPO}
+			issue_id=$match[2]
+
+			gitlab_url="$MAIN_GITLAB/$repo/issues/$issue_id"
+			echo "[$repo#$issue_id|$gitlab_url]"
+		elif [[ $handle =~ '^[0-9a-f]{5,40}$' ]]; then
+			commit_hash=$MATCH
+			commit_hash_short=$(echo $commit_hash | cut -c1-7)
+			gitlab_url="$MAIN_GITLAB/$DEFAULT_REPO/commit/$commit_hash"
+			echo "[{{$commit_hash_short}}|$gitlab_url]"
+		elif [[ $handle =~ '^T[0-9]{1,6}$' ]]; then
+			phabtricator_task_id=$MATCH
+			phabtricator_url="$MAIN_PHABRICATOR/$phabtricator_task_id"
+			echo "[$phabtricator_task_id|$phabtricator_url]"
+		fi
+	done
 }

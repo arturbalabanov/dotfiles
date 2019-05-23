@@ -11,7 +11,7 @@ ZSH_THEME="artur"
 # CASE_SENSITIVE="true" 
 
 # Comment this out to disable bi-weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
+DISABLE_AUTO_UPDATE="true"
 
 # Uncomment to change how often before auto-updates occur? (in days)
 # export UPDATE_ZSH_DAYS=13
@@ -134,8 +134,11 @@ bindkey '^Z' fancy-ctrl-z
 
 # Ctrl-S -> insert sudo at the beginning of the line
 function prepend-sudo {
-  if [[ $BUFFER != "sudo "* ]]; then
-    BUFFER="sudo $BUFFER"; CURSOR+=5
+  if [[ $BUFFER == "sudo "* ]]; then
+	BUFFER=$(echo $BUFFER | sed 's/^sudo //')
+  else
+    BUFFER="sudo $BUFFER"
+	CURSOR+=5
   fi
 }
 zle -N prepend-sudo

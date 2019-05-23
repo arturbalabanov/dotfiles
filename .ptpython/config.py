@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 import re
 
 from prompt_toolkit.filters import ViInsertMode, ViNavigationMode, ViSelectionMode, ViMode
-from prompt_toolkit.key_binding.input_processor import KeyPress
-from prompt_toolkit.keys import Keys, Key
+from prompt_toolkit.key_binding.key_processor import KeyPress
+from prompt_toolkit.keys import Keys
 from pygments.token import Token
 from ptpython.repl import PythonRepl
 
@@ -20,15 +20,15 @@ imap jj <Esc>
 # @repl.add_key_binding('j', 'j', filter=ViInsertMode())
 # def _(event):
 #     " Map 'jj' to Escape. "
-#     event.cli.input_processor.feed(KeyPress(Keys.Escape))
+#     event.cli.key_processor.feed(KeyPress(Keys.Escape))
 
 KEY_REGEX = r'(?:[a-zA-Z]|<[A-Z][a-z]+>)'
 
 
 class VimMapping(object):
     def __init__(self, input, output, mode=ViMode()):
-        self.input = [Key(match.group(0)) for match in re.finditer(KEY_REGEX, input)]
-        self.output = [Key(match.group(0)) for match in re.finditer(KEY_REGEX, output)]
+        self.input = [match.group(0) for match in re.finditer(KEY_REGEX, input)]
+        self.output = [match.group(0) for match in re.finditer(KEY_REGEX, output)]
         self.mode = mode
 
     def register_mapping(self, repl):
@@ -176,7 +176,7 @@ def configure(repl):
     @repl.add_key_binding('j', 'j', filter=ViInsertMode())
     def _(event):
         " Map 'jj' to Escape. "
-        event.cli.input_processor.feed(KeyPress(Keys.Escape))
+        event.cli.key_processor.feed(KeyPress(Keys.Escape))
 
     """
     # Custom key binding for some simple autocorrection while typing.

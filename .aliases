@@ -24,6 +24,7 @@ alias cdtmp='cd $(mktemp -d)'
 alias raliases='source ~/.aliases'
 alias rm='rm -rf'
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
+alias cb-copy="xclip -selection clipboard"
 
 if type thefuck > /dev/null; then
 	eval $(thefuck --alias)

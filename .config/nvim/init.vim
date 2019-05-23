@@ -3,7 +3,7 @@
 
 	" Python support
 	let g:python_host_prog='/usr/bin/python2'
-	let g:python3_host_prog='/usr/bin/python3'
+	let g:python3_host_prog='/usr/bin/python3.6'
 
 	" Map the leader keys
 	let mapleader=","
@@ -30,7 +30,7 @@
 	set scrolloff=5
 
 	" Ignore these files in autocomplition, NERDTree and Denite
-	set wildignore+=*.pyc,*.pyo,*.so,*.o,__pycache__
+	set wildignore+=*.pyc,*.pyo,*.so,*.o,__pycache__,.git,.coverage
 
 	set nobackup                     " disable backups
 	set noswapfile                   " it's 2015, NeoVim.
@@ -217,13 +217,15 @@
 	nnoremap <leader>, m`A,<Esc>``
 
 	" Toggle spellcheck
-	let g:myLang = 0
+	let g:myLang = 1
 	let g:myLangList = ['nospell', 'en_gb', 'bg']
 	function! MySpellLang() " {{{
 		if g:myLang == 0 | setlocal nospell | endif
 		if g:myLang == 1 | let &l:spelllang = g:myLangList[g:myLang] | setlocal spell | endif
 		if g:myLang == 2 | let &l:spelllang = g:myLangList[g:myLang] | setlocal spell | endif
+
 		echomsg 'Language:' g:myLangList[g:myLang]
+
 		let g:myLang = g:myLang + 1
 		if g:myLang >= len(g:myLangList) | let g:myLang = 0 | endif
 	endfunction " }}}
@@ -435,6 +437,12 @@
 			au BufRead, BufNewFile /etc/nginx/*,/usr/local/nginx/conf/* if &ft == '' | setfiletype nginx | endif
 		augroup END
 		let g:tex_flavor = "latex"
+	" }}}
+	" Git {{{
+		augroup ft_gitcommit
+			au!
+			au FileType gitcommit let &l:spelllang = 'en_gb' | setlocal spell
+		augroup END
 	" }}}
 	" C {{{
 		augroup ft_c

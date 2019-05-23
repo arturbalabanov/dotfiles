@@ -12,6 +12,12 @@
 		let g:airline#extensions#whitespace#enabled = 0
 
 		let g:airline#extensions#tabline#enabled = 1
+        let g:airline#extensions#tabline#show_tab_nr = 0
+        let g:airline#extensions#tabline#show_tab_count = 0
+        let g:airline#extensions#tabline#show_tab_type = 0
+        let g:airline#extensions#tabline#show_buffers = 0
+
+        let g:airline#extensions#bufferline#enabled = 0
 
 		let g:airline#extensions#ale#enabled = 1
 		let g:airline#extensions#ale#error_symbol = '✗'
@@ -54,9 +60,9 @@
 	repo = 'tpope/vim-fugitive'
 
 	[[plugins]]
-    depends = 'vim-fugitive'
+	depends = 'vim-fugitive'
 	repo = 'gregsexton/gitv'
-    on_cmd = 'Gitv'
+	on_cmd = 'Gitv'
 
 	[[plugins]]
 	repo = 'embear/vim-localvimrc'
@@ -72,8 +78,8 @@
 		vnoremap <C-_> :TComment<CR>
 		inoremap <C-_> <Esc>:TComment<CR>i
 
-        let g:tcomment#options = {}
-        let g:tcomment#options.mixedindent = 1
+		let g:tcomment#options = {}
+		let g:tcomment#options.mixedindent = 1
 	'''
 
 	[[plugins]]
@@ -115,11 +121,11 @@
 	[[plugins]]
 	repo = 'w0rp/ale'
 	hook_add = '''
-        if &diff
-            let g:ale_enabled = 0
-        else
-            let g:ale_enabled = 1
-        endif
+		if &diff
+			let g:ale_enabled = 0
+		else
+			let g:ale_enabled = 1
+		endif
 	'''
 
 	[[plugins]]
@@ -148,8 +154,28 @@
 	[[plugins]]
 	repo = 'kshenoy/vim-signature'
 
-    [[plugins]]
-    repo = 'sheerun/vim-polyglot'
+	[[plugins]]
+	repo = 'sheerun/vim-polyglot'
+
+	[[plugins]]
+	repo = 'AndrewRadev/splitjoin.vim'
+	hook_add = '''
+		let g:splitjoin_trailing_comma = 1
+		let g:splitjoin_python_brackets_on_separate_lines = 1
+
+		" Mappings
+		let g:splitjoin_split_mapping = ''
+		let g:splitjoin_join_mapping = ''
+
+		nnoremap sj :SplitjoinSplit<cr>
+		nnoremap sk :SplitjoinJoin<cr>
+	'''
+
+	[[plugins]]
+	repo = 'unblevable/quick-scope'
+	hook_add = '''
+		let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+	'''
 # }}}
 # Dependancies {{{
 	[[plugins]]
@@ -201,7 +227,7 @@
 	'''
 	hook_source = '''
 		let g:tmux_navigator_no_mappings = 1
-        let g:tmux_navigator_disable_when_zoomed = 1
+		let g:tmux_navigator_disable_when_zoomed = 1
 	'''
 
 	[[plugins]]
@@ -278,7 +304,7 @@
 	repo = 'junegunn/limelight.vim'
 	on_cmd = 'Limelight'
 
-	[[plugin]]
+	[[plugins]]
 	repo = 'xolox/vim-lua-ftplugin'
 	depends = 'vim-misc'
 	on_ft = 'lua'
@@ -301,10 +327,9 @@
 		" let g:jedi#show_call_signatures_delay = 200
 		autocmd FileType python setlocal completeopt-=preview  " No auto docstring
 
-		" Don't fucking insert 'import' do distrupt my flow!
+		" Don't fucking insert 'import' to disrupt my flow!
 		let g:jedi#smart_auto_mappings = 0
 	'''
-
 
 	[[plugins]]
 	repo = 'haya14busa/vim-operator-flashy'
@@ -333,13 +358,25 @@
 	[[plugins]]
 	repo = 'guns/xterm-color-table.vim'
 	on_cmd = 'XtermColorTable'
+
+	[[plugins]]
+	repo = 'arturbalabanov/context-edit'
+	depends = 'context_filetype.vim'
+	on_func = 'ContextEdit'
+    hook_add = '''
+        nnoremap <silent> <F6> :<C-U>call ContextEdit()<CR>
+    '''
+
+	[[plugins]]
+	repo = 'tpope/vim-git'
+	on_ft = ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail']
 # }}}
 # Shougo's glorious plugins (and their extensions) {{{
 	[[plugins]]
 	repo = 'Shougo/dein.vim'
 
 	[[plugins]]
-	repo = 'Shougo/denite.nvim'
+	repo = 'arturbalabanov/denite.nvim'
 	on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
 	hook_source = '''
 		call denite#custom#option('default', {
@@ -350,8 +387,8 @@
 			\ 'vertical_preview': 1,
 			\ })
 
-		call denite#custom#var('file_rec', 'command', ['scantree.py', '--ignore', &wildignore])
-		call denite#custom#var('file_rec', 'matchers', ['matcher_substring'])
+		call denite#custom#var('file/rec', 'command', ['scantree.py'])
+		call denite#custom#var('file/rec', 'matchers', ['matcher/substring'])
 
 		call denite#custom#var('grep', 'command', ['rg'])
 		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
@@ -359,7 +396,15 @@
 		call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
 		call denite#custom#var('grep', 'separator', ['--'])
 
-	    call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
+		call denite#custom#var('outline', 'command', ['uctags'])
+		call denite#custom#var('outline', 'ignore_types', ['v', 'x'])
+		call denite#custom#var('outline', 'candidate_columns', [
+			\ {'name': 'type'},
+			\ {'name': 'name', 'max_len': 40, 'use_filter': 1},
+			\ {'name': 'ref', 'use_filter': 1},
+			\ ])
+
+		call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
 
 		call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
 		call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabswitch>', 'noremap')
@@ -375,11 +420,13 @@
 		call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
 	'''
 	hook_add = '''
-		nnoremap <silent> <C-p> :<C-u>Denite file_rec<CR>
+		nnoremap <silent> <C-p> :<C-u>Denite file/rec -split=floating<CR>
 		nnoremap <silent> <C-h> :<C-u>Denite help<CR>
 		nnoremap <silent> <C-f> :<C-u>Denite -no-empty grep:. -mode=normal<CR>
 		nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
 		cnoremap <silent> <C-r> :<C-u>Denite command_history<CR>
+        nnoremap <silent> <C-s> :<C-u>Denite spell -split=floating -mode=normal<CR>
+        nnoremap <silent> <C-o> :<C-u>Denite outline -smartcase=true -split=floating<CR>
 	'''
 
 	# [[plugins]]
@@ -387,25 +434,12 @@
 	# depends = 'denite.nvim'
 	# on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
 	# hook_source = '''
-    #     call denite#custom#var('z', 'order', 'frecent')
+	#	 call denite#custom#var('z', 'order', 'frecent')
 	# 	call denite#custom#source('z', 'sorters', ['sorter_z'])
 	# '''
 
-		# let g:context_filetype#filetypes.python = [{'filetype': 'sql', 'start': "^\s*sql\s*=\s*\(\"\"\"\)\s*$", 'end': "^\s*\1\s*$"}]
-		# if !exists('g:context_filetype#filetypes')
-		#   let g:context_filetype#filetypes = {}
-		# endif
-		#
-		# let g:context_filetype#filetypes.python = [{'filetype': 'sql', 'start': "^\s*sql\s*=\s*\(\"\"\"\)\s*$", 'end': "^\s*\1\s*$"}]
 	[[plugins]]
 	repo = 'Shougo/context_filetype.vim'
-	# hook_add = '''
-	# 	if !exists('g:context_filetype#filetypes')
-	# 	  let g:context_filetype#filetypes = {}
-	# 	endif
-    #
-	# 	let g:context_filetype#filetypes.python = [{'filetype': 'sql', 'start': "|", 'end': "|"}]
-	# '''
 
 	[[plugins]]
 	repo = 'Shougo/deoplete.nvim'
@@ -413,7 +447,7 @@
 	on_i = 1
 	hook_source = '''
 		let g:deoplete#enable_at_startup = 1
-		let g:deoplete#max_menu_width = 60
+		let g:deoplete#max_menu_width = 80
 		" Auto select the first option
 		set completeopt+=noinsert
 
@@ -440,6 +474,13 @@
 	on_ft = 'zsh'
 	on_i = 1
 
+    [[plugins]]
+    repo = 'deoplete-plugins/deoplete-go'
+	depends = 'deoplete.nvim'
+    build = 'make'
+    on_ft = 'go'
+    on_i = 1
+
 	[[plugins]]
 	repo = 'Shougo/echodoc.vim'
 	on_event = 'CompleteDone'
@@ -451,8 +492,4 @@
 	[[plugins]]
 	repo = 'Shougo/neco-vim'
 	on_ft = 'vim'
-
-	[[plugins]]
-	repo = 'tpope/vim-git'
-	on_ft = ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail']
 # }}}
