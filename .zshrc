@@ -148,8 +148,10 @@ export PATH=$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin
 
 export PATH="$PATH:$HOME/node_modules/.bin"
 
-if [[ -f "$HOME/.local/share/z/z.sh" ]]; then
+if [[ -r "$HOME/.local/share/z/z.sh" ]]; then
 	source "$HOME/.local/share/z/z.sh"
+elif [[ -r "/usr/share/z/z.sh" ]]; then
+	source "/usr/share/z/z.sh"
 fi
 
 DEFAULT_PYTHON_VERSION=$(python -c "import sys; print(sys.version_info[0])")
@@ -162,3 +164,5 @@ source $HOME/.aliases
 if [[ -f "$HOME/.zshrc_local" ]]; then
 	source "$HOME/.zshrc_local"
 fi
+
+

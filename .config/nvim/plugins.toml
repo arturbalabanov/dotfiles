@@ -325,7 +325,7 @@
 		let g:jedi#documentation_command = "<C-d>"
 
 		" let g:jedi#show_call_signatures_delay = 200
-		autocmd FileType python setlocal completeopt-=preview  " No auto docstring
+		" autocmd FileType python setlocal completeopt-=preview  " No auto docstring
 
 		" Don't fucking insert 'import' to disrupt my flow!
 		let g:jedi#smart_auto_mappings = 0
@@ -448,6 +448,7 @@
 	hook_source = '''
 		let g:deoplete#enable_at_startup = 1
 		let g:deoplete#max_menu_width = 80
+
 		" Auto select the first option
 		set completeopt+=noinsert
 
@@ -460,6 +461,13 @@
 			let col = col('.') - 1
 			return !col || getline('.')[col - 1]  =~ '\s'
 		endfunction "}}}
+
+        " Auto close the "preview" (dostring) window after the completion is done
+        augroup go_autoclose_preview
+            autocmd!
+            autocmd CompleteDone * silent! pclose!
+            autocmd InsertLeave * silent! pclose!
+        augroup END
 	'''
 
 	[[plugins]]
