@@ -13,11 +13,12 @@ URxvt.keysym.Shift-Control-V: eval:paste_clipboard
 URxvt.url-launcher: /usr/bin/xdg-open
 URxvt.matcher.button: 1
 
+URxvt*internalBorder: 0
+
 ! Icon
 ! URxvt.iconFile: /usr/share/icons/gnome/256x256/apps/gnome-terminal.png
  
 ! Font
-URxvt*font: xft:Hack NF:size=11
 URxvt*letterSpace: -1
 
 Xft*antialias:  true
@@ -75,3 +76,5 @@ URxvt.color14:      #8abeb7
 ! white
 URxvt.color7:       #707880
 URxvt.color15:      #c5c8c6
+
+#include ".Xresources_local"

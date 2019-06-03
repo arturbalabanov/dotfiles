@@ -3,7 +3,13 @@
 
 	" Python support
 	let g:python_host_prog='/usr/bin/python2'
-	let g:python3_host_prog='/usr/bin/python3.6'
+	
+	let is_default_py3_version_recent_enough = system("/usr/bin/python3 -c 'import sys; assert sys.version_info >= (3, 6)'")
+	if v:shell_error != 0
+		let g:python3_host_prog='/usr/bin/python3.6'
+	else
+		let g:python3_host_prog='/usr/bin/python3'
+	endif
 
 	" Map the leader keys
 	let mapleader=","
