@@ -324,9 +324,6 @@
 		let g:jedi#goto_command = "gd"
 		let g:jedi#documentation_command = "<C-d>"
 
-		" let g:jedi#show_call_signatures_delay = 200
-		" autocmd FileType python setlocal completeopt-=preview  " No auto docstring
-
 		" Don't fucking insert 'import' to disrupt my flow!
 		let g:jedi#smart_auto_mappings = 0
 	'''
@@ -335,7 +332,7 @@
 	repo = 'haya14busa/vim-operator-flashy'
 	depends = 'vim-operator-user'
 	on_map = [['nx', '<Plug>']]
-	on_add = '''
+	hook_add = '''
 		map y <Plug>(operator-flashy)
 		nmap Y ^<Plug>(operator-flashy)g_
 	'''
@@ -370,8 +367,12 @@
 	[[plugins]]
 	repo = 'tpope/vim-git'
 	on_ft = ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail']
+
+    [[plugins]]
+    repo = 'fatih/vim-go'
+    on_ft = 'go'
+    make = ':GoUpdateBinaries'
 # }}}
-# Shougo's glorious plugins (and their extensions) {{{
 	[[plugins]]
 	repo = 'Shougo/dein.vim'
 
@@ -462,12 +463,15 @@
 			return !col || getline('.')[col - 1]  =~ '\s'
 		endfunction "}}}
 
-        " Auto close the "preview" (dostring) window after the completion is done
-        augroup go_autoclose_preview
-            autocmd!
-            autocmd CompleteDone * silent! pclose!
-            autocmd InsertLeave * silent! pclose!
-        augroup END
+		" "Auto close the "preview" (dostring) window after the completion is done
+		" augroup go_autoclose_preview
+		" 	autocmd!
+		" 	autocmd CompleteDone * silent! pclose!
+		" 	autocmd InsertLeave * silent! pclose!
+		" augroup END
+
+        " Disable the "preview" (docstring) window after the completion is done
+		set completeopt-=preview
 	'''
 
 	[[plugins]]
@@ -492,7 +496,7 @@
 	[[plugins]]
 	repo = 'Shougo/echodoc.vim'
 	on_event = 'CompleteDone'
-	on_add = '''
+	hook_add = '''
 		set noshowmode  " Don't show --INSERT-- in the command_line
 		let g:echodoc#enable_at_startup = 1
 	'''

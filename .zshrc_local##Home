@@ -1,2 +1,5 @@
 # For the zsh theme -- if the user is DEFAULT_USER, it is not shown
 export DEFAULT_USER="artur"
+
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
