@@ -53,8 +53,8 @@
 	[[plugins]]
 	repo = 'terryma/vim-multiple-cursors'
 
-	[[plugins]]
-	repo = 'tpope/vim-surround'
+    [[plugins]]
+    repo = 'machakann/vim-sandwich'
 
 	[[plugins]]
 	repo = 'tpope/vim-fugitive'
