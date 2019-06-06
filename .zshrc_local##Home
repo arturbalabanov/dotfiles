@@ -3,3 +3,5 @@ export DEFAULT_USER="artur"
 
 export GOPATH=$HOME/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
+
+alias pac="pikaur"
