@@ -90,10 +90,6 @@
 
 	[[plugins]]
 	repo = 'jiangmiao/auto-pairs'
-	on_i = 1
-	hook_source = '''
-		let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
-	'''
 
 	[[plugins]]
 	repo = 'plytophogy/vim-virtualenv'
@@ -202,9 +198,16 @@
 # Lazy-loaded {{{
 	[[plugins]]
 	repo = 'scrooloose/nerdtree'
-	on_cmd = ['NERDTree', 'NERDTreeClose', 'NERDTreeFocus', 
-			  'NERDTreeMirror', 'NERDTreeCWD', 'NERDTreeFind', 
-			  'NERDTreeFromBookmark', 'NERDTreeToggle']
+	on_cmd = [
+        'NERDTree',
+        'NERDTreeClose',
+        'NERDTreeFocus',
+        'NERDTreeMirror',
+        'NERDTreeCWD',
+        'NERDTreeFind',
+        'NERDTreeFromBookmark',
+        'NERDTreeToggle'
+    ]
 	hook_add = '''
 		noremap <F2> :NERDTreeToggle<CR>
 	'''
@@ -217,8 +220,13 @@
 
 	[[plugins]]
 	repo = 'christoomey/vim-tmux-navigator'
-	on_cmd = ['TmuxNavigateLeft', 'TmuxNavigateRight', 'TmuxNavigateUp',
-			  'TmuxNavigateDown', 'TmuxNavigatePrevious']
+	on_cmd = [
+        'TmuxNavigateLeft',
+        'TmuxNavigateRight',
+        'TmuxNavigateUp',
+        'TmuxNavigateDown',
+        'TmuxNavigatePrevious'
+    ]
 	hook_add = '''
 		nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
 		nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
@@ -336,6 +344,10 @@
 		map y <Plug>(operator-flashy)
 		nmap Y ^<Plug>(operator-flashy)g_
 	'''
+    hook_source = '''
+        " The same as Visual
+        highlight Flashy ctermbg=237 guibg=#373b41
+    '''
 
 	[[plugins]]
 	repo = 'beloglazov/vim-textobj-quotes'
