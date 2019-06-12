@@ -384,6 +384,16 @@
     repo = 'fatih/vim-go'
     on_ft = 'go'
     make = ':GoUpdateBinaries'
+    hook_add = '''
+        " Disable default mapping for showing documentation
+        let g:go_doc_keywordprg_enabled = 0
+
+        " Disable the quickfix error for linting
+        let g:go_fmt_fail_silently = 1
+    '''
+    hook_source = '''
+        nnoremap <buffer> <C-d> :GoDoc<CR>
+    '''
 # }}}
 # Shougo's glorious plugins {{{
 	[[plugins]]
