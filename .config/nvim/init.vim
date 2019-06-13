@@ -56,126 +56,6 @@
 		call dein#end()
 		call dein#save_state()
 	endif
-	" ale {{{
-		let g:ale_sign_column_always = 1
-		let g:ale_sign_error = '✗'
-		let g:ale_sign_warning = ''
-
-		" nmap <A-k> <Plug>(ale_previous_wrap)
-		" nmap <A-j> <Plug>(ale_next_wrap)
-
-		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
-	" }}}
-	" emmet {{{
-		" TODO: Use SuperTab. `` is actually quite useful
-		let g:user_emmet_install_global = 0
-		autocmd FileType html,css,xml EmmetInstall
-		let g:user_emmet_expandabbr_key = '``'
-		let g:user_emmet_next_key = '`j'
-		let g:user_emmet_prev_key = '`k'
-		let g:use_emmet_complete_tag = 1
-	" }}}
-	" vim-surround {{{
-		autocmd FileType htmldjango let b:surround_{char2nr("v")} = "{{ \r }}"
-		autocmd FileType htmldjango let b:surround_{char2nr("t")} = "{% \r %}"
-
-		" Bold, italic and underline in TeX/LaTeX
-		autocmd FileType tex let b:surround_{char2nr("b")} = "\\textbf{\r}"
-		autocmd FileType tex let b:surround_{char2nr("i")} = "\\textit{\r}"
-		autocmd FileType tex let b:surround_{char2nr("u")} = "\\underline{\r}"
-
-		" Bold and italic in markdown
-		autocmd FileType mkd let b:surround_{char2nr("b")} = "**\r**"
-		autocmd FileType mkd let b:surround_{char2nr("i")} = "_\r_"
-
-		" Bold and italic in rst
-		autocmd FileType rst let b:surround_{char2nr("b")} = "**\r**"
-		autocmd FileType rst let b:surround_{char2nr("i")} = "*\r*"
-	" }}}
-	" limelight.vim {{{
-		let g:limelight_conceal_ctermfg = 'black'
-	" }}}
-	" goyo.vim {{{
-		let g:goyo_margin_top=0
-		let g:goyo_margin_bottom=0
-		let g:goyo_linenr=2
-
-		function! GoyoBefore()
-			silent !tmux set status off
-			normal zR
-			set nonumber
-			" Limelight
-		endfunction
-
-		function! GoyoAfter()
-			silent !tmux set status on
-			set number
-			" Limelight!
-		endfunction
-
-		let g:goyo_callbacks = [function('GoyoBefore'), function('GoyoAfter')]
-	" }}}
-	" InstantRst {{{
-		let g:instant_rst_browser = "google-chrome-stable"
-	" }}}
-	" python-mode {{{
-		" Disable nearly all the functions of python-mode since I use other
-		" plugins for them. Ones far younger and more powerful!
-
-		call pymode#default('g:pymode_doc', 0)
-		call pymode#default("g:pymode_indent", 0)
-		call pymode#default("g:pymode_motion", 0)
-		call pymode#default("g:pymode_options", 0)
-		call pymode#default('g:pymode_virtualenv', 0)
-		call pymode#default('g:pymode_run', 0)
-		call pymode#default('g:pymode_lint', 0)
-		call pymode#default('g:pymode_rope', 0)
-
-		call pymode#default("g:pymode_folding", 0)
-		" call pymode#default("g:pymode_folding", 1)
-		" call pymode#default("g:pymode_folding_nest_limit", 1000)
-		" call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
-
-		" I'm using it only for the breakpoints. For now.
-
-		call pymode#default('g:pymode_breakpoint', 1)
-		call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
-		call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
-
-		call pymode#default("g:pymode_trim_whitespaces", 1)
-	" }}}
-	" vim-exchange {{{
-		nmap X <Plug>(Exchange)
-		xmap X <Plug>(Exchange)
-		nmap cX <Plug>(ExchangeClear)
-		nmap XX <Plug>(ExchangeLine)
-	" }}}
-	" vim-multiple-cursors {{{
-		let g:multi_cursor_insert_maps = { 'j': 1 }
-
-		function! Multiple_cursors_before()
-			let b:deoplete_disable_auto_complete = 1
-		endfunction
-
-		function! Multiple_cursors_after()
-			let b:deoplete_disable_auto_complete = 0
-		endfunction
-	" }}}
-	" vim-slime {{{
-		let g:slime_target = "tmux"	
-
-		let g:slime_no_mappings = 1
-		xmap <C-c> <Plug>SlimeRegionSend
-		nmap <C-c> <Plug>SlimeLineSend
-	" }}}
-	" vim-projectionist {{{
-		" Jump to the alternate file
-		nnoremap <leader>a :A<CR>
-	" }}}
-	" vim-localvimrc {{{
-		let g:localvimrc_whitelist = [expand('$HOME/dev/colinbet'), expand('$HOME/side/pgcli')]
-		let g:localvimrc_sandbox=0
-	" }}}
 " }}}
 " Mappings {{{
 	" I'm mistyping this all the time...
@@ -205,7 +85,7 @@
 	inoremap <C-z> <C-^>
 	cnoremap <C-z> <C-^>
 
-	" Select the whole line without the identation. Useful for python code...
+	" Select the whole line without the indentation. Useful for python code...
 	" TODO: Don't enable this in NERD Tree
 	nnoremap vv ^vg_
 
@@ -223,19 +103,20 @@
 	nnoremap <leader>, m`A,<Esc>``
 
 	" Toggle spellcheck
-	let g:myLang = 1
+	let g:myLang = 0
 	let g:myLangList = ['nospell', 'en_gb', 'bg']
 	function! MySpellLang() " {{{
-		if g:myLang == 0 | setlocal nospell | endif
-		if g:myLang == 1 | let &l:spelllang = g:myLangList[g:myLang] | setlocal spell | endif
-		if g:myLang == 2 | let &l:spelllang = g:myLangList[g:myLang] | setlocal spell | endif
-
-		echomsg 'Language:' g:myLangList[g:myLang]
-
 		let g:myLang = g:myLang + 1
-		if g:myLang >= len(g:myLangList) | let g:myLang = 0 | endif
+
+		if g:myLang >= len(g:myLangList)
+			let g:myLang = 0
+			setlocal nospell
+		else
+			let &l:spelllang = g:myLangList[g:myLang]
+			setlocal spell
+		endif
 	endfunction " }}}
-	nnoremap <leader>s :<C-U>call MySpellLang()<CR>
+	nnoremap <silent> <leader>s :<C-U>call MySpellLang()<CR>
 
 	" Sudo to write
 	cnoremap w!! w !sudo tee % >/dev/null
@@ -247,11 +128,11 @@
 	nnoremap K :tabn<CR>
 	nnoremap J :tabp<CR>
 
-	" Reselect visual block after indent/outdent
+	" Reselect visual block after indent/dedent
 	vnoremap < <gv
 	vnoremap > >gv
 
-	" Eazily go to the beginning/end of the line
+	" Easily go to the beginning/end of the line
 	noremap H ^
 	noremap L $
 	vnoremap L g_
@@ -410,31 +291,24 @@
 	set splitright
 
 	" Only show cursorline in the current buffer and in normal mode.
-	augroup cline "{{{
+	augroup cline
 		au!
 		au WinLeave,InsertEnter * set nocursorline
 		au WinEnter,InsertLeave * set cursorline
-	augroup END "}}}
+	augroup END
 
 	" Only show line numbers numbers and the ALE gutter in the current buffer.
-	" augroup linenum "{{{
+	" augroup linenum
 	" 	au!
 	" 	au WinLeave * setlocal nonumber | :sign unplace *
 	" 	au WinEnter * setlocal number | :ALELint
-	" augroup END "}}}
+	" augroup END
 
-	" Resizing splits {{{
-		nnoremap <left>  <c-w><
-		nnoremap <right> <c-w>>
-		nnoremap <up>    <c-w>-
-		nnoremap <down>  <c-w>+
-	" }}}
-	" Splits navigation {{{
-		" nnoremap gh <C-w>h
-		" nnoremap gj <C-w>j
-		" nnoremap gk <C-w>k
-		" nnoremap gl <C-w>l
-	" }}}
+	" Resizing splits
+	nnoremap <left>  <c-w><
+	nnoremap <right> <c-w>>
+	nnoremap <up>    <c-w>-
+	nnoremap <down>  <c-w>+
 " }}}
 " Filetype specific settings {{{
 	" Automaticlly set filetypes {{{

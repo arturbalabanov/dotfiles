@@ -48,10 +48,25 @@
 	repo = 'w0ng/vim-hybrid'
 
 	[[plugins]]
-	repo = 'python-mode/python-mode'
-
-	[[plugins]]
 	repo = 'terryma/vim-multiple-cursors'
+    hook_source = '''
+		let g:multi_cursor_insert_maps = { 'j': 1 }
+
+        function! Multiple_cursors_before()
+            if deoplete#is_enabled()
+                call deoplete#disable()
+                let g:deoplete_is_enable_before_multi_cursors = 1
+            else
+                let g:deoplete_is_enable_before_multi_cursors = 0
+            endif
+        endfunction
+
+        function! Multiple_cursors_after()
+            if g:deoplete_is_enable_before_multi_cursors
+                call deoplete#enable()
+            endif
+        endfunction
+    '''
 
     [[plugins]]
     repo = 'machakann/vim-sandwich'
@@ -60,30 +75,14 @@
 	repo = 'tpope/vim-fugitive'
 
 	[[plugins]]
-	depends = 'vim-fugitive'
-	repo = 'gregsexton/gitv'
-	on_cmd = 'Gitv'
-
-	[[plugins]]
 	repo = 'embear/vim-localvimrc'
-
-	[[plugins]]
-	repo = 'tomtom/tcomment_vim'
-	on_cmd = "TComment"
     hook_add = '''
-		" Ctrl-/ for comment/uncomment
-		nnoremap <C-_> :TComment<CR>
-		vnoremap <C-_> :TComment<CR>
-		inoremap <C-_> <Esc>:TComment<CR>i
-    '''
-	hook_source = '''
-		let g:tcomment_maps=0
-		let g:tcomment#options = {}
-		let g:tcomment#options.mixedindent = 1
-	'''
+        " TODO: Fix these hardcoded paths. Ideally every project should have
+        " the ability to have a local vimrc
 
-	[[plugins]]
-	repo = 'mattn/emmet-vim'
+		let g:localvimrc_whitelist = [expand('$HOME/dev/colinbet'), expand('$HOME/side/pgcli')]
+		let g:localvimrc_sandbox=0
+    '''
 
 	[[plugins]]
 	repo = 'inkarkat/vim-SyntaxRange'
@@ -92,31 +91,20 @@
 	repo = 'jiangmiao/auto-pairs'
 
 	[[plugins]]
-	repo = 'plytophogy/vim-virtualenv'
-
-	[[plugins]]
-	repo = 'SirVer/ultisnips'
-	on_i = 1
-	on_cmd = ['UltiSnipsEdit', 'UltiSnipsAddFiletypes']
-	hook_source = '''
-		let g:UltiSnipsEditSplit="vertical"
-		let g:UltiSnipsExpandTrigger = "<C-j>"
-		let g:UltiSnipsJumpForwardTrigger = "<C-j>"
-		let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
-	'''
-
-	[[plugins]]
 	repo = 'tpope/vim-endwise'
-
-	[[plugins]]
-	repo = 'tommcdo/vim-exchange'
 
 	[[plugins]]
 	repo = 'ryanoasis/vim-devicons'
 
 	[[plugins]]
 	repo = 'w0rp/ale'
-	hook_add = '''
+	hook_source = '''
+		let g:ale_sign_column_always = 1
+		let g:ale_sign_error = '✗'
+		let g:ale_sign_warning = ''
+
+		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
+
 		if &diff
 			let g:ale_enabled = 0
 		else
@@ -126,20 +114,6 @@
 
 	[[plugins]]
 	repo = 'othree/eregex.vim'
-
-	[[plugins]]
-	repo = 'jpalardy/vim-slime'
-
-	[[plugins]]
-	repo = 'tpope/vim-projectionist'
-
-	[[plugins]]
-	repo = 'tpope/vim-dispatch'
-	on_cmd = ['Make', 'Copen', 'Dispatch', 'FocusDispatch', 'Start', 'Spawn']
-	hook_add = '''
-		nnoremap <F9> :Dispatch<CR>
-		inoremap <F9> <Esc>:Dispatch<CR>a
-	'''
 
 	[[plugins]]
 	repo = 'tpope/vim-abolish'
@@ -165,12 +139,6 @@
 
 		nnoremap sj :SplitjoinSplit<cr>
 		nnoremap sk :SplitjoinJoin<cr>
-	'''
-
-	[[plugins]]
-	repo = 'unblevable/quick-scope'
-	hook_add = '''
-		let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 	'''
 # }}}
 # Dependancies {{{
@@ -239,45 +207,6 @@
 	'''
 
 	[[plugins]]
-	repo = 'hail2u/vim-css3-syntax'
-	on_ft = 'css'
-
-	[[plugins]]
-	repo = 'groenewege/vim-less'
-	on_ft = 'less'
-
-	[[plugins]]
-	repo = 'cakebaker/scss-syntax.vim'
-	on_ft = ['scss', 'sass']
-
-	[[plugins]]
-	repo = 'exu/pgsql.vim'
-	on_ft = ['sql', 'pgsql']
-	hook_source = '''
-		let g:sql_type_default = 'pgsql'
-	'''
-
-	[[plugins]]
-	repo = 'alcesleo/vim-uppercase-sql'
-	on_ft = ['sql', 'pgsql']
-
-	# [[plugins]]
-	# repo = 'tmhedberg/SimpylFold'
-	# on_ft = 'python'
-
-	[[plugins]]
-	repo = 'tpope/vim-haml'
-	on_ft = 'haml'
-
-	[[plugins]]
-	repo = 'cespare/vim-toml'
-	on_ft = 'toml'
-
-	[[plugins]]
-	repo = 'kchmck/vim-coffee-script'
-	on_ft = 'coffee'
-
-	[[plugins]]
 	repo = 'sjl/gundo.vim'
 	on_cmd = 'GundoToggle'
 	hook_add = '''
@@ -297,50 +226,35 @@
 	'''
 
 	[[plugins]]
-	repo = 'plasticboy/vim-markdown'
-	on_ft = 'markdown'
-
-	[[plugins]]
-	repo = 'vim-ruby/vim-ruby'
-	on_ft = 'ruby'
-
-	[[plugins]]
-	repo = 'keith/tmux.vim'
-	on_ft = 'tmux'
-
-	[[plugins]]
 	repo = 'junegunn/limelight.vim'
 	on_cmd = 'Limelight'
-
-	[[plugins]]
-	repo = 'xolox/vim-lua-ftplugin'
-	depends = 'vim-misc'
-	on_ft = 'lua'
+    hook_source = '''
+		let g:limelight_conceal_ctermfg = 'black'
+    '''
 
 	[[plugins]]
 	repo = 'junegunn/goyo.vim'
 	depends = 'limelight.vim'
 	on_cmd = 'Goyo'
-
-	[[plugins]]
-	repo = 'davidhalter/jedi-vim'
-	on_ft = 'python'
-	hook_source = '''
-		let g:jedi#use_tabs_not_buffers = 1
-		let g:jedi#show_call_signatures = "0"  " 1 -> Popup; 2 -> command line
-		let g:jedi#completions_enabled = 0
-		let g:jedi#goto_command = "gd"
-		let g:jedi#documentation_command = "<C-d>"
-
-		" Don't fucking insert 'import' to disrupt my flow!
-		let g:jedi#smart_auto_mappings = 0
-	'''
-
-    [[plugins]]
-    repo = 'vim-python/python-syntax'
-    on_ft = 'python'
     hook_source = '''
-        let g:python_highlight_all = 1
+		let g:goyo_margin_top=0
+		let g:goyo_margin_bottom=0
+		let g:goyo_linenr=2
+
+		function! GoyoBefore()
+			silent !tmux set status off
+			normal zR
+			set nonumber
+			" Limelight
+		endfunction
+
+		function! GoyoAfter()
+			silent !tmux set status on
+			set number
+			" Limelight!
+		endfunction
+
+		let g:goyo_callbacks = [function('GoyoBefore'), function('GoyoAfter')]
     '''
 
 	[[plugins]]
@@ -366,11 +280,6 @@
 	depends = 'vim-textobj-user'
 	on_map = [['ox', '<Plug>']]
 
-	# TODO: Add build instructions
-	[[plugins]]
-	repo = 'Rykka/InstantRst'
-	on_ft = 'rst'
-
 	[[plugins]]
 	repo = 'guns/xterm-color-table.vim'
 	on_cmd = 'XtermColorTable'
@@ -384,23 +293,277 @@
     '''
 
 	[[plugins]]
-	repo = 'tpope/vim-git'
-	on_ft = ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail']
+	depends = 'vim-fugitive'
+	repo = 'gregsexton/gitv'
+	on_cmd = 'Gitv'
 
-    [[plugins]]
-    repo = 'fatih/vim-go'
-    on_ft = 'go'
-    make = ':GoUpdateBinaries'
+	[[plugins]]
+	repo = 'tomtom/tcomment_vim'
+	on_cmd = "TComment"
     hook_add = '''
-        " Disable default mapping for showing documentation
-        let g:go_doc_keywordprg_enabled = 0
+		" Ctrl-/ for comment/uncomment
+		nnoremap <C-_> :TComment<CR>
+		vnoremap <C-_> :TComment<CR>
+		inoremap <C-_> <Esc>:TComment<CR>i
+    '''
+	hook_source = '''
+		let g:tcomment_maps=0
+		let g:tcomment#options = {}
+		let g:tcomment#options.mixedindent = 1
+	'''
 
-        " Disable the quickfix error for linting
-        let g:go_fmt_fail_silently = 1
-    '''
+	[[plugins]]
+	repo = 'SirVer/ultisnips'
+	on_i = 1
+	on_cmd = ['UltiSnipsEdit', 'UltiSnipsAddFiletypes']
+	hook_source = '''
+        let g:UltiSnipsUsePythonVersion = 3 
+		let g:UltiSnipsEditSplit="vertical"
+		let g:UltiSnipsExpandTrigger = "<C-j>"
+		let g:UltiSnipsJumpForwardTrigger = "<C-j>"
+		let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
+	'''
+
+	[[plugins]]
+	repo = 'tommcdo/vim-exchange'
+	on_map = [['nox', '<Plug>']]
+	hook_add = '''
+		nmap X <Plug>(Exchange)
+		xmap X <Plug>(Exchange)
+		nmap cX <Plug>(ExchangeClear)
+		nmap XX <Plug>(ExchangeLine)
+	'''
+
+	[[plugins]]
+	repo = 'jpalardy/vim-slime'
+	on_map = [['nx', '<Plug>']]
     hook_source = '''
-        nnoremap <buffer> <C-d> :GoDoc<CR>
+		let g:slime_target = "tmux"	
+		let g:slime_no_mappings = 1
     '''
+    hook_add = '''
+		xmap <C-c> <Plug>SlimeRegionSend
+		nmap <C-c> <Plug>SlimeLineSend
+    '''
+
+	[[plugins]]
+	repo = 'tpope/vim-projectionist'
+    on_cmd = ['A', 'AS', 'AV', 'AT', 'AD', 'Pcd', 'Plcd', 'ProjectDo']
+    hook_add = '''
+		" Jump to the alternate file
+		nnoremap <leader>a :A<CR>
+    '''
+
+	[[plugins]]
+	repo = 'tpope/vim-dispatch'
+	on_cmd = ['Make', 'Copen', 'Dispatch', 'FocusDispatch', 'Start', 'Spawn']
+	hook_add = '''
+		nnoremap <F9> :Dispatch<CR>
+		inoremap <F9> <Esc>:Dispatch<CR>a
+	'''
+# }}}
+# Filetype-specific {{{
+    # Python {{{
+        [[plugins]]
+        repo = 'vim-python/python-syntax'
+        on_ft = 'python'
+        hook_source = '''
+            let g:python_highlight_all = 1
+        '''
+
+        # [[plugins]]
+        # repo = 'tmhedberg/SimpylFold'
+        # on_ft = 'python'
+
+        [[plugins]]
+        repo = 'davidhalter/jedi-vim'
+        on_ft = 'python'
+        hook_source = '''
+            let g:jedi#use_tabs_not_buffers = 1
+            let g:jedi#show_call_signatures = "0"  " 1 -> Popup; 2 -> command line
+            let g:jedi#completions_enabled = 0
+            let g:jedi#goto_command = "gd"
+            let g:jedi#documentation_command = "<C-d>"
+
+            " Don't fucking insert 'import' to disrupt my flow!
+            let g:jedi#smart_auto_mappings = 0
+        '''
+
+        [[plugins]]
+        repo = 'ColinKennedy/vim-python-function-expander'
+        on_ft = 'python'
+
+        [[plugins]]
+        repo = 'zchee/deoplete-jedi'
+        depends = 'deoplete.nvim'
+        on_ft = 'python'
+        on_i = 1
+
+        [[plugins]]
+        repo = 'python-mode/python-mode'
+        on_ft = 'python'
+        hook_source = '''
+            " Disable nearly all the functions of python-mode since I use other
+            " plugins for them. Ones far younger and more powerful!
+
+            let g:pymode_doc = 1
+            let g:pymode_doc_bind = '<C-d>'
+
+            call pymode#default('g:pymode_doc', 0)
+            call pymode#default("g:pymode_indent", 0)
+            call pymode#default("g:pymode_motion", 0)
+            call pymode#default("g:pymode_options", 0)
+            call pymode#default('g:pymode_virtualenv', 0)
+            call pymode#default('g:pymode_run', 0)
+            call pymode#default('g:pymode_lint', 0)
+            call pymode#default('g:pymode_rope', 0)
+
+            call pymode#default("g:pymode_folding", 0)
+            " call pymode#default("g:pymode_folding", 1)
+            " call pymode#default("g:pymode_folding_nest_limit", 1000)
+            " call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
+
+            " I'm using it only for the breakpoints. For now.
+
+            call pymode#default('g:pymode_breakpoint', 1)
+            call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
+            call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
+
+            call pymode#default("g:pymode_trim_whitespaces", 1)
+        '''
+
+        [[plugins]]
+        repo = 'plytophogy/vim-virtualenv'
+        on_ft = 'python'
+    # }}}
+    # Go {{{
+        [[plugins]]
+        repo = 'fatih/vim-go'
+        on_ft = 'go'
+        make = ':GoUpdateBinaries'
+        hook_add = '''
+            " Disable default mapping for showing documentation
+            let g:go_doc_keywordprg_enabled = 0
+
+            " Disable the quickfix error for linting
+            let g:go_fmt_fail_silently = 1
+        '''
+        hook_source = '''
+            nnoremap <buffer> <C-d> :GoDoc<CR>
+        '''
+
+        [[plugins]]
+        repo = 'deoplete-plugins/deoplete-go'
+        depends = 'deoplete.nvim'
+        build = 'make'
+        on_ft = 'go'
+        on_i = 1
+    # }}}
+    # Ruby {{{
+        [[plugins]]
+        repo = 'vim-ruby/vim-ruby'
+        on_ft = 'ruby'
+    # }}}
+    # Lua {{{
+        [[plugins]]
+        repo = 'xolox/vim-lua-ftplugin'
+        depends = 'vim-misc'
+        on_ft = 'lua'
+    # }}}
+    # SQL {{{
+        [[plugins]]
+        repo = 'exu/pgsql.vim'
+        on_ft = ['sql', 'pgsql']
+        hook_source = '''
+            let g:sql_type_default = 'pgsql'
+        '''
+
+        [[plugins]]
+        repo = 'alcesleo/vim-uppercase-sql'
+        on_ft = ['sql', 'pgsql']
+    # }}}
+    # CoffeeScript {{{
+        [[plugins]]
+        repo = 'kchmck/vim-coffee-script'
+        on_ft = 'coffee'
+    # }}}
+    # HTML {{{
+        [[plugins]]
+        repo = 'mattn/emmet-vim'
+        on_ft = 'html'
+        hook_source = '''
+            " TODO: Use SuperTab. `` is actually quite useful
+            let g:user_emmet_install_global = 0
+
+            autocmd FileType html EmmetInstall
+
+            let g:user_emmet_expandabbr_key = '``'
+            let g:user_emmet_next_key = '`j'
+            let g:user_emmet_prev_key = '`k'
+            let g:use_emmet_complete_tag = 1
+        '''
+    # }}}
+    # Haml {{{
+        [[plugins]]
+        repo = 'tpope/vim-haml'
+        on_ft = 'haml'
+    # }}}
+    # CSS {{{
+        [[plugins]]
+        repo = 'hail2u/vim-css3-syntax'
+        on_ft = 'css'
+    # }}}
+    # Sass {{{
+        [[plugins]]
+        repo = 'cakebaker/scss-syntax.vim'
+        on_ft = ['scss', 'sass']
+    # }}}
+    # Less {{{
+        [[plugins]]
+        repo = 'groenewege/vim-less'
+        on_ft = 'less'
+    # }}}
+    # Markdown {{{
+        [[plugins]]
+        repo = 'plasticboy/vim-markdown'
+        on_ft = 'markdown'
+    # }}}
+    # ReStructuredText {{{
+        # TODO: Add build instructions
+        [[plugins]]
+        repo = 'Rykka/InstantRst'
+        on_ft = 'rst'
+        hook_source = '''
+            let g:instant_rst_browser = $BROWSER
+        '''
+    # }}}
+    # TOML {{{
+        [[plugins]]
+        repo = 'cespare/vim-toml'
+        on_ft = 'toml'
+    # }}}
+    # vim {{{
+        [[plugins]]
+        repo = 'Shougo/neco-vim'
+        on_ft = 'vim'
+    # }}}
+    # tmux {{{
+        [[plugins]]
+        repo = 'keith/tmux.vim'
+        on_ft = 'tmux'
+    # }}}
+    # zsh {{{
+        [[plugins]]
+        repo = 'zchee/deoplete-zsh'
+        depends = 'deoplete.nvim'
+        on_ft = 'zsh'
+        on_i = 1
+    # }}}
+    # git {{{
+        [[plugins]]
+        repo = 'tpope/vim-git'
+        on_ft = ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail']
+    # }}}
 # }}}
 # Shougo's glorious plugins {{{
 	[[plugins]]
@@ -505,33 +668,10 @@
 	'''
 
 	[[plugins]]
-	repo = 'zchee/deoplete-jedi'
-	depends = 'deoplete.nvim'
-	on_ft = 'python'
-	on_i = 1
-
-	[[plugins]]
-	repo = 'zchee/deoplete-zsh'
-	depends = 'deoplete.nvim'
-	on_ft = 'zsh'
-	on_i = 1
-
-    [[plugins]]
-    repo = 'deoplete-plugins/deoplete-go'
-	depends = 'deoplete.nvim'
-    build = 'make'
-    on_ft = 'go'
-    on_i = 1
-
-	[[plugins]]
 	repo = 'Shougo/echodoc.vim'
 	on_event = 'CompleteDone'
 	hook_add = '''
 		set noshowmode  " Don't show --INSERT-- in the command_line
 		let g:echodoc#enable_at_startup = 1
 	'''
-
-	[[plugins]]
-	repo = 'Shougo/neco-vim'
-	on_ft = 'vim'
 # }}}
