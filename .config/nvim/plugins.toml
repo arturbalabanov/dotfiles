@@ -98,7 +98,7 @@
 
 	[[plugins]]
 	repo = 'w0rp/ale'
-	hook_source = '''
+	hook_add = '''
 		let g:ale_sign_column_always = 1
 		let g:ale_sign_error = '✗'
 		let g:ale_sign_warning = ''
@@ -326,13 +326,13 @@
 
 	[[plugins]]
 	repo = 'tommcdo/vim-exchange'
-	on_map = [['nox', '<Plug>']]
-	hook_add = '''
-		nmap X <Plug>(Exchange)
-		xmap X <Plug>(Exchange)
-		nmap cX <Plug>(ExchangeClear)
-		nmap XX <Plug>(ExchangeLine)
-	'''
+    on_map = [['nx', '<Plug>']]
+    hook_add = '''
+        nmap X <Plug>(Exchange)
+        xmap X <Plug>(Exchange)
+        nmap cX <Plug>(ExchangeClear)
+        nmap XX <Plug>(ExchangeLine)
+    '''
 
 	[[plugins]]
 	repo = 'jpalardy/vim-slime'
