@@ -187,6 +187,13 @@
 	set mouse=a
 " }}}
 " Tabs and spaces {{{
+	" TODO: Research more all the options and document them here
+	" Create two modes (via functions?):
+	" 	* 4 spaces indentation (default)
+	" 	* Tabs indentation (width = 4)
+	" Set exceptions for some file types / projects (localvimrc)
+	" https://vim.fandom.com/wiki/Indent_with_tabs,_align_with_spaces
+
     set smartindent
     set shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
     set tabstop=4     " an hard TAB displays as 4 columns

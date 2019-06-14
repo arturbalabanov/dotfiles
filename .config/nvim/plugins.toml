@@ -316,7 +316,7 @@
 	repo = 'SirVer/ultisnips'
 	on_i = 1
 	on_cmd = ['UltiSnipsEdit', 'UltiSnipsAddFiletypes']
-	hook_source = '''
+	hook_add = '''
         let g:UltiSnipsUsePythonVersion = 3 
 		let g:UltiSnipsEditSplit="vertical"
 		let g:UltiSnipsExpandTrigger = "<C-j>"
@@ -532,7 +532,7 @@
         # TODO: Add build instructions
         [[plugins]]
         repo = 'Rykka/InstantRst'
-        on_ft = 'rst'
+        on_cmd = 'InstantRst'
         hook_source = '''
             let g:instant_rst_browser = $BROWSER
         '''
