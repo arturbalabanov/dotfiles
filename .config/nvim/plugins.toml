@@ -1,17 +1,17 @@
 # Non-lazy-loaded... Yet {{{
-	[[plugins]]
-	repo = 'itchyny/vim-cursorword'
+    [[plugins]]
+    repo = 'itchyny/vim-cursorword'
 
-	[[plugins]]
-	repo = 'vim-airline/vim-airline'
-	hook_add = '''
-		set laststatus=2   " Always show the statusline
+    [[plugins]]
+    repo = 'vim-airline/vim-airline'
+    hook_add = '''
+        set laststatus=2   " Always show the statusline
 
-		let g:airline_powerline_fonts = 1
+        let g:airline_powerline_fonts = 1
 
-		let g:airline#extensions#whitespace#enabled = 0
+        let g:airline#extensions#whitespace#enabled = 0
 
-		let g:airline#extensions#tabline#enabled = 1
+        let g:airline#extensions#tabline#enabled = 1
         let g:airline#extensions#tabline#show_tab_nr = 0
         let g:airline#extensions#tabline#show_tab_count = 0
         let g:airline#extensions#tabline#show_tab_type = 0
@@ -19,38 +19,38 @@
 
         let g:airline#extensions#bufferline#enabled = 0
 
-		let g:airline#extensions#ale#enabled = 1
-		let g:airline#extensions#ale#error_symbol = '✗'
-		let g:airline#extensions#ale#warning_symbol = ''
+        let g:airline#extensions#ale#enabled = 1
+        let g:airline#extensions#ale#error_symbol = '✗'
+        let g:airline#extensions#ale#warning_symbol = ''
 
-		let g:airline#extensions#branch#enabled = 1
+        let g:airline#extensions#branch#enabled = 1
 
-		if !exists('g:airline_symbols')
-			let g:airline_symbols = {}
-		endif
+        if !exists('g:airline_symbols')
+            let g:airline_symbols = {}
+        endif
 
-		let g:airline_exclude_preview = 1
+        let g:airline_exclude_preview = 1
 
-		" Sections
-		let g:airline_skip_empty_sections = 1
-		let g:airline_section_y = ''
-		let g:airline_section_z = ''
-	'''
+        " Sections
+        let g:airline_skip_empty_sections = 1
+        let g:airline_section_y = ''
+        let g:airline_section_z = ''
+    '''
 
-	[[plugins]]
-	repo = 'vim-airline/vim-airline-themes'
-	depends = 'vim-airline'
-	hook_add = '''
-		let g:airline_theme = 'powerlineish'
-	'''
+    [[plugins]]
+    repo = 'vim-airline/vim-airline-themes'
+    depends = 'vim-airline'
+    hook_add = '''
+        let g:airline_theme = 'powerlineish'
+    '''
 
-	[[plugins]]
-	repo = 'w0ng/vim-hybrid'
+    [[plugins]]
+    repo = 'w0ng/vim-hybrid'
 
-	[[plugins]]
-	repo = 'terryma/vim-multiple-cursors'
+    [[plugins]]
+    repo = 'terryma/vim-multiple-cursors'
     hook_source = '''
-		let g:multi_cursor_insert_maps = { 'j': 1 }
+        let g:multi_cursor_insert_maps = { 'j': 1 }
 
         function! Multiple_cursors_before()
             if deoplete#is_enabled()
@@ -75,100 +75,100 @@
         runtime macros/sandwich/keymap/surround.vim
     '''
 
-	[[plugins]]
-	repo = 'tpope/vim-fugitive'
+    [[plugins]]
+    repo = 'tpope/vim-fugitive'
 
-	[[plugins]]
-	repo = 'embear/vim-localvimrc'
+    [[plugins]]
+    repo = 'embear/vim-localvimrc'
     hook_add = '''
         " TODO: Fix these hardcoded paths. Ideally every project should have
         " the ability to have a local vimrc
 
-		let g:localvimrc_whitelist = [expand('$HOME/dev/colinbet'), expand('$HOME/side/pgcli')]
-		let g:localvimrc_sandbox=0
+        let g:localvimrc_whitelist = [expand('$HOME/dev/colinbet'), expand('$HOME/side/pgcli')]
+        let g:localvimrc_sandbox=0
     '''
 
-	[[plugins]]
-	repo = 'jiangmiao/auto-pairs'
+    [[plugins]]
+    repo = 'jiangmiao/auto-pairs'
 
-	[[plugins]]
-	repo = 'tpope/vim-endwise'
+    [[plugins]]
+    repo = 'tpope/vim-endwise'
 
-	[[plugins]]
-	repo = 'ryanoasis/vim-devicons'
+    [[plugins]]
+    repo = 'ryanoasis/vim-devicons'
 
-	[[plugins]]
-	repo = 'w0rp/ale'
-	hook_add = '''
-		let g:ale_sign_column_always = 1
-		let g:ale_sign_error = '✗'
-		let g:ale_sign_warning = ''
+    [[plugins]]
+    repo = 'w0rp/ale'
+    hook_add = '''
+        let g:ale_sign_column_always = 1
+        let g:ale_sign_error = '✗'
+        let g:ale_sign_warning = ''
 
-		let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
+        let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
 
-		if &diff
-			let g:ale_enabled = 0
-		else
-			let g:ale_enabled = 1
-		endif
-	'''
+        if &diff
+            let g:ale_enabled = 0
+        else
+            let g:ale_enabled = 1
+        endif
+    '''
 
-	[[plugins]]
-	repo = 'othree/eregex.vim'
+    [[plugins]]
+    repo = 'othree/eregex.vim'
 
-	[[plugins]]
-	repo = 'tpope/vim-abolish'
+    [[plugins]]
+    repo = 'tpope/vim-abolish'
 
-	[[plugins]]
-	repo = 'djoshea/vim-autoread'
+    [[plugins]]
+    repo = 'djoshea/vim-autoread'
 
-	[[plugins]]
-	repo = 'kshenoy/vim-signature'
+    [[plugins]]
+    repo = 'kshenoy/vim-signature'
 
-	[[plugins]]
-	repo = 'sheerun/vim-polyglot'
+    [[plugins]]
+    repo = 'sheerun/vim-polyglot'
 
-	[[plugins]]
-	repo = 'AndrewRadev/splitjoin.vim'
+    [[plugins]]
+    repo = 'AndrewRadev/splitjoin.vim'
     on_cmd = ['SplitjoinSplit', 'SplitjoinJoin']
-	hook_add = '''
-		let g:splitjoin_trailing_comma = 1
-		let g:splitjoin_python_brackets_on_separate_lines = 1
+    hook_add = '''
+        let g:splitjoin_trailing_comma = 1
+        let g:splitjoin_python_brackets_on_separate_lines = 1
 
-		" Mappings
-		let g:splitjoin_split_mapping = ''
-		let g:splitjoin_join_mapping = ''
+        " Mappings
+        let g:splitjoin_split_mapping = ''
+        let g:splitjoin_join_mapping = ''
 
-		nnoremap <silent> sj :SplitjoinSplit<cr>
-		nnoremap <silent> sk :SplitjoinJoin<cr>
-	'''
+        nnoremap <silent> sj :SplitjoinSplit<cr>
+        nnoremap <silent> sk :SplitjoinJoin<cr>
+    '''
 # }}}
 # Dependancies {{{
-	[[plugins]]
-	repo = 'kana/vim-operator-user'
-	lazy = 1
+    [[plugins]]
+    repo = 'kana/vim-operator-user'
+    lazy = 1
 
-	[[plugins]]
-	repo = 'kana/vim-textobj-user'
-	lazy = 1
+    [[plugins]]
+    repo = 'kana/vim-textobj-user'
+    lazy = 1
 
-	[[plugins]]
-	repo = 'xolox/vim-misc'
-	lazy = 1
+    [[plugins]]
+    repo = 'xolox/vim-misc'
+    lazy = 1
 
-	# TODO: See which plugins require these two
-	[[plugins]]
-	repo = 'MarcWeber/vim-addon-mw-utils'
-	lazy = 1
+    # TODO: See which plugins require these two
+    [[plugins]]
+    repo = 'MarcWeber/vim-addon-mw-utils'
+    lazy = 1
 
-	[[plugins]]
-	repo = 'tomtom/tlib_vim'
-	lazy = 1
+    [[plugins]]
+    repo = 'tomtom/tlib_vim'
+    lazy = 1
 # }}}
 # Lazy-loaded {{{
-	[[plugins]]
-	repo = 'scrooloose/nerdtree'
-	on_cmd = [
+    [[plugins]]
+    repo = 'scrooloose/nerdtree'
+    on_cmd = [
         'NERDTree',
         'NERDTreeClose',
         'NERDTreeFocus',
@@ -178,156 +178,156 @@
         'NERDTreeFromBookmark',
         'NERDTreeToggle'
     ]
-	hook_add = '''
-		noremap <F2> :NERDTreeToggle<CR>
-	'''
-	hook_source = '''
-		let g:NERDTreeShowBookmarks=1
-		let g:NERDTreeMapOpenSplit='s'
-		let g:NERDTreeMapOpenVSplit='v'
-		let g:NERDTreeRespectWildIgnore=1
-	'''
+    hook_add = '''
+        noremap <F2> :NERDTreeToggle<CR>
+    '''
+    hook_source = '''
+        let g:NERDTreeShowBookmarks=1
+        let g:NERDTreeMapOpenSplit='s'
+        let g:NERDTreeMapOpenVSplit='v'
+        let g:NERDTreeRespectWildIgnore=1
+    '''
 
-	[[plugins]]
-	repo = 'christoomey/vim-tmux-navigator'
-	on_cmd = [
+    [[plugins]]
+    repo = 'christoomey/vim-tmux-navigator'
+    on_cmd = [
         'TmuxNavigateLeft',
         'TmuxNavigateRight',
         'TmuxNavigateUp',
         'TmuxNavigateDown',
         'TmuxNavigatePrevious'
     ]
-	hook_add = '''
-		nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
-		nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
-		nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
-		nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
-	'''
-	hook_source = '''
-		let g:tmux_navigator_no_mappings = 1
-		let g:tmux_navigator_disable_when_zoomed = 1
-	'''
-
-	[[plugins]]
-	repo = 'sjl/gundo.vim'
-	on_cmd = 'GundoToggle'
-	hook_add = '''
-		nnoremap <F1> :GundoToggle<CR>
-	'''
-	hook_source = '''
-		let g:gundo_tree_statusline = "Gundo"
-		let g:gundo_preview_statusline = "Gundo Preview"
-		let g:gundo_right = 1
-	'''
-
-	[[plugins]]
-	repo = 'majutsushi/tagbar'
-	on_cmd = 'TagbarToggle'
-	hook_add = '''
-		nnoremap <F3> :TagbarToggle<CR>
-	'''
-
-	[[plugins]]
-	repo = 'junegunn/limelight.vim'
-	on_cmd = 'Limelight'
+    hook_add = '''
+        nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
+        nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
+        nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
+        nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
+    '''
     hook_source = '''
-		let g:limelight_conceal_ctermfg = 'black'
+        let g:tmux_navigator_no_mappings = 1
+        let g:tmux_navigator_disable_when_zoomed = 1
     '''
 
-	[[plugins]]
-	repo = 'junegunn/goyo.vim'
-	depends = 'limelight.vim'
-	on_cmd = 'Goyo'
+    [[plugins]]
+    repo = 'sjl/gundo.vim'
+    on_cmd = 'GundoToggle'
+    hook_add = '''
+        nnoremap <F1> :GundoToggle<CR>
+    '''
     hook_source = '''
-		let g:goyo_margin_top=0
-		let g:goyo_margin_bottom=0
-		let g:goyo_linenr=2
-
-		function! GoyoBefore()
-			silent !tmux set status off
-			normal zR
-			set nonumber
-			" Limelight
-		endfunction
-
-		function! GoyoAfter()
-			silent !tmux set status on
-			set number
-			" Limelight!
-		endfunction
-
-		let g:goyo_callbacks = [function('GoyoBefore'), function('GoyoAfter')]
+        let g:gundo_tree_statusline = "Gundo"
+        let g:gundo_preview_statusline = "Gundo Preview"
+        let g:gundo_right = 1
     '''
 
-	[[plugins]]
-	repo = 'haya14busa/vim-operator-flashy'
-	depends = 'vim-operator-user'
-	on_map = [['nx', '<Plug>']]
-	hook_add = '''
-		map y <Plug>(operator-flashy)
-		nmap Y ^<Plug>(operator-flashy)g_
-	'''
+    [[plugins]]
+    repo = 'majutsushi/tagbar'
+    on_cmd = 'TagbarToggle'
+    hook_add = '''
+        nnoremap <F3> :TagbarToggle<CR>
+    '''
+
+    [[plugins]]
+    repo = 'junegunn/limelight.vim'
+    on_cmd = 'Limelight'
+    hook_source = '''
+        let g:limelight_conceal_ctermfg = 'black'
+    '''
+
+    [[plugins]]
+    repo = 'junegunn/goyo.vim'
+    depends = 'limelight.vim'
+    on_cmd = 'Goyo'
+    hook_source = '''
+        let g:goyo_margin_top=0
+        let g:goyo_margin_bottom=0
+        let g:goyo_linenr=2
+
+        function! GoyoBefore()
+            silent !tmux set status off
+            normal zR
+            set nonumber
+            " Limelight
+        endfunction
+
+        function! GoyoAfter()
+            silent !tmux set status on
+            set number
+            " Limelight!
+        endfunction
+
+        let g:goyo_callbacks = [function('GoyoBefore'), function('GoyoAfter')]
+    '''
+
+    [[plugins]]
+    repo = 'haya14busa/vim-operator-flashy'
+    depends = 'vim-operator-user'
+    on_map = [['nx', '<Plug>']]
+    hook_add = '''
+        map y <Plug>(operator-flashy)
+        nmap Y ^<Plug>(operator-flashy)g_
+    '''
     hook_source = '''
         " The same as Visual
         highlight Flashy ctermbg=237 guibg=#373b41
     '''
 
-	[[plugins]]
-	repo = 'beloglazov/vim-textobj-quotes'
-	depends = 'vim-textobj-user'
-	on_map = [['ox', '<Plug>']]
+    [[plugins]]
+    repo = 'beloglazov/vim-textobj-quotes'
+    depends = 'vim-textobj-user'
+    on_map = [['ox', '<Plug>']]
 
-	[[plugins]]
-	repo = 'Julian/vim-textobj-brace'
-	depends = 'vim-textobj-user'
-	on_map = [['ox', '<Plug>']]
+    [[plugins]]
+    repo = 'Julian/vim-textobj-brace'
+    depends = 'vim-textobj-user'
+    on_map = [['ox', '<Plug>']]
 
-	[[plugins]]
-	repo = 'guns/xterm-color-table.vim'
-	on_cmd = 'XtermColorTable'
+    [[plugins]]
+    repo = 'guns/xterm-color-table.vim'
+    on_cmd = 'XtermColorTable'
 
-	[[plugins]]
-	repo = 'arturbalabanov/context-edit'
-	depends = 'context_filetype.vim'
-	on_func = 'ContextEdit'
+    [[plugins]]
+    repo = 'arturbalabanov/context-edit'
+    depends = 'context_filetype.vim'
+    on_func = 'ContextEdit'
     hook_add = '''
         nnoremap <silent> <F6> :<C-U>call ContextEdit()<CR>
     '''
 
-	[[plugins]]
-	depends = 'vim-fugitive'
-	repo = 'gregsexton/gitv'
-	on_cmd = 'Gitv'
+    [[plugins]]
+    depends = 'vim-fugitive'
+    repo = 'gregsexton/gitv'
+    on_cmd = 'Gitv'
 
-	[[plugins]]
-	repo = 'tomtom/tcomment_vim'
-	on_cmd = "TComment"
+    [[plugins]]
+    repo = 'tomtom/tcomment_vim'
+    on_cmd = "TComment"
     hook_add = '''
-		" Ctrl-/ for comment/uncomment
-		nnoremap <C-_> :TComment<CR>
-		vnoremap <C-_> :TComment<CR>
-		inoremap <C-_> <Esc>:TComment<CR>i
+        " Ctrl-/ for comment/uncomment
+        nnoremap <C-_> :TComment<CR>
+        vnoremap <C-_> :TComment<CR>
+        inoremap <C-_> <Esc>:TComment<CR>i
     '''
-	hook_source = '''
-		let g:tcomment_maps=0
-		let g:tcomment#options = {}
-		let g:tcomment#options.mixedindent = 1
-	'''
+    hook_source = '''
+        let g:tcomment_maps=0
+        let g:tcomment#options = {}
+        let g:tcomment#options.mixedindent = 1
+    '''
 
-	[[plugins]]
-	repo = 'SirVer/ultisnips'
-	on_i = 1
-	on_cmd = ['UltiSnipsEdit', 'UltiSnipsAddFiletypes']
-	hook_add = '''
+    [[plugins]]
+    repo = 'SirVer/ultisnips'
+    on_i = 1
+    on_cmd = ['UltiSnipsEdit', 'UltiSnipsAddFiletypes']
+    hook_add = '''
         let g:UltiSnipsUsePythonVersion = 3 
-		let g:UltiSnipsEditSplit="vertical"
-		let g:UltiSnipsExpandTrigger = "<C-j>"
-		let g:UltiSnipsJumpForwardTrigger = "<C-j>"
-		let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
-	'''
+        let g:UltiSnipsEditSplit="vertical"
+        let g:UltiSnipsExpandTrigger = "<C-j>"
+        let g:UltiSnipsJumpForwardTrigger = "<C-j>"
+        let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
+    '''
 
-	[[plugins]]
-	repo = 'tommcdo/vim-exchange'
+    [[plugins]]
+    repo = 'tommcdo/vim-exchange'
     on_map = [['nx', '<Plug>']]
     hook_add = '''
         nmap X <Plug>(Exchange)
@@ -336,33 +336,33 @@
         nmap XX <Plug>(ExchangeLine)
     '''
 
-	[[plugins]]
-	repo = 'jpalardy/vim-slime'
-	on_map = [['nx', '<Plug>']]
+    [[plugins]]
+    repo = 'jpalardy/vim-slime'
+    on_map = [['nx', '<Plug>']]
     hook_source = '''
-		let g:slime_target = "tmux"	
-		let g:slime_no_mappings = 1
+        let g:slime_target = "tmux"    
+        let g:slime_no_mappings = 1
     '''
     hook_add = '''
-		xmap <C-c> <Plug>SlimeRegionSend
-		nmap <C-c> <Plug>SlimeLineSend
+        xmap <C-c> <Plug>SlimeRegionSend
+        nmap <C-c> <Plug>SlimeLineSend
     '''
 
-	[[plugins]]
-	repo = 'tpope/vim-projectionist'
+    [[plugins]]
+    repo = 'tpope/vim-projectionist'
     on_cmd = ['A', 'AS', 'AV', 'AT', 'AD', 'Pcd', 'Plcd', 'ProjectDo']
     hook_add = '''
-		" Jump to the alternate file
-		nnoremap <leader>a :A<CR>
+        " Jump to the alternate file
+        nnoremap <leader>a :A<CR>
     '''
 
-	[[plugins]]
-	repo = 'tpope/vim-dispatch'
-	on_cmd = ['Make', 'Copen', 'Dispatch', 'FocusDispatch', 'Start', 'Spawn']
-	hook_add = '''
-		nnoremap <F9> :Dispatch<CR>
-		inoremap <F9> <Esc>:Dispatch<CR>a
-	'''
+    [[plugins]]
+    repo = 'tpope/vim-dispatch'
+    on_cmd = ['Make', 'Copen', 'Dispatch', 'FocusDispatch', 'Start', 'Spawn']
+    hook_add = '''
+        nnoremap <F9> :Dispatch<CR>
+        inoremap <F9> <Esc>:Dispatch<CR>a
+    '''
 # }}}
 # Filetype-specific {{{
     # Python {{{
@@ -568,112 +568,112 @@
     # }}}
 # }}}
 # Shougo's glorious plugins {{{
-	[[plugins]]
-	repo = 'Shougo/dein.vim'
+    [[plugins]]
+    repo = 'Shougo/dein.vim'
 
-	[[plugins]]
-	repo = 'arturbalabanov/denite.nvim'
-	on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
-	hook_source = '''
-		call denite#custom#option('default', {
-			\ 'prompt': '❯',
-			\ 'highlight_matched_char': 'Underlined',
-			\ 'highlight_mode_normal': 'CursorLine',
-			\ 'statusline': 0,
-			\ 'vertical_preview': 1,
-			\ })
+    [[plugins]]
+    repo = 'arturbalabanov/denite.nvim'
+    on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
+    hook_source = '''
+        call denite#custom#option('default', {
+            \ 'prompt': '❯',
+            \ 'highlight_matched_char': 'Underlined',
+            \ 'highlight_mode_normal': 'CursorLine',
+            \ 'statusline': 0,
+            \ 'vertical_preview': 1,
+            \ })
 
-		call denite#custom#var('file/rec', 'command', ['scantree.py'])
-		call denite#custom#var('file/rec', 'matchers', ['matcher/substring'])
+        call denite#custom#var('file/rec', 'command', ['scantree.py'])
+        call denite#custom#var('file/rec', 'matchers', ['matcher/substring'])
 
-		call denite#custom#var('grep', 'command', ['rg'])
-		call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
-		call denite#custom#var('grep', 'recursive_opts', [])
-		call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
-		call denite#custom#var('grep', 'separator', ['--'])
+        call denite#custom#var('grep', 'command', ['rg'])
+        call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
+        call denite#custom#var('grep', 'recursive_opts', [])
+        call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+        call denite#custom#var('grep', 'separator', ['--'])
 
-		call denite#custom#var('outline', 'command', ['uctags'])
-		call denite#custom#var('outline', 'ignore_types', ['v', 'x'])
-		call denite#custom#var('outline', 'candidate_columns', [
-			\ {'name': 'type'},
-			\ {'name': 'name', 'max_len': 40, 'use_filter': 1},
-			\ {'name': 'ref', 'use_filter': 1},
-			\ ])
+        call denite#custom#var('outline', 'command', ['uctags'])
+        call denite#custom#var('outline', 'ignore_types', ['v', 'x'])
+        call denite#custom#var('outline', 'candidate_columns', [
+            \ {'name': 'type'},
+            \ {'name': 'name', 'max_len': 40, 'use_filter': 1},
+            \ {'name': 'ref', 'use_filter': 1},
+            \ ])
 
-		call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
+        call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
 
-		call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
-		call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabswitch>', 'noremap')
-		call denite#custom#map('insert', '<C-s>', '<denite:do_action:splitswitch>', 'noremap')
-		call denite#custom#map('insert', '<C-v>', '<denite:do_action:vsplitswitch>', 'noremap')
-		call denite#custom#map('normal', 't', '<denite:do_action:tabswitch>', 'noremap')
-		call denite#custom#map('normal', 's', '<denite:do_action:splitswitch>', 'noremap')
-		call denite#custom#map('normal', 'v', '<denite:do_action:vsplitswitch>', 'noremap')
-		call denite#custom#map('insert', '<Esc>', '<denite:quit>', 'noremap')
-		call denite#custom#map('normal', '<Esc>', '<denite:quit>', 'noremap')
+        call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
+        call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabswitch>', 'noremap')
+        call denite#custom#map('insert', '<C-s>', '<denite:do_action:splitswitch>', 'noremap')
+        call denite#custom#map('insert', '<C-v>', '<denite:do_action:vsplitswitch>', 'noremap')
+        call denite#custom#map('normal', 't', '<denite:do_action:tabswitch>', 'noremap')
+        call denite#custom#map('normal', 's', '<denite:do_action:splitswitch>', 'noremap')
+        call denite#custom#map('normal', 'v', '<denite:do_action:vsplitswitch>', 'noremap')
+        call denite#custom#map('insert', '<Esc>', '<denite:quit>', 'noremap')
+        call denite#custom#map('normal', '<Esc>', '<denite:quit>', 'noremap')
 
-		call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
-		call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
-	'''
-	hook_add = '''
-		nnoremap <silent> <C-p> :<C-u>Denite file/rec -split=floating<CR>
-		nnoremap <silent> <C-h> :<C-u>Denite help<CR>
-		nnoremap <silent> <C-f> :<C-u>Denite -no-empty grep:. -mode=normal<CR>
-		nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
-		cnoremap <silent> <C-r> :<C-u>Denite command_history<CR>
+        call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
+        call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+    '''
+    hook_add = '''
+        nnoremap <silent> <C-p> :<C-u>Denite file/rec -split=floating<CR>
+        nnoremap <silent> <C-h> :<C-u>Denite help<CR>
+        nnoremap <silent> <C-f> :<C-u>Denite -no-empty grep:. -mode=normal<CR>
+        nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
+        cnoremap <silent> <C-r> :<C-u>Denite command_history<CR>
         nnoremap <silent> <C-s> :<C-u>Denite spell -split=floating -mode=normal<CR>
         nnoremap <silent> <C-o> :<C-u>Denite outline -smartcase=true -split=floating<CR>
-	'''
+    '''
 
-	# [[plugins]]
-	# repo = 'rafi/vim-denite-z'
-	# depends = 'denite.nvim'
-	# on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
-	# hook_source = '''
-	#	 call denite#custom#var('z', 'order', 'frecent')
-	# 	call denite#custom#source('z', 'sorters', ['sorter_z'])
-	# '''
+    # [[plugins]]
+    # repo = 'rafi/vim-denite-z'
+    # depends = 'denite.nvim'
+    # on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
+    # hook_source = '''
+    #     call denite#custom#var('z', 'order', 'frecent')
+    #     call denite#custom#source('z', 'sorters', ['sorter_z'])
+    # '''
 
-	[[plugins]]
-	repo = 'Shougo/context_filetype.vim'
+    [[plugins]]
+    repo = 'Shougo/context_filetype.vim'
 
-	[[plugins]]
-	repo = 'Shougo/deoplete.nvim'
-	depends = 'context_filetype.vim'
-	on_i = 1
-	hook_source = '''
-		let g:deoplete#enable_at_startup = 1
-		let g:deoplete#max_menu_width = 80
+    [[plugins]]
+    repo = 'Shougo/deoplete.nvim'
+    depends = 'context_filetype.vim'
+    on_i = 1
+    hook_source = '''
+        let g:deoplete#enable_at_startup = 1
+        let g:deoplete#max_menu_width = 80
 
-		" Auto select the first option
-		set completeopt+=noinsert
+        " Auto select the first option
+        set completeopt+=noinsert
 
-		inoremap <silent><expr> <TAB>
-				\ pumvisible() ? "\<C-n>" :
-				\ <SID>check_back_space() ? "\<TAB>" :
-				\ deoplete#mappings#manual_complete()
+        inoremap <silent><expr> <TAB>
+                \ pumvisible() ? "\<C-n>" :
+                \ <SID>check_back_space() ? "\<TAB>" :
+                \ deoplete#mappings#manual_complete()
 
-		function! s:check_back_space() abort "{{{
-			let col = col('.') - 1
-			return !col || getline('.')[col - 1]  =~ '\s'
-		endfunction "}}}
+        function! s:check_back_space() abort "{{{
+            let col = col('.') - 1
+            return !col || getline('.')[col - 1]  =~ '\s'
+        endfunction "}}}
 
-		" "Auto close the "preview" (dostring) window after the completion is done
-		" augroup go_autoclose_preview
-		" 	autocmd!
-		" 	autocmd CompleteDone * silent! pclose!
-		" 	autocmd InsertLeave * silent! pclose!
-		" augroup END
+        " "Auto close the "preview" (dostring) window after the completion is done
+        " augroup go_autoclose_preview
+        "     autocmd!
+        "     autocmd CompleteDone * silent! pclose!
+        "     autocmd InsertLeave * silent! pclose!
+        " augroup END
 
         " Disable the "preview" (docstring) window after the completion is done
-		set completeopt-=preview
-	'''
+        set completeopt-=preview
+    '''
 
-	[[plugins]]
-	repo = 'Shougo/echodoc.vim'
-	on_event = 'CompleteDone'
-	hook_add = '''
-		set noshowmode  " Don't show --INSERT-- in the command_line
-		let g:echodoc#enable_at_startup = 1
-	'''
+    [[plugins]]
+    repo = 'Shougo/echodoc.vim'
+    on_event = 'CompleteDone'
+    hook_add = '''
+        set noshowmode  " Don't show --INSERT-- in the command_line
+        let g:echodoc#enable_at_startup = 1
+    '''
 # }}}
