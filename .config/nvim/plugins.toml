@@ -70,6 +70,10 @@
 
     [[plugins]]
     repo = 'machakann/vim-sandwich'
+    hook_source = '''
+        " Use the surround mappings, I'm already used to that interface
+        runtime macros/sandwich/keymap/surround.vim
+    '''
 
 	[[plugins]]
 	repo = 'tpope/vim-fugitive'
@@ -83,9 +87,6 @@
 		let g:localvimrc_whitelist = [expand('$HOME/dev/colinbet'), expand('$HOME/side/pgcli')]
 		let g:localvimrc_sandbox=0
     '''
-
-	[[plugins]]
-	repo = 'inkarkat/vim-SyntaxRange'
 
 	[[plugins]]
 	repo = 'jiangmiao/auto-pairs'
@@ -129,6 +130,7 @@
 
 	[[plugins]]
 	repo = 'AndrewRadev/splitjoin.vim'
+    on_cmd = ['SplitjoinSplit', 'SplitjoinJoin']
 	hook_add = '''
 		let g:splitjoin_trailing_comma = 1
 		let g:splitjoin_python_brackets_on_separate_lines = 1
@@ -137,8 +139,8 @@
 		let g:splitjoin_split_mapping = ''
 		let g:splitjoin_join_mapping = ''
 
-		nnoremap sj :SplitjoinSplit<cr>
-		nnoremap sk :SplitjoinJoin<cr>
+		nnoremap <silent> sj :SplitjoinSplit<cr>
+		nnoremap <silent> sk :SplitjoinJoin<cr>
 	'''
 # }}}
 # Dependancies {{{
