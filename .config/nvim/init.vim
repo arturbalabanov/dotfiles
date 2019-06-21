@@ -523,6 +523,14 @@
             au FileType lua setlocal autoindent    " align the new line indent with the previous line
         augroup END
     " }}}
+    " Logfiles {{{
+        augroup ft_log
+            au!
+            " The syntax highlighting is nice but slows down vim tremendously
+            " in log files
+            au FileType log syntax clear
+        augroup END
+    " }}}
     " Nonvim {{{
         augroup nonvim
             au!
