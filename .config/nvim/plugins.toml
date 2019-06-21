@@ -3,6 +3,15 @@
     repo = 'itchyny/vim-cursorword'
 
     [[plugins]]
+    repo = 'tommcdo/vim-exchange'
+    hook_add = '''
+        nmap X <Plug>(Exchange)
+        xmap X <Plug>(Exchange)
+        nmap cX <Plug>(ExchangeClear)
+        nmap XX <Plug>(ExchangeLine)
+    '''
+
+    [[plugins]]
     repo = 'vim-airline/vim-airline'
     hook_add = '''
         set laststatus=2   " Always show the statusline
@@ -324,16 +333,6 @@
         let g:UltiSnipsExpandTrigger = "<C-j>"
         let g:UltiSnipsJumpForwardTrigger = "<C-j>"
         let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
-    '''
-
-    [[plugins]]
-    repo = 'tommcdo/vim-exchange'
-    on_map = [['nx', '<Plug>']]
-    hook_add = '''
-        nmap X <Plug>(Exchange)
-        xmap X <Plug>(Exchange)
-        nmap cX <Plug>(ExchangeClear)
-        nmap XX <Plug>(ExchangeLine)
     '''
 
     [[plugins]]
