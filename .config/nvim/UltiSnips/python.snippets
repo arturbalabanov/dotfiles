@@ -603,5 +603,21 @@ with ${1:db_ctx}.cursor() as cur:
 	$0
 endsnippet
 
+snippet cfa "cur.fetchall" b
+cur.execute("""
+	$1
+"""${2/.+/, /}${2:query_args})
 
+${3:rows}${3/.+/ = /}cur.fetchall()
+$0
+endsnippet
+
+snippet cfo "cur.fetchone" b
+cur.execute("""
+	$1
+"""${2/.+/, /}${2:query_args})
+
+${3:row}${3/.+/ = /}cur.fetchone()
+$0
+endsnippet
 # vim:ft=snippets:

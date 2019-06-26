@@ -172,9 +172,9 @@
         highlight ALEErrorSign ctermfg=red ctermbg=234
         highlight ALEWarningSign ctermfg=yellow ctermbg=234
 
-        " highlight Flashy ctermbg=239
-        highlight Flashy ctermbg=red
+        highlight link Flashy Visual
     " }}}
+
     set number
     augroup numbertoggle
         autocmd!

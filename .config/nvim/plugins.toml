@@ -151,6 +151,12 @@
         nnoremap <silent> sj :SplitjoinSplit<cr>
         nnoremap <silent> sk :SplitjoinJoin<cr>
     '''
+
+    [[plugins]]
+    repo = 'AaronLasseigne/yank-code'
+    hook_add = '''
+        map <leader>y <plug>YankCode
+    '''
 # }}}
 # Dependancies {{{
     [[plugins]]
@@ -275,10 +281,6 @@
     hook_add = '''
         map y <Plug>(operator-flashy)
         nmap Y ^<Plug>(operator-flashy)g_
-    '''
-    hook_source = '''
-        " The same as Visual
-        highlight Flashy ctermbg=237 guibg=#373b41
     '''
 
     [[plugins]]
