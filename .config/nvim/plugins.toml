@@ -79,7 +79,7 @@
 
     [[plugins]]
     repo = 'machakann/vim-sandwich'
-    hook_source = '''
+    hook_add = '''
         " Use the surround mappings, I'm already used to that interface
         runtime macros/sandwich/keymap/surround.vim
     '''
