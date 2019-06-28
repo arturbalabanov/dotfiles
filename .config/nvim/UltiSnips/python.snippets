@@ -577,7 +577,7 @@ class Test${1:Class}(${2:unittest.TestCase}):
 endsnippet
 
 snippet pr "print" b
-print($1)$0
+print(${0:${VISUAL}})
 endsnippet
 
 snippet ref "regex flags"
@@ -587,10 +587,9 @@ endsnippet
 snippet debug "simple pring debug"
 print('\n' * 10)
 print('@' * 20)
-print($1)
+print(${0:${VISUAL}})
 print('@' * 20)
 print('\n' * 10)
-$0
 endsnippet
 
 snippet bp "Breakpoint"
@@ -600,12 +599,12 @@ endsnippet
 
 snippet cur "DB cursor" b
 with ${1:db_ctx}.cursor() as cur:
-	$0
+	${0:${VISUAL}}
 endsnippet
 
 snippet cfa "cur.fetchall" b
 cur.execute("""
-	$1
+	${1:${VISUAL}}
 """${2/.+/, /}${2:query_args})
 
 ${3:rows}${3/.+/ = /}cur.fetchall()
@@ -614,7 +613,7 @@ endsnippet
 
 snippet cfo "cur.fetchone" b
 cur.execute("""
-	$1
+	${1:${VISUAL}}
 """${2/.+/, /}${2:query_args})
 
 ${3:row}${3/.+/ = /}cur.fetchone()
