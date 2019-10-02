@@ -32,7 +32,7 @@
         let g:airline#extensions#ale#error_symbol = '✗'
         let g:airline#extensions#ale#warning_symbol = ''
 
-        let g:airline#extensions#branch#enabled = 1
+        let g:airline#extensions#branch#enabled = 0
 
         if !exists('g:airline_symbols')
             let g:airline_symbols = {}
@@ -42,8 +42,10 @@
 
         " Sections
         let g:airline_skip_empty_sections = 1
+        " No git info
+        let g:airline_section_b = ''
+        " No file encoding
         let g:airline_section_y = ''
-        let g:airline_section_z = ''
     '''
 
     [[plugins]]
@@ -392,9 +394,11 @@
             let g:jedi#smart_auto_mappings = 0
         '''
 
-        [[plugins]]
-        repo = 'ColinKennedy/vim-python-function-expander'
-        on_ft = 'python'
+        # When editing other filetypes, after the plugin has been activated,
+        # a lot of errors appear every time an edit has been made
+        # [[plugins]]
+        # repo = 'ColinKennedy/vim-python-function-expander'
+        # on_ft = 'python'
 
         [[plugins]]
         repo = 'zchee/deoplete-jedi'

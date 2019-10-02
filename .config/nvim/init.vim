@@ -51,7 +51,6 @@
 
     if dein#load_state('~/.cache/dein')
         call dein#begin('~/.cache/dein')
-        " TODO: Extract that into a variable
         call dein#load_toml(expand('~/.config/nvim/plugins.toml'))
         call dein#end()
         call dein#save_state()
@@ -86,7 +85,6 @@
     cnoremap <C-z> <C-^>
 
     " Select the whole line without the indentation. Useful for python code...
-    " TODO: Don't enable this in NERD Tree
     nnoremap vv ^vg_
 
     " Paste in the next line.
@@ -151,6 +149,9 @@
 
     " Fix broken syntax highlighting
     nnoremap <F12> :syntax sync fromstart<CR>
+
+    " Open the directory of the current file in the default file manager
+    nnoremap <silent> <leader>od :silent !xdg-open "%:p:h"<CR>
 " }}}
 " Interface {{{
     " Colors {{{
@@ -175,12 +176,14 @@
         highlight link Flashy Visual
     " }}}
 
-    set number
-    augroup numbertoggle
-        autocmd!
-        autocmd BufEnter,FocusGained * if expand('%:t:r') !~ '^_*\(NERD_tree\|Tagbar\|Gundo\)' | setlocal number | endif
-        autocmd BufLeave,FocusLost * setlocal nonumber
-    augroup END
+    set nonumber
+
+    " set number
+    " augroup numbertoggle
+    "     autocmd!
+    "     autocmd BufEnter,FocusGained * if expand('%:t:r') !~ '^_*\(NERD_tree\|Tagbar\|Gundo\)' | setlocal number | endif
+    "     autocmd BufLeave,FocusLost * setlocal nonumber
+    " augroup END
 
     set ruler
     set cursorline

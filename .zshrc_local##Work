@@ -14,19 +14,27 @@ function venv {
 }
 
 function pgssh {
-	if [[ "$#" -ne 2 ]]; then
-		echo "Usage: $0 <container> <db name>"
+	if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
+		echo "Usage: $0 <db name> <env> [-w]"
 		return 1
 	fi
 
-	container="$1"
-	db_name="$2"
+	db_name="$1"
+	env="$2"
+	flags="$3"
 
-	if [[ $container == 'live' ]]; then
+	if [[ $env == 'live' ]]; then
 		container="${db_name}db"
-		username='readonly'
-		password='r3ad0nly'
+
+		if [[ $flags == '-w' ]]; then
+			username='colin'
+			password='c0l1n'
+		else
+			username='readonly'
+			password='r3ad0nly'
+		fi
 	else
+		container="$env"
 		username='colin'
 		password='c0l1n'
 	fi
@@ -37,46 +45,24 @@ function pgssh {
 
 function logssh {
 	if [[ "$#" -lt 2 ]]; then
-		echo "Usage: $0 <container> <service> [<editor>]"
+		echo "Usage: $0 <service> <env> [<journalctl_args>]"
 		return 1
 	fi
 
-	orig_dir=$(pwd)
+	service="$1"
+	env="$2"
+	#
+	# The printf is quite important -- it deals with whitespace in the arguments
+	# ref: https://stackoverflow.com/q/1668649/
+	journalctl_args=$(printf " %q" ${@:3})
 
-	container="$1"
-	service="$2"
-
-	if [[ "$#" -eq 3 ]]; then
-		editor="$3"
+	if [[ $env == 'live' ]]; then
+		container="$service.mustard"
 	else
-		editor="$EDITOR"
+		container="$env"
 	fi
 
-	echo -n "Remote sudo password: "
-	read -s sudo_password
-	echo
-
-	remote_command="sudo journalctl -u $service"
-
-	echo $sudo_password | ssh -tt $container '$remote_command'
-
-	# logs_dir=$(mktemp -d)
-	# combined_log=$(mktemp)
-    #
-	# scp $USER@$container:/var/log/colin/$service.log* $logs_dir
-	#
-	# cd $logs_dir
-	# for gz_log in *.gz; do
-	# 	gunzip $gz_log
-	# done
-	#
-	# cat $(ls | sort -n -t '.' -k 3 -r) | sed 's:#012:\n:g' > $combined_log
-    #
-	# cd $orig_dir
-	# rm -r $logs_dir
-    #
-	# $editor $combined_log
-	# rm $combined_log
+	ssh -t $container "sudo journalctl -u $service.service $journalctl_args"
 }
 
 function jira-links {
@@ -128,7 +114,22 @@ function get-mr {
 }
 
 function remoteedit {
-	$EDITOR scp://$USER@$1/$2
+	if [[ "$#" -ne 2 ]]; then
+		echo "Usage: $0 <filepath> <container>"
+		return 1
+	fi
+
+	filepath="$1"
+	container="$2"
+	editor_flags=""
+
+	# If relative path, assume we want to edit a file in the colinbet repo
+	if [[ $filepath =~ '^(\w{1,})/' ]]; then
+		filepath="/home/colin/colinbet/${match[1]}/$filepath"
+		editor_flags=+'source ~/dev/colinbet/.lvimrc | exe "set ft=" . &ft'
+	fi
+
+	$EDITOR $editor_flags "scp://$USER@$container/$filepath"
 }
 
 alias re=remoteedit
