@@ -674,11 +674,15 @@
         set completeopt-=preview
     '''
 
-    [[plugins]]
-    repo = 'Shougo/echodoc.vim'
-    on_event = 'CompleteDone'
-    hook_add = '''
-        set noshowmode  " Don't show --INSERT-- in the command_line
-        let g:echodoc#enable_at_startup = 1
-    '''
+    # It's buggy with autocompletion in Python (e.g. when setting the arguments
+    # of argparse methods). I don't use it that much, so I'll just disable it
+    # for now.
+    #
+    # [[plugins]]
+    # repo = 'Shougo/echodoc.vim'
+    # on_event = 'CompleteDone'
+    # hook_add = '''
+    #     set noshowmode  " Don't show --INSERT-- in the command_line
+    #     let g:echodoc#enable_at_startup = 1
+    # '''
 # }}}
