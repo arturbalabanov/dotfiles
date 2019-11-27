@@ -119,7 +119,7 @@ function remoteedit {
 alias re=remoteedit
 
 function gl-review {
-	gitlab-tool --token="$(pass show gitlab-private-token)" review --team=plum $@
+	gitlab-tool --token="$(pass show gitlab-private-token)" review --team=plum --no-wip --no-reviewer Artur $@
 }
 
 function py2.7 {
