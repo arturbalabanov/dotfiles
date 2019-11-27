@@ -1,3 +1,5 @@
+# vim: ft=zsh
+
 alias ls='ls --color=auto'
 alias ll='ls -lh'
 alias la='ll -a'
@@ -42,6 +44,26 @@ function mkcd() { mkdir -p "$@" && cd "$_"; }
 function yadm_update() {
 	local commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
 	yadm commit -am "$commit_msg" && yadm push;
+}
+
+unalias gd
+function gd() {
+	# Stolen from: https://stackoverflow.com/a/4864668/2456167
+	
+	pager=$(git config --get core.pager)
+	if [[ -z "$pager" ]]; then
+		pager=less
+	fi
+
+	if [[ "$#" -eq 0 ]]; then
+		(
+			git diff --color
+			git ls-files --others --exclude-standard |
+				while read -r i; do git diff --color -- /dev/null "$i"; done
+		) | $pager
+	else
+		git diff "$@"
+	fi
 }
 
 # ptpython -> bpython -> ipython -> python

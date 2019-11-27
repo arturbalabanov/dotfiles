@@ -152,6 +152,30 @@
 
     " Open the directory of the current file in the default file manager
     nnoremap <silent> <leader>od :silent !xdg-open "%:p:h"<CR>
+
+    " ref: https://github.com/christoomey/vim-tmux-navigator/blob/master/plugin/tmux_navigator.vim
+    function! MyTmuxAwareNavigate(direction) " {{{
+        let nr = winnr()
+        execute 'wincmd ' . a:direction
+
+        if nr == winnr() && !empty($TMUX)
+            let move_pane_dir_args = {
+                \ "h": "-L M-h",
+                \ "j": "-D M-j",
+                \ "k": "-U M-k",
+                \ "l": "-R M-l"
+            \ }[a:direction]
+
+            call system("~/scripts/move-pane.sh " . move_pane_dir_args . " --ignore_vim")
+        endif
+    endfunction " }}}
+
+    nnoremap <silent> <M-h> :call MyTmuxAwareNavigate('h')<CR>
+    nnoremap <silent> <M-j> :call MyTmuxAwareNavigate('j')<CR>
+    nnoremap <silent> <M-k> :call MyTmuxAwareNavigate('k')<CR>
+    nnoremap <silent> <M-l> :call MyTmuxAwareNavigate('l')<CR>
+
+    nnoremap <silent> <F1> :set number!<CR>
 " }}}
 " Interface {{{
     " Colors {{{

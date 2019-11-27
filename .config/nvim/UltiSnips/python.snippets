@@ -163,6 +163,18 @@ endglobal
 # Class & Special Method Name Snippets #
 ########################################
 
+snippet cl "simple class" b
+class ${1:ClassName}:
+	def __init__(self, $2):`!p
+snip.rv = ""
+snip >> 2
+
+for arg in get_args(t[2]):
+	snip += "self.{0} = {0}".format(arg)
+`
+
+endsnippet
+
 snippet class "class with docstrings" b
 class ${1:MyClass}(${2:object}):
 

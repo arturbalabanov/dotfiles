@@ -119,6 +119,8 @@ bindkey '^E' push-line
 bindkey '^N' edit-command-line
 bindkey '^H' run-help 
 
+bindkey -M vicmd '^N' edit-command-line
+
 # Ctrl-z -> If there is a suspended process, bring it to foreground
 fancy-ctrl-z () {
   if [[ $#BUFFER -eq 0 ]]; then
@@ -145,6 +147,7 @@ zle -N prepend-sudo
 bindkey "^s" prepend-sudo
 
 export PATH=$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin
+export MANPATH="$MANPATH:$HOME/.local/man"
 
 export PATH="$PATH:$HOME/node_modules/.bin"
 

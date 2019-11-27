@@ -17,29 +17,31 @@
         set laststatus=2   " Always show the statusline
 
         let g:airline_powerline_fonts = 1
+        
+        let g:airline#extensions#unicode#enabled = 0
 
         let g:airline#extensions#whitespace#enabled = 0
-
+        
         let g:airline#extensions#tabline#enabled = 1
         let g:airline#extensions#tabline#show_tab_nr = 0
         let g:airline#extensions#tabline#show_tab_count = 0
         let g:airline#extensions#tabline#show_tab_type = 0
         let g:airline#extensions#tabline#show_buffers = 0
-
+        
         let g:airline#extensions#bufferline#enabled = 0
-
+        
         let g:airline#extensions#ale#enabled = 1
         let g:airline#extensions#ale#error_symbol = '✗'
         let g:airline#extensions#ale#warning_symbol = ''
-
+        
         let g:airline#extensions#branch#enabled = 0
-
+        
         if !exists('g:airline_symbols')
             let g:airline_symbols = {}
         endif
-
+        
         let g:airline_exclude_preview = 1
-
+        
         " Sections
         let g:airline_skip_empty_sections = 1
         " No git info
@@ -95,7 +97,7 @@
         " TODO: Fix these hardcoded paths. Ideally every project should have
         " the ability to have a local vimrc
 
-        let g:localvimrc_whitelist = [expand('$HOME/dev/colinbet'), expand('$HOME/side/pgcli')]
+        let g:localvimrc_whitelist = [expand('$HOME/dev'), expand('$HOME/side/pgcli')]
         let g:localvimrc_sandbox=0
     '''
 
@@ -114,14 +116,19 @@
         let g:ale_sign_column_always = 1
         let g:ale_sign_error = '✗'
         let g:ale_sign_warning = ''
-
+        
         let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
-
+        
         if &diff
             let g:ale_enabled = 0
         else
             let g:ale_enabled = 1
         endif
+
+        let g:ale_linters = {
+            \ 'python': ['flake8'],
+            \ 'go': ['staticcheck', 'govet', 'gofmt', 'goimports', 'trim_whitespace', 'remove_trailing_lines']
+            \ }
     '''
 
     [[plugins]]
@@ -205,31 +212,31 @@
         let g:NERDTreeRespectWildIgnore=1
     '''
 
-    [[plugins]]
-    repo = 'christoomey/vim-tmux-navigator'
-    on_cmd = [
-        'TmuxNavigateLeft',
-        'TmuxNavigateRight',
-        'TmuxNavigateUp',
-        'TmuxNavigateDown',
-        'TmuxNavigatePrevious'
-    ]
-    hook_add = '''
-        nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
-        nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
-        nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
-        nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
-    '''
-    hook_source = '''
-        let g:tmux_navigator_no_mappings = 1
-        let g:tmux_navigator_disable_when_zoomed = 1
-    '''
+    # [[plugins]]
+    # repo = 'christoomey/vim-tmux-navigator'
+    # on_cmd = [
+    #     'TmuxNavigateLeft',
+    #     'TmuxNavigateRight',
+    #     'TmuxNavigateUp',
+    #     'TmuxNavigateDown',
+    #     'TmuxNavigatePrevious'
+    # ]
+    # hook_add = '''
+    #     nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
+    #     nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
+    #     nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
+    #     nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
+    # '''
+    # hook_source = '''
+    #     let g:tmux_navigator_no_mappings = 1
+    #     let g:tmux_navigator_disable_when_zoomed = 1
+    # '''
 
     [[plugins]]
     repo = 'sjl/gundo.vim'
     on_cmd = 'GundoToggle'
     hook_add = '''
-        nnoremap <F1> :GundoToggle<CR>
+        nnoremap <F4> :GundoToggle<CR>
     '''
     hook_source = '''
         let g:gundo_tree_statusline = "Gundo"
@@ -333,7 +340,7 @@
     on_cmd = ['UltiSnipsEdit', 'UltiSnipsAddFiletypes']
     hook_add = '''
         let g:UltiSnipsUsePythonVersion = 3 
-        let g:UltiSnipsEditSplit="vertical"
+        let g:UltiSnipsEditSplit = "context"
         let g:UltiSnipsExpandTrigger = "<C-j>"
         let g:UltiSnipsJumpForwardTrigger = "<C-j>"
         let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
@@ -366,6 +373,29 @@
         nnoremap <F9> :Dispatch<CR>
         inoremap <F9> <Esc>:Dispatch<CR>a
     '''
+
+    [[plugins]]
+    repo = 'chrisbra/unicode.vim'
+    on_cmd = [
+        'Digraphs',
+        'UnicodeSearch',
+        'UnicodeSearch!',
+        'UnicodeName',
+        'UnicodeTable',
+        'DownloadUnicode',
+        'UnicodeCache'
+    ]
+    on_map = [
+        ['nx', '<C-X><C-G>'],
+        ['nx', '<C-X><C-Z>'],
+        ['nx', '<F4>']
+    ]
+    on_func = [
+        'unicode#FindUnicodeBy',
+        'unicode#FindDigraphBy',
+        'unicode#Digraph',
+        'unicode#UnicodeName'
+    ]
 # }}}
 # Filetype-specific {{{
     # Python {{{
@@ -452,11 +482,23 @@
             " Disable default mapping for showing documentation
             let g:go_doc_keywordprg_enabled = 0
 
+            " Disable default mapping for go to definition
+            let g:go_def_mapping_enabled = 0
+
             " Disable the quickfix error for linting
             let g:go_fmt_fail_silently = 1
+
+            " Keep folds as they are on write (after go_fmt does its job)
+            " ref: https://github.com/fatih/vim-go/issues/502
+            let g:go_fmt_experimental = 1
         '''
         hook_source = '''
-            nnoremap <buffer> <C-d> :GoDoc<CR>
+            augroup go_mappings
+                autocmd!
+                autocmd FileType go nnoremap <buffer> <C-d> :GoDoc<CR>
+                autocmd FileType go nnoremap <buffer> <C-S-d> :GoDocBrowser<CR>
+                autocmd FileType go nmap <buffer> gd <Plug>(go-def-tab)
+            augroup END
         '''
 
         [[plugins]]
@@ -534,6 +576,11 @@
         [[plugins]]
         repo = 'plasticboy/vim-markdown'
         on_ft = 'markdown'
+        hook_add = '''
+            " The folding works just fine, however it's triggered on save and that's annoying
+            " Ideally (TODO) I should keep it but fix this behaviour
+            let g:vim_markdown_folding_disabled = 1
+        '''
     # }}}
     # ReStructuredText {{{
         # TODO: Add build instructions
@@ -677,12 +724,12 @@
     # It's buggy with autocompletion in Python (e.g. when setting the arguments
     # of argparse methods). I don't use it that much, so I'll just disable it
     # for now.
-    #
-    # [[plugins]]
-    # repo = 'Shougo/echodoc.vim'
-    # on_event = 'CompleteDone'
-    # hook_add = '''
-    #     set noshowmode  " Don't show --INSERT-- in the command_line
-    #     let g:echodoc#enable_at_startup = 1
-    # '''
+
+    [[plugins]]
+    repo = 'Shougo/echodoc.vim'
+    on_event = 'CompleteDone'
+    hook_add = '''
+        set noshowmode  " Don't show --INSERT-- in the command_line
+        let g:echodoc#enable_at_startup = 1
+    '''
 # }}}

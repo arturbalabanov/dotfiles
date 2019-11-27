@@ -97,22 +97,6 @@ function jira-links {
 	done
 }
 
-function get-mr {
-	GITLAB_API_BASE_URL="https://gitlab.mustardsystems.com/api/v4"
-	GITLAB_PRIVATE_TOKEN=$(pass show gitlab-private-token)
-
-	commit_hash=$1
-
-	function _http_get {
-		curl --header "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN" $1 2>/dev/null | jq -r $2
-	}
-
-	colinbet_id=$(_http_get "$GITLAB_API_BASE_URL/projects?search=colinbet" '.[].id')
-
-	mr_urls=$(_http_get "$GITLAB_API_BASE_URL/projects/$colinbet_id/repository/commits/$commit_hash/merge_requests" '.[].web_url')
-	echo $mr_urls
-}
-
 function remoteedit {
 	if [[ "$#" -ne 2 ]]; then
 		echo "Usage: $0 <filepath> <container>"
@@ -133,3 +117,11 @@ function remoteedit {
 }
 
 alias re=remoteedit
+
+function gl-review {
+	gitlab-tool --token="$(pass show gitlab-private-token)" review --team=plum $@
+}
+
+function py2.7 {
+	( cd ~/side/py2.7 && source venv/bin/activate && ptpython )
+}

@@ -101,7 +101,7 @@ prompt_git() {
   repo_path=$(git rev-parse --git-dir 2>/dev/null)
 
   if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-    ref=$(git tag --points-at HEAD 2> /dev/null)
+    ref=$(git tag --points-at HEAD 2> /dev/null | paste -sd ' ' - | sed 's/ /  /g')
 		if [[ -z $ref ]]; then
 			ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
 		else
