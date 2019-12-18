@@ -122,6 +122,6 @@ function gl-review {
 	gitlab-tool --token="$(pass show gitlab-private-token)" review --team=plum --no-wip --no-reviewer Artur $@
 }
 
-function py2.7 {
-	( cd ~/side/py2.7 && source venv/bin/activate && ptpython )
+function py {
+	( cd ~/side/"py$1" && source venv/bin/activate && ptpython )
 }
