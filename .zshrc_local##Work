@@ -51,7 +51,7 @@ function logssh {
 
 	service="$1"
 	env="$2"
-	#
+
 	# The printf is quite important -- it deals with whitespace in the arguments
 	# ref: https://stackoverflow.com/q/1668649/
 	journalctl_args=$(printf " %q" ${@:3})

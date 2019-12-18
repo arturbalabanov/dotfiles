@@ -3,28 +3,28 @@
 priority -50
 
 global !p
-def _pascal_to_snake_repl(match):
-	uppercase, following_char = match.groups()
-
-	if following_char is None:
-		# This is the last group, which means that the string ends in an
-		# upper-case word
-
-		return '_' + uppercase.lower()
-
-	words = uppercase
-
-	if len(uppercase) > 1:
-		# This is not a capitalized word but an uppercased one. However, the
-		# next word will also start with a capital letter, so we need to
-		# separate them here
-
-		words = uppercase[:-1] + '_' + uppercase[-1]
-
-	return '_' + words.lower() + following_char
-
 _pascal_to_snake_re = re.compile(r'([A-Z1-9]+)([^A-Z1-9])?')
 def pascal_to_snake(string):
+	def _pascal_to_snake_repl(match):
+		uppercase, following_char = match.groups()
+
+		if following_char is None:
+			# This is the last group, which means that the string ends in an
+			# upper-case word
+
+			return '_' + uppercase.lower()
+
+		words = uppercase
+
+		if len(uppercase) > 1:
+			# This is not a capitalized word but an uppercased one. However, the
+			# next word will also start with a capital letter, so we need to
+			# separate them here
+
+			words = uppercase[:-1] + '_' + uppercase[-1]
+
+		return '_' + words.lower() + following_char
+
 	snake_cased_string = _pascal_to_snake_re.sub(_pascal_to_snake_repl, string)
 
 	if snake_cased_string.startswith('_'):
@@ -67,7 +67,11 @@ _in_func_or_meth_re = re.compile(r'''
 	^\s*func
 	\s*(?P<receiver>\(\s*\w+\s+[\w\[\]\*\.]+\s*\))?
 	\s*(?P<name>[\w_]+)\s*
-	\s*\((?P<args>(?:\s*\w+\s+[\w\[\]\*\.]+,?\s*)*)\)
+	\s*\((?P<args>(?:
+		\s*\w+                      # Arg name
+		(?:\s+[\w\[\]\{\}\*\.]+)?   # Arg type (optional because multiple args can have the same type)
+		,?\s*
+	)*)\)
 	\s*(?P<returns>\(?
 		(?:\s*(?:\w+\s+)?[\w\[\]\*\.]+,?\s*)*
 	\)?)?

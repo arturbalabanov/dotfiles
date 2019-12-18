@@ -1,5 +1,7 @@
 # vim: ft=zsh
 
+distro=$(lsb_release -i | sed 's/Distributor ID:\s*//')
+
 alias ls='ls --color=auto'
 alias ll='ls -lh'
 alias la='ll -a'
@@ -26,6 +28,12 @@ alias rm='rm -rf'
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
 alias cb-copy="xclip -selection clipboard"
 
+if [[ $distro == "Ubuntu" ]]; then
+	alias yank="yank-cli -- xclip -selection clipboard"
+else
+	alias yank="yank -- xclip -selection clipboard"
+fi
+
 if type thefuck > /dev/null; then
 	eval $(thefuck --alias)
 else
@@ -49,6 +57,13 @@ function yadm_update() {
 unalias gd
 function gd() {
 	# Stolen from: https://stackoverflow.com/a/4864668/2456167
+
+	inside_git_repo=$(git rev-parse --is-inside-work-tree 2>/dev/null)
+
+	if [[ ! $inside_git_repo ]]; then 
+		echo "error: not inside a git repo" >&2
+		return 1
+	fi
 	
 	pager=$(git config --get core.pager)
 	if [[ -z "$pager" ]]; then
