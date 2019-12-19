@@ -80,3 +80,7 @@ function gd() {
 		git diff "$@"
 	fi
 }
+
+function venv {
+    source venv/bin/activate && export PYTHONPATH=`pwd`;
+}

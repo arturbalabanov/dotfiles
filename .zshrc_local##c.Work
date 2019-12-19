@@ -9,10 +9,6 @@ alias pgcli='~/side/pgcli/venv/bin/pgcli'
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
-function venv {
-    source venv/bin/activate && export PYTHONPATH=`pwd`;
-}
-
 function pgssh {
 	if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
 		echo "Usage: $0 <db name> <env> [-w]"
