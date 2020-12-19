@@ -1,1 +1,3 @@
-URxvt*font: xft:Hack NF:size=11
+URxvt*font: xft:Hack Nerd Font Mono:size=12, xft:Inconsolata:size=12:minspace=False
+
+
