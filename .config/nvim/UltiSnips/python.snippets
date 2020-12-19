@@ -541,15 +541,21 @@ endsnippet
 #####################
 
 snippet pdb "Set PDB breakpoint" b
+# fmt: off
 import pdb; pdb.set_trace()
+# fmt: on
 endsnippet
 
 snippet ipdb "Set IPDB breakpoint" b
+# fmt: off
 import ipdb; ipdb.set_trace()
+# fmt: on
 endsnippet
 
 snippet pudb "Set PUDB breakpoint" b
+# fmt: off
 import pudb; pudb.set_trace()
+# fmt: on
 endsnippet
 
 snippet ae "Assert equal" b
@@ -605,7 +611,7 @@ print('\n' * 10)
 endsnippet
 
 snippet bp "Breakpoint"
-import pdb; pdb.set_trace()
+breakpoint()
 endsnippet
 
 
@@ -631,4 +637,14 @@ cur.execute("""
 ${3:row}${3/.+/ = /}cur.fetchone()
 $0
 endsnippet
+
+# -------------------------------------------------------------------------
+# Section name
+# -------------------------------------------------------------------------
+snippet /sec(tion)?/ "A comment to separate functions/classes" rb
+# -------------------------------------------------------------------------
+# $1
+# -------------------------------------------------------------------------
+endsnippet
+
 # vim:ft=snippets:

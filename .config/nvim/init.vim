@@ -36,7 +36,7 @@
     set scrolloff=5
 
     " Ignore these files in autocomplition, NERDTree and Denite
-    set wildignore+=*.pyc,*.pyo,*.so,*.o,__pycache__,.git,.coverage
+    set wildignore+=*.pyc,*.pyo,*.so,*.o,__pycache__,.git,.coverage,**/node_modules/**,.idea,*.png,*.jpeg,*.pdf,*.svg,**/__vcr_cassettes__/**
 
     set nobackup                     " disable backups
     set noswapfile                   " it's 2015, NeoVim.
@@ -304,6 +304,8 @@
         \ 'tr': "~/.tmux.conf",
         \ 'tc': "~/.tmux-powerlinerc",
         \ 'tt': "~/.tmux/tmux-powerline/themes/" . tmux_theme_name . ".sh",
+        \ 'xr': "~/.Xresources",
+        \ 'xl': "~/.Xresources_local",
         \ }
     
     for [mapping, file_path] in items(quick_edit_files)
@@ -426,6 +428,7 @@
             au FileType python setlocal shiftround    " round indent to multiple of 'shiftwidth'
             au FileType python setlocal autoindent    " align the new line indent with the previous line
             au FileType python setlocal colorcolumn=121
+            au FileType python setlocal foldnestmax=2
         augroup END
     " }}}
     " TOML {{{

@@ -54,9 +54,72 @@ NORMAL_MODE_INDICATOR="%{$fg_bold[green]%}-%{$fg[green]%}- NORMAL --%{$reset_col
 INSERT_MODE_INDICATOR="%{$fg_bold[blue]%}-%{$fg[blue]%}- INSERT --%{$reset_color%}"
 VISUAL_MODE_INDICATOR="%{$fg_bold[magenta]%}-%{$fg[magenta]%}- VISUAL --%{$reset_color%}"
 
-function vim_mode_prompt_info() {
-  echo "${${${KEYMAP/vicmd/$NORMAL_MODE_INDICATOR}/(main|viins)/$INSERT_MODE_INDICATOR}/(vivis)/$VISUAL_MODE_INDICATOR}"
+function _set_cursor_shape {
+	shape="$1"
+
+	case $shape in
+		block)
+			echo -ne '\e[2 q'
+			;;
+		block_blink)
+			echo -ne '\e[1 q'
+			;;
+		underscore)
+			echo -ne '\e[4 q'
+			;;
+		underscore_blink)
+			echo -ne '\e[3 q'
+			;;
+		line)
+			echo -ne '\e[6 q'
+			;;
+		line_blink)
+			echo -ne '\e[6 q'
+			;;
+		*)
+			return 1
+			;;
+	esac
 }
+
+function _vim_mode_prompt_info() {
+	case $KEYMAP in
+		vicmd)
+			echo "$NORMAL_MODE_INDICATOR"
+			;;
+		viins||main)
+			echo "$INSERT_MODE_INDICATOR"
+			;;
+		vivis)
+			echo "$VISUAL_MODE_INDICATOR"
+			;;
+	esac
+}
+
+function zle-keymap-select zle-line-init {
+	case $KEYMAP in
+		vicmd)
+			_set_cursor_shape "block"
+			;;
+		viins||main)
+			_set_cursor_shape "line"
+			;;
+		vivis)
+			_set_cursor_shape "block"
+			;;
+	esac
+
+	zle reset-prompt
+	zle -R
+}
+
+function zle-line-finish {
+	_set_cursor_shape "block"
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select
+zle -N zle-line-finish
 
 RPS1='$(vim_mode_prompt_info)'
 

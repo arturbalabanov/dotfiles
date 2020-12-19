@@ -11,7 +11,7 @@ alias vi='nvim'
 alias vim='nvim'
 alias s='sudo'
 alias se='sudoedit'
-alias pac='pacaur'
+alias pac='pikaur'
 alias open='xdg-open'
 alias wget='wget -c'
 alias lynx='lynx -lss=~/.lynx.lss'
@@ -42,7 +42,7 @@ fi
 
 # Global aliases are a zsh-specific feature
 if [ -n "$ZSH_VERSION" ]; then
-	alias -g G='| grep'
+	alias -g G='| grep -i'
 	alias -g L='| less'
 	alias -g H='| head'
 	alias -g T='| tail'
@@ -82,5 +82,6 @@ function gd() {
 }
 
 function venv {
-    source venv/bin/activate && export PYTHONPATH=`pwd`;
+	venv_path=$(poetry env info -p)
+	source $venv_path/bin/activate
 }
