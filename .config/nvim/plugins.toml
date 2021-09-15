@@ -129,6 +129,15 @@
             \ 'python': ['flake8'],
             \ 'go': ['staticcheck', 'govet', 'gofmt', 'goimports', 'trim_whitespace', 'remove_trailing_lines']
             \ }
+
+        let g:ale_fixers = {
+            \ 'python': ['isort', 'black'],
+            \ }
+
+        let g:ale_fix_on_save = 1
+
+        nnoremap <silent> <C-S-j> :<C-u>ALENext<CR>
+        nnoremap <silent> <C-S-k> :<C-u>ALEPrevious<CR>
     '''
 
     [[plugins]]
@@ -396,6 +405,17 @@
         'unicode#Digraph',
         'unicode#UnicodeName'
     ]
+
+
+    [[plugins]]
+    repo = 'rhysd/git-messenger.vim'
+    on_cmd = [
+        'GitMessenger'
+    ]
+    on_map = [['ox', '<Plug>']]
+    hook_add = '''
+        nmap <Leader>gm <Plug>(git-messenger)
+    '''
 # }}}
 # Filetype-specific {{{
     # Python {{{

@@ -3,12 +3,16 @@ export DEFAULT_USER="artur"
 
 alias -g SU='--snapshot-update'
 alias -g VU='--vcr-renew'
+alias -g NW='-p no:warnings'
+alias -g NH='--no-headless'
 
 function repl {
 	if [[ "$#" -lt 2 ]]; then
-		echo "usage: $0 <shell> <env> [db_name]" >&2
+		echo "usage: $0 <shell> <env> [service=platform]" >&2
 		return 1
 	fi
+
+	# TODO: Add Atlas
 
 	shell="$1"
 	env="$2"
@@ -20,13 +24,16 @@ function repl {
 		db_url="$(pass show staging_db_url)/staging"
 		aws_access_key_id="$(pass show staging_aws_access_key_id)"
 		aws_secret_access_key="$(pass show staging_aws_secret_access_key)"
-	elif [[ $env == "review" ]]; then
-		db_name="$3"
+	elif [[ $env =~ "^(kube|review)\-" ]]; then
+		# Review instance, the platofrm DB name is the same as the container
+		# (environment)
+		db_name="$2"
+
 		db_url="$(pass show staging_db_url)/$db_name"
 		aws_access_key_id="$(pass show staging_aws_access_key_id)"
 		aws_secret_access_key="$(pass show staging_aws_secret_access_key)"
 	elif [[ $env == "prod" ]]; then
-		db_url="$(pass show prod_db_url)/alere_prod"
+		db_url="$(pass show prod_db_url)/platform"
 		aws_access_key_id="$(pass show prod_aws_access_key_id)"
 		aws_secret_access_key="$(pass show prod_aws_secret_access_key)"
 	else

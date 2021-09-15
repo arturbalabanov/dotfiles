@@ -39,7 +39,7 @@ CURRENT_BG='NONE'
   # what font the user is viewing this source code in. Do not replace the
   # escape sequence with a single literal character.
   # Do not change this! Do not make it '\u2b80'; that is the old, wrong code point.
-  SEGMENT_FORWARD_SEPERATOR=$'\ue0b0'
+  SEGMENT_FORWARD_SEPARATOR=$'\ue0b0'
   SUBSEGMENT_FORWARD_SEPARATOR=$'\ue0b1'
 
   SEGMENT_BACKWARD_SEPARATOR=$'\ue0b2'
@@ -55,7 +55,7 @@ prompt_segment() {
   [[ -n $2 ]] && fg="%F{$2}" || fg="%f"
 	
   if [[ $CURRENT_BG != 'NONE' && $1 != $CURRENT_BG ]]; then
-    echo -n " %{$bg%F{$CURRENT_BG}%}$SEGMENT_FORWARD_SEPERATOR%{$fg%} "
+    echo -n " %{$bg%F{$CURRENT_BG}%}$SEGMENT_FORWARD_SEPARATOR%{$fg%} "
   else
     echo -n "%{$bg%}%{$fg%} "
   fi
@@ -65,13 +65,13 @@ prompt_segment() {
 }
 
 prompt_subsegment() {
-  [[ -n $1 ]] && echo -n "$SUBSEGMENT_FORWARD_SEPERATOR $1"
+  [[ -n $1 ]] && echo -n "$SUBSEGMENT_FORWARD_SEPARATOR $1"
 }
 
 # End the prompt, closing any open segments
 prompt_end() {
   if [[ -n $CURRENT_BG ]]; then
-    echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_FORWARD_SEPERATOR"
+    echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_FORWARD_SEPARATOR"
   else
     echo -n "%{%k%}"
   fi
@@ -210,7 +210,14 @@ prompt_dir() {
 prompt_virtualenv() {
   local virtualenv_path="$VIRTUAL_ENV"
   if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
-    prompt_segment magenta black "$(basename $virtualenv_path)"
+    env_name="$(basename $virtualenv_path)"
+
+    if [[ $env_name =~ "([a-zA-Z0-9_\-]+)\-[a-zA-Z0-9]{8}\-py([0-9]\.[0-9]+)" ]]; then
+      prompt_segment magenta black "${match[1]} "
+      prompt_subsegment "${match[2]}"
+    else
+      prompt_segment magenta black "$env_name"
+    fi
   fi
 }
 
