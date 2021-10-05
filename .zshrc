@@ -230,3 +230,5 @@ source $HOME/.aliases
 if [[ -f "$HOME/.zshrc_local" ]]; then
 	source "$HOME/.zshrc_local"
 fi
+
+export PATH="$HOME/.poetry/bin:$PATH"
