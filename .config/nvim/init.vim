@@ -36,7 +36,7 @@
     set scrolloff=5
 
     " Ignore these files in autocomplition, NERDTree and Denite
-    set wildignore+=*.pyc,*.pyo,*.so,*.o,__pycache__,.git,.coverage,**/node_modules/**,.idea,*.png,*.jpeg,*.pdf,*.svg,**/__vcr_cassettes__/**
+    set wildignore+=*.pyc,*.pyo,*.so,*.o,__pycache__,**/.git/**,.coverage,**/node_modules/**,.idea,*.png,*.jpeg,*.pdf,*.svg,**/__vcr_cassettes__/**,**/.pytest_cache/**,**/.mypy_cache/**
 
     set nobackup                     " disable backups
     set noswapfile                   " it's 2015, NeoVim.
@@ -427,7 +427,7 @@
             au FileType python setlocal softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
             au FileType python setlocal shiftround    " round indent to multiple of 'shiftwidth'
             au FileType python setlocal autoindent    " align the new line indent with the previous line
-            au FileType python setlocal colorcolumn=121
+            au FileType python setlocal colorcolumn=100
             au FileType python setlocal foldnestmax=2
         augroup END
     " }}}

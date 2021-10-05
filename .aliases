@@ -65,7 +65,7 @@ function gd() {
 		return 1
 	fi
 	
-	pager=$(git config --get core.pager)
+	pager=$(git config --get pager.diff)
 	if [[ -z "$pager" ]]; then
 		pager=less
 	fi
