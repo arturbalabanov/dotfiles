@@ -12,10 +12,11 @@ function repl {
 		return 1
 	fi
 
-	# TODO: Add Atlas
+	# TODO: Add Atlas and LW
 
 	shell="$1"
 	env="$2"
+	service_name="${3:-platform}"
 
 	aws_default_region="eu-west-1"
 	aws_storage_bucket_name="7b-dev-media-$aws_default_region"
@@ -33,7 +34,7 @@ function repl {
 		aws_access_key_id="$(pass show staging_aws_access_key_id)"
 		aws_secret_access_key="$(pass show staging_aws_secret_access_key)"
 	elif [[ $env == "prod" ]]; then
-		db_url="$(pass show prod_db_url)/platform"
+		db_url="$(pass show prod_db_url)/platform"	
 		aws_access_key_id="$(pass show prod_aws_access_key_id)"
 		aws_secret_access_key="$(pass show prod_aws_secret_access_key)"
 	else
