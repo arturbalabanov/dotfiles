@@ -644,16 +644,16 @@
     repo = 'Shougo/dein.vim'
 
     [[plugins]]
-    repo = 'arturbalabanov/denite.nvim'
+    repo = 'Shougo/denite.nvim'
     on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
     hook_source = '''
         call denite#custom#option('default', {
-            \ 'prompt': '❯',
-            \ 'highlight_matched_char': 'Underlined',
-            \ 'highlight_mode_normal': 'CursorLine',
-            \ 'statusline': 0,
-            \ 'vertical_preview': 1,
-            \ })
+           \ 'prompt': '❯',
+           \ 'highlight_matched_char': 'Underlined',
+           \ 'highlight_mode_normal': 'CursorLine',
+           \ 'statusline': 0,
+           \ 'vertical_preview': 1,
+           \ })
 
         call denite#custom#var('file/rec', 'command', ['scantree.py'])
         call denite#custom#var('file/rec', 'matchers', ['matcher/substring'])
@@ -664,37 +664,37 @@
         call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
         call denite#custom#var('grep', 'separator', ['--'])
 
-        call denite#custom#var('outline', 'command', ['uctags'])
-        call denite#custom#var('outline', 'ignore_types', ['v', 'x'])
-        call denite#custom#var('outline', 'candidate_columns', [
-            \ {'name': 'type'},
-            \ {'name': 'name', 'max_len': 40, 'use_filter': 1},
-            \ {'name': 'ref', 'use_filter': 1},
-            \ ])
-
         call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
 
-        call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>', 'noremap')
-        call denite#custom#map('insert', '<C-t>', '<denite:do_action:tabswitch>', 'noremap')
-        call denite#custom#map('insert', '<C-s>', '<denite:do_action:splitswitch>', 'noremap')
-        call denite#custom#map('insert', '<C-v>', '<denite:do_action:vsplitswitch>', 'noremap')
-        call denite#custom#map('normal', 't', '<denite:do_action:tabswitch>', 'noremap')
-        call denite#custom#map('normal', 's', '<denite:do_action:splitswitch>', 'noremap')
-        call denite#custom#map('normal', 'v', '<denite:do_action:vsplitswitch>', 'noremap')
-        call denite#custom#map('insert', '<Esc>', '<denite:quit>', 'noremap')
-        call denite#custom#map('normal', '<Esc>', '<denite:quit>', 'noremap')
+        function! s:denite_my_settings() abort
+            nnoremap <silent><buffer><expr> <CR> denite#do_map('do_action')
+            nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
+            nnoremap <silent><buffer><expr> p denite#do_map('do_action', 'preview')
 
-        call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
-        call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+            nnoremap <silent><buffer><expr> t denite#do_map('do_action', 'tabswitch')
+            nnoremap <silent><buffer><expr> s denite#do_map('do_action', 'splitswitch')
+            nnoremap <silent><buffer><expr> v denite#do_map('do_action', 'vsplitswitch')
+
+            nmap <silent><buffer><expr> <Esc> denite#do_map('quit')
+        endfunction
+
+        function! s:denite_filter_my_settings() abort
+            call deoplete#custom#buffer_option('auto_complete', v:false)
+            imap <silent><buffer> <Esc> <Plug>(denite_filter_quit)
+            imap <silent><buffer> jj <Plug>(denite_filter_update)
+        endfunction
+
+        autocmd FileType denite call s:denite_my_settings()
+        autocmd FileType denite-filter call s:denite_filter_my_settings()
     '''
     hook_add = '''
-        nnoremap <silent> <C-p> :<C-u>Denite file/rec -split=floating<CR>
-        nnoremap <silent> <C-h> :<C-u>Denite help<CR>
-        nnoremap <silent> <C-f> :<C-u>Denite -no-empty grep:. -mode=normal<CR>
-        nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:. -mode=normal<CR>
-        cnoremap <silent> <C-r> :<C-u>Denite command_history<CR>
-        nnoremap <silent> <C-s> :<C-u>Denite spell -split=floating -mode=normal<CR>
-        nnoremap <silent> <C-o> :<C-u>Denite outline -smartcase=true -split=floating<CR>
+        nnoremap <silent> <C-p> :<C-u>Denite file/rec -split=floating -start-filter<CR>
+        nnoremap <silent> <C-h> :<C-u>Denite help -start-filter<CR>
+        nnoremap <silent> <C-f> :<C-u>Denite -no-empty grep:.<CR>
+        nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:.<CR>
+        cnoremap <silent> <C-r> :<C-u>Denite command_history -start-filter<CR>
+        nnoremap <silent> <C-s> :<C-u>Denite spell -split=floating<CR>
+        nnoremap <silent> <C-o> :<C-u>Denite outline -smartcase=true -split=floating -start-filter<CR>
     '''
 
     # [[plugins]]

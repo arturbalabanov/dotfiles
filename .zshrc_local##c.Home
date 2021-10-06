@@ -5,3 +5,50 @@ export GOPATH=$HOME/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 
 alias pac="pikaur"
+
+function repl {
+	if [[ "$#" -lt 2 ]]; then
+		echo "usage: $0 <shell> <env> [db_name]" >&2
+		return 1
+	fi
+
+	shell="$1"
+	env="$2"
+
+	aws_default_region="eu-west-1"
+	aws_storage_bucket_name="7b-dev-media-$aws_default_region"
+
+	if [[ $env == "staging" ]]; then
+		db_url="$(pass show staging_db_url)/staging"
+		aws_access_key_id="$(pass show staging_aws_access_key_id)"
+		aws_secret_access_key="$(pass show staging_aws_secret_access_key)"
+	elif [[ $env == "review" ]]; then
+		db_name="$3"
+		db_url="$(pass show staging_db_url)/$db_name"
+		aws_access_key_id="$(pass show staging_aws_access_key_id)"
+		aws_secret_access_key="$(pass show staging_aws_secret_access_key)"
+	elif [[ $env == "prod" ]]; then
+		db_url="$(pass show prod_db_url)/alere_prod"
+		aws_access_key_id="$(pass show prod_aws_access_key_id)"
+		aws_secret_access_key="$(pass show prod_aws_secret_access_key)"
+	else
+		echo "invalid environment: $env" >&2
+		return 1
+	fi
+
+	export AWS_DEFAULT_REGION="$aws_default_region"
+	export AWS_STORAGE_BUCKET_NAME="$aws_storage_bucket_name"
+	export AWS_ACCESS_KEY_ID="$aws_access_key_id"
+	export AWS_SECRET_ACCESS_KEY="$aws_secret_access_key"
+
+	if [[ $shell == "py" ]]; then
+		cd ~/7bridges/sid/seven_bridges
+		venv
+		DATABASE_URL="$db_url"  ./manage.py shell_plus
+	elif [[ $shell == 'pg' || $shell == 'db' || $shell == 'sql' ]]; then
+		pgcli "$db_url"
+	else
+		echo "invalid shell: $shell" >&2
+		return 1
+	fi
+}
