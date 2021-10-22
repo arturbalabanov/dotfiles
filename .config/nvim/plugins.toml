@@ -713,10 +713,11 @@
     repo = 'Shougo/deoplete.nvim'
     depends = 'context_filetype.vim'
     on_i = 1
-    hook_source = '''
+    hook_add = '''
         let g:deoplete#enable_at_startup = 1
         let g:deoplete#max_menu_width = 80
-
+    '''
+    hook_source = '''
         " Auto select the first option
         set completeopt+=noinsert
 
