@@ -197,6 +197,15 @@
     [[plugins]]
     repo = 'tomtom/tlib_vim'
     lazy = 1
+
+    [[plugins]]
+    repo = 'nixprime/cpsm'
+    lazy = 1
+    build = 'PY3=ON ./install.sh'
+
+    [[plugins]]
+    repo = 'Shougo/neomru.vim'
+    lazy = 1
 # }}}
 # Lazy-loaded {{{
     [[plugins]]
@@ -345,7 +354,7 @@
 
     [[plugins]]
     repo = 'SirVer/ultisnips'
-    on_i = 1
+    on_event = 'InsertEnter'
     on_cmd = ['UltiSnipsEdit', 'UltiSnipsAddFiletypes']
     hook_add = '''
         let g:UltiSnipsUsePythonVersion = 3 
@@ -454,7 +463,7 @@
         repo = 'zchee/deoplete-jedi'
         depends = 'deoplete.nvim'
         on_ft = 'python'
-        on_i = 1
+        on_event = 'InsertEnter'
 
         [[plugins]]
         repo = 'python-mode/python-mode'
@@ -526,7 +535,7 @@
         depends = 'deoplete.nvim'
         build = 'make'
         on_ft = 'go'
-        on_i = 1
+        on_event = 'InsertEnter'
     # }}}
     # Ruby {{{
         [[plugins]]
@@ -631,7 +640,7 @@
         repo = 'zchee/deoplete-zsh'
         depends = 'deoplete.nvim'
         on_ft = 'zsh'
-        on_i = 1
+        on_event = 'InsertEnter'
     # }}}
     # git {{{
         [[plugins]]
@@ -646,6 +655,7 @@
     [[plugins]]
     repo = 'Shougo/denite.nvim'
     on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
+    depends = ['cpsm', 'neomru.vim']
     hook_source = '''
         call denite#custom#option('default', {
            \ 'prompt': '❯',
@@ -655,14 +665,25 @@
            \ 'vertical_preview': 1,
            \ })
 
-        call denite#custom#var('file/rec', 'command', ['scantree.py'])
-        call denite#custom#var('file/rec', 'matchers', ['matcher/substring'])
+        call denite#custom#var('file/rec', 'command', ['rg', '--files', '--glob', '!.git', '--color', 'never'])
+        call denite#custom#var('file/rec', 'matchers', ['matcher/cpsm'])
+
+        call denite#custom#var('file_mru', 'command', ['rg', '--files', '--glob', '!.git', '--color', 'never'])
+        call denite#custom#var('file_mru', 'matchers', ['matcher/cpsm', 'matcher/project_files'])
 
         call denite#custom#var('grep', 'command', ['rg'])
         call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
         call denite#custom#var('grep', 'recursive_opts', [])
         call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
         call denite#custom#var('grep', 'separator', ['--'])
+
+        call denite#custom#alias('source', 'search_models', 'file/point')
+        " call denite#custom#var('grep/models', 'command', ['rg', '^class (\w+).*$', '-g', '**/models/*.py', '-g', 'models.py', '-r', '$1', '.'])
+        call denite#custom#var('grep/models', 'command', ['rg', '^class (\w+).*$'])
+        call denite#custom#var('grep/models', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
+        call denite#custom#var('grep/models', 'recursive_opts', [])
+        call denite#custom#var('grep/models', 'pattern_opt', ['--regexp'])
+        call denite#custom#var('grep/models', 'separator', ['--'])
 
         call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
 
@@ -688,9 +709,10 @@
         autocmd FileType denite-filter call s:denite_filter_my_settings()
     '''
     hook_add = '''
-        nnoremap <silent> <C-p> :<C-u>Denite file/rec -split=floating -start-filter<CR>
+        nnoremap <silent> <C-p> :<C-u>Denite file_mru file/rec -split=floating -start-filter<CR>
         nnoremap <silent> <C-h> :<C-u>Denite help -start-filter<CR>
         nnoremap <silent> <C-f> :<C-u>Denite -no-empty grep:.<CR>
+        nnoremap <silent> <C-m> :<C-u>Denite search_models<CR>
         nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:.<CR>
         cnoremap <silent> <C-r> :<C-u>Denite command_history -start-filter<CR>
         nnoremap <silent> <C-s> :<C-u>Denite spell -split=floating<CR>
@@ -712,7 +734,7 @@
     [[plugins]]
     repo = 'Shougo/deoplete.nvim'
     depends = 'context_filetype.vim'
-    on_i = 1
+    on_event = 'InsertEnter'
     hook_add = '''
         let g:deoplete#enable_at_startup = 1
         let g:deoplete#max_menu_width = 80
