@@ -103,7 +103,7 @@ zle -N zle-line-init
 zle -N zle-keymap-select
 zle -N zle-line-finish
 
-RPS1='$(vim_mode_prompt_info)'
+RPS1='$(_vim_mode_prompt_info)'
 
 # Vimode keybindings
 bindkey -M viins 'jj' vi-cmd-mode
