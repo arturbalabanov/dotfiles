@@ -418,6 +418,12 @@
             au FileType tmux setlocal foldmethod=marker
         augroup END
     " }}}
+    " zsh {{{
+        augroup ft_zsh
+            au!
+            au FileType zsh setlocal foldmethod=marker
+        augroup END
+    " }}}
     " Python {{{
         augroup ft_python
             au!

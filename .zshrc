@@ -1,10 +1,5 @@
-# Path to your oh-my-zsh configuration.
+# Oh my ZSH {{{
 export ZSH=$HOME/.oh-my-zsh
-
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
 
 if type starship > /dev/null; then
 	eval "$(starship init zsh)"
@@ -12,123 +7,103 @@ else
 	ZSH_THEME="artur" 
 fi
 
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true" 
-
-# Comment this out to disable bi-weekly auto-update checks
-DISABLE_AUTO_UPDATE="true"
-
-# Uncomment to change how often before auto-updates occur? (in days)
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment following line if you want to disable colors in ls
-# DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
+export DISABLE_AUTO_UPDATE="true"
 export DISABLE_AUTO_TITLE="true"
+export HIST_STAMPS="dd.mm.yyyy"
 
-# Uncomment following line if you want to disable command autocorrection
-# DISABLE_CORRECTION="true"
-
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-COMPLETION_WAITING_DOTS="true"
-
-# Uncomment following line if you want to disable marking untracked files under
-# VCS as dirty. This makes repository status check for large repositories much,
-# much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-HIST_STAMPS="dd.mm.yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# plugins=(git git-extras npm zsh-syntax-highlighting vi-mode zle-vi-visual) # zsh-autosuggestions
-
-plugins=(git git-extras zsh-syntax-highlighting)
-
+plugins=(git git-extras zsh-syntax-highlighting vi-mode zle-vi-visual)
 source $ZSH/oh-my-zsh.sh
+# }}}
+# Terminal wizardry {{{
+eval $(dircolors ~/.dircolors)
 
-# Customize to your needs...
+# Stupid Ctrl-S!
+stty -ixon
 
-# NORMAL_MODE_INDICATOR="%{$fg_bold[green]%}-%{$fg[green]%}- NORMAL --%{$reset_color%}"
-# INSERT_MODE_INDICATOR="%{$fg_bold[blue]%}-%{$fg[blue]%}- INSERT --%{$reset_color%}"
-# VISUAL_MODE_INDICATOR="%{$fg_bold[magenta]%}-%{$fg[magenta]%}- VISUAL --%{$reset_color%}"
-#
-# function _set_cursor_shape {
-# 	shape="$1"
-#
-# 	case $shape in
-# 		block)
-# 			echo -ne '\e[2 q'
-# 			;;
-# 		block_blink)
-# 			echo -ne '\e[1 q'
-# 			;;
-# 		underscore)
-# 			echo -ne '\e[4 q'
-# 			;;
-# 		underscore_blink)
-# 			echo -ne '\e[3 q'
-# 			;;
-# 		line)
-# 			echo -ne '\e[6 q'
-# 			;;
-# 		line_blink)
-# 			echo -ne '\e[6 q'
-# 			;;
-# 		*)
-# 			return 1
-# 			;;
-# 	esac
-# }
-#
-# function _vim_mode_prompt_info() {
-# 	case $KEYMAP in
-# 		vicmd)
-# 			echo "$NORMAL_MODE_INDICATOR"
-# 			;;
-# 		viins||main)
-# 			echo "$INSERT_MODE_INDICATOR"
-# 			;;
-# 		vivis)
-# 			echo "$VISUAL_MODE_INDICATOR"
-# 			;;
-# 	esac
-# }
-#
-# function zle-keymap-select zle-line-init {
-# 	case $KEYMAP in
-# 		vicmd)
-# 			_set_cursor_shape "block"
-# 			;;
-# 		viins||main)
-# 			_set_cursor_shape "line"
-# 			;;
-# 		vivis)
-# 			_set_cursor_shape "block"
-# 			;;
-# 	esac
-#
-# 	zle reset-prompt
-# 	zle -R
-# }
-#
-# function zle-line-finish {
-# 	_set_cursor_shape "block"
-# }
-#
-# zle -N zle-line-init
-# zle -N zle-keymap-select
-# zle -N zle-line-finish
-#
-# RPS1='$(vim_mode_prompt_info)'
+# man page colors
+export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking 
+export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold 
+export LESS_TERMCAP_me=$'\E[0m'           # end mode 
+export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode 
+export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box 
+export LESS_TERMCAP_ue=$'\E[0m'           # end underline 
+export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
+
+export LESS="$LESS -x4"  # less uses 4 space tab witdh
+# }}}
+# VIM Mode {{{
+NORMAL_MODE_INDICATOR="%{$fg_bold[green]%}-%{$fg[green]%}- NORMAL --%{$reset_color%}"
+INSERT_MODE_INDICATOR="%{$fg_bold[blue]%}-%{$fg[blue]%}- INSERT --%{$reset_color%}"
+VISUAL_MODE_INDICATOR="%{$fg_bold[magenta]%}-%{$fg[magenta]%}- VISUAL --%{$reset_color%}"
+
+function _set_cursor_shape {
+	shape="$1"
+
+	case $shape in
+		block)
+			echo -ne '\e[2 q'
+			;;
+		block_blink)
+			echo -ne '\e[1 q'
+			;;
+		underscore)
+			echo -ne '\e[4 q'
+			;;
+		underscore_blink)
+			echo -ne '\e[3 q'
+			;;
+		line)
+			echo -ne '\e[6 q'
+			;;
+		line_blink)
+			echo -ne '\e[6 q'
+			;;
+		*)
+			return 1
+			;;
+	esac
+}
+
+function _vim_mode_prompt_info() {
+	case $KEYMAP in
+		vicmd)
+			echo "$NORMAL_MODE_INDICATOR"
+			;;
+		viins||main)
+			echo "$INSERT_MODE_INDICATOR"
+			;;
+		vivis)
+			echo "$VISUAL_MODE_INDICATOR"
+			;;
+	esac
+}
+
+function zle-keymap-select zle-line-init {
+	case $KEYMAP in
+		vicmd)
+			_set_cursor_shape "block"
+			;;
+		viins||main)
+			_set_cursor_shape "line"
+			;;
+		vivis)
+			_set_cursor_shape "block"
+			;;
+	esac
+
+	zle reset-prompt
+	zle -R
+}
+
+function zle-line-finish {
+	_set_cursor_shape "block"
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select
+zle -N zle-line-finish
+
+RPS1='$(vim_mode_prompt_info)'
 
 # Vimode keybindings
 bindkey -M viins 'jj' vi-cmd-mode
@@ -161,28 +136,8 @@ tmux-select-pane-right () {
 }
 zle -N tmux-select-pane-right
 bindkey -M vicmd 'gl' tmux-select-pane-right
-
-export EDITOR="nvim"
-export BROWSER="google-chrome-stable"
-
-eval $(dircolors ~/.dircolors)
-
-# Stupid Ctrl-S!
-stty -ixon
-
-# man page colors
-export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking 
-export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold 
-export LESS_TERMCAP_me=$'\E[0m'           # end mode 
-export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode 
-export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box 
-export LESS_TERMCAP_ue=$'\E[0m'           # end underline 
-export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
-
-export LESS="$LESS -x4"  # less uses 4 space tab witdh
-
-# PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
-
+# }}}
+# Keybindings {{{
 bindkey '\e[3~' delete-char
 bindkey '^R' history-incremental-search-backward
 bindkey '^E' push-line
@@ -215,25 +170,19 @@ function prepend-sudo {
 }
 zle -N prepend-sudo
 bindkey "^s" prepend-sudo
+# }}}
+# Environment Variables {{{
+export EDITOR="nvim"
+export BROWSER="google-chrome-stable"
 
-export PATH=$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin
+export PATH="$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin:$HOME/node_modules/.bin"
 export MANPATH="$MANPATH:$HOME/.local/man"
-
-export PATH="$PATH:$HOME/node_modules/.bin"
-
+# }}}
+# External Tools {{{
 if [[ -r "$HOME/.local/share/z/z.sh" ]]; then
 	source "$HOME/.local/share/z/z.sh"
 elif [[ -r "/usr/share/z/z.sh" ]]; then
 	source "/usr/share/z/z.sh"
-fi
-
-# Disable the default (virtualenv) in front of the prompt
-# This will enable it as a seperate sector which is way more beautiful
-# VIRTUAL_ENV_DISABLE_PROMPT=1
-
-source $HOME/.aliases
-if [[ -f "$HOME/.zshrc_local" ]]; then
-	source "$HOME/.zshrc_local"
 fi
 
 # Enable bash completion scripts
@@ -252,3 +201,13 @@ if type pyenv > /dev/null; then
 	eval "$(pyenv init --path)"
 	eval "$(pyenv init -)"
 fi
+# }}}
+# Source other configs {{{
+if [[ -f "$HOME/.aliases" ]]; then
+	source $HOME/.aliases
+fi
+
+if [[ -f "$HOME/.zshrc_local" ]]; then
+	source "$HOME/.zshrc_local"
+fi
+# }}}
