@@ -709,7 +709,7 @@
         autocmd FileType denite-filter call s:denite_filter_my_settings()
     '''
     hook_add = '''
-        nnoremap <silent> <C-p> :<C-u>Denite file_mru file/rec -split=floating -start-filter<CR>
+        nnoremap <silent> <C-p> :<C-u>Denite file/rec -split=floating -start-filter<CR>
         nnoremap <silent> <C-h> :<C-u>Denite help -start-filter<CR>
         nnoremap <silent> <C-f> :<C-u>Denite -no-empty grep:.<CR>
         nnoremap <silent> <C-m> :<C-u>Denite search_models<CR>

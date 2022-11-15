@@ -2,7 +2,12 @@
 
 distro=$(lsb_release -i | sed 's/Distributor ID:\s*//')
 
-alias ls='ls --color=auto'
+
+if type lsd > /dev/null; then
+	alias ls='lsd'
+else
+	alias ls='ls --color=auto'
+fi
 alias ll='ls -lh'
 alias la='ll -a'
 alias grep='grep --color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
@@ -84,4 +89,15 @@ function gd() {
 function venv {
 	venv_path=$(poetry env info -p)
 	source $venv_path/bin/activate
+}
+
+function review_pass {
+	filename=$(find ~/7bridges -name populate_dev_users.py)
+	password=$(cat $filename| grep set_password | sed "s/.*set_password('\(.*\)')/\1/")
+
+	echo $password
+
+	if type xclip > /dev/null; then
+		echo -n $password | xclip -selection clipboard
+	fi
 }

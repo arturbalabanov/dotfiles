@@ -1,8 +1,10 @@
 # For the zsh theme -- if the user is DEFAULT_USER, it is not shown
 export DEFAULT_USER="artur"
+export HUSKY="0"
 
 export GOPATH=$HOME/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
+export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
 
 alias pac="pikaur"
 
@@ -22,13 +24,16 @@ function repl {
 		db_url="$(pass show staging_db_url)/staging"
 		aws_access_key_id="$(pass show staging_aws_access_key_id)"
 		aws_secret_access_key="$(pass show staging_aws_secret_access_key)"
-	elif [[ $env == "review" ]]; then
-		db_name="$3"
+	elif [[ $env =~ "^(kube|review)\-" ]]; then
+		# Review instance, the platofrm DB name is the same as the container
+		# (environment)
+		db_name="$2"
+
 		db_url="$(pass show staging_db_url)/$db_name"
 		aws_access_key_id="$(pass show staging_aws_access_key_id)"
 		aws_secret_access_key="$(pass show staging_aws_secret_access_key)"
 	elif [[ $env == "prod" ]]; then
-		db_url="$(pass show prod_db_url)/alere_prod"
+		db_url="$(pass show prod_db_url)/platform"
 		aws_access_key_id="$(pass show prod_aws_access_key_id)"
 		aws_secret_access_key="$(pass show prod_aws_secret_access_key)"
 	else
