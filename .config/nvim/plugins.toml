@@ -136,8 +136,8 @@
 
         let g:ale_fix_on_save = 1
 
-        nnoremap <silent> <C-S-j> :<C-u>ALENext<CR>
-        nnoremap <silent> <C-S-k> :<C-u>ALEPrevious<CR>
+        nnoremap <silent> <C-l><C-j> :<C-u>ALENext<CR>
+        nnoremap <silent> <C-l><C-k> :<C-u>ALEPrevious<CR>
     '''
 
     [[plugins]]
@@ -429,6 +429,19 @@
 # Filetype-specific {{{
     # Python {{{
         [[plugins]]
+        repo = 'github/copilot.vim'
+        on_ft = 'python'
+        hook_source = '''
+            let g:copilot_filetypes = {
+                \ '*': v:false,
+                \ 'python': v:true,
+                \ }
+
+            let g:copilot_no_tab_map = v:true
+            imap <silent><script><expr> <C-o> copilot#Accept("")
+        '''
+
+        [[plugins]]
         repo = 'vim-python/python-syntax'
         on_ft = 'python'
         hook_source = '''
@@ -647,6 +660,11 @@
         repo = 'tpope/vim-git'
         on_ft = ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail']
     # }}}
+    # Lark {{{
+        [[plugins]]
+        repo = 'lark-parser/vim-lark-syntax'
+        on_ft = 'lark'
+    # }}}
 # }}}
 # Shougo's glorious plugins {{{
     [[plugins]]
@@ -676,16 +694,11 @@
         call denite#custom#var('grep', 'recursive_opts', [])
         call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
         call denite#custom#var('grep', 'separator', ['--'])
-
-        call denite#custom#alias('source', 'search_models', 'file/point')
-        " call denite#custom#var('grep/models', 'command', ['rg', '^class (\w+).*$', '-g', '**/models/*.py', '-g', 'models.py', '-r', '$1', '.'])
-        call denite#custom#var('grep/models', 'command', ['rg', '^class (\w+).*$'])
-        call denite#custom#var('grep/models', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
-        call denite#custom#var('grep/models', 'recursive_opts', [])
-        call denite#custom#var('grep/models', 'pattern_opt', ['--regexp'])
-        call denite#custom#var('grep/models', 'separator', ['--'])
-
         call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
+
+        call denite#custom#alias('source', 'search_models', 'grep')
+        " call denite#custom#var('search_models', 'command', ['rg', '^class (\w+).*$', '-g', '**/models/*.py', '-g', 'models.py', '-r', '$1', '.'])
+        call denite#custom#var('search_models', 'command', ['rg', 'class'])
 
         function! s:denite_my_settings() abort
             nnoremap <silent><buffer><expr> <CR> denite#do_map('do_action')
@@ -712,7 +725,7 @@
         nnoremap <silent> <C-p> :<C-u>Denite file/rec -split=floating -start-filter<CR>
         nnoremap <silent> <C-h> :<C-u>Denite help -start-filter<CR>
         nnoremap <silent> <C-f> :<C-u>Denite -no-empty grep:.<CR>
-        nnoremap <silent> <C-m> :<C-u>Denite search_models<CR>
+        nnoremap <silent> <C-m> :<C-u>Denite -start-filter search_models:.::!<CR>
         nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:.<CR>
         cnoremap <silent> <C-r> :<C-u>Denite command_history -start-filter<CR>
         nnoremap <silent> <C-s> :<C-u>Denite spell -split=floating<CR>
