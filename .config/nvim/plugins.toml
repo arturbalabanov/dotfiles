@@ -54,11 +54,14 @@
     repo = 'vim-airline/vim-airline-themes'
     depends = 'vim-airline'
     hook_add = '''
-        let g:airline_theme = 'powerlineish'
+        " let g:airline_theme = 'base16_gruvbox_dark_soft'
     '''
 
     [[plugins]]
     repo = 'w0ng/vim-hybrid'
+
+    [[plugins]]
+    repo = 'morhetz/gruvbox'
 
     [[plugins]]
     repo = 'terryma/vim-multiple-cursors'
@@ -345,6 +348,10 @@
         nnoremap <C-_> :TComment<CR>
         vnoremap <C-_> :TComment<CR>
         inoremap <C-_> <Esc>:TComment<CR>i
+
+        nnoremap <C-/> :TComment<CR>
+        vnoremap <C-/> :TComment<CR>
+        inoremap <C-/> <Esc>:TComment<CR>i
     '''
     hook_source = '''
         let g:tcomment_maps=0

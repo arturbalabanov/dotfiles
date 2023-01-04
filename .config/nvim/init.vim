@@ -226,6 +226,16 @@
 " Interface {{{
     " Colors {{{
         syntax on
+
+        if (has("nvim"))
+            let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+        endif
+
+        if (has("termguicolors"))
+            set termguicolors
+        endif
+
+        set background=dark
         
         " http://terminal.sexy/ is an awesome website to find out (and create) more :)
         " Other cool dark 256 color colorschemes:
@@ -237,11 +247,120 @@
         " colorscheme mango
         " colorscheme xoria256
         " colorscheme solarized
-        set background=dark
-        colorscheme hybrid
+        "
+        " colorscheme hybrid
+        " highlight ALEErrorSign ctermfg=red ctermbg=234
+        " highlight ALEWarningSign ctermfg=yellow ctermbg=234
 
-        highlight ALEErrorSign ctermfg=red ctermbg=234
-        highlight ALEWarningSign ctermfg=yellow ctermbg=234
+        " Gruvbox Theme Settings {{{
+            " Enables bold text.
+            " Default: 1
+            let g:gruvbox_bold = '1'
+
+            " Enables italic text.
+            " Default: gui 1, term 0
+            let g:gruvbox_italic = '1'
+
+            " Enables transparent background.
+            " Default: 0
+            let g:gruvbox_transparent_bg = '0'
+
+            " Enables underlined text.
+            " Default: 1
+            let g:gruvbox_underline = '1'
+
+            " Enables undercurled text.
+            " Default: 1
+            let g:gruvbox_undercurl = '1'
+
+            " Uses 256-color palette (suitable to pair with gruvbox-palette shell script).
+            " If you're dissatisfied with that, set option value to 16 to fallback base colors to your terminal palette. Refer † for details.
+            " Default: 256
+            let g:gruvbox_termcolors = '256'
+
+            " Changes dark mode contrast. Overrides g:gruvbox_contrast option. Possible values are soft, medium and hard.
+            " Default: medium
+            let g:gruvbox_contrast_dark = 'hard'
+
+            " Changes light mode contrast. Overrides g:gruvbox_contrast option. Possible values are soft, medium and hard.
+            " Default: medium
+            let g:gruvbox_contrast_light = 'hard'
+
+            " Changes cursor background while search is highlighted. Possible values are any of gruvbox palette.
+            " Default: orange
+            let g:gruvbox_hls_cursor = 'orange'
+
+            " Changes number column background color. Possible values are any of gruvbox palette.
+            " Default: none
+            let g:gruvbox_number_column = 'bg0'
+
+            " Changes sign column background color. Possible values are any of gruvbox palette.
+            " Default: bg1
+            let g:gruvbox_sign_column = 'bg0'
+
+            " Changes color column background color. Possible values are any of gruvbox palette.
+            " Default: bg1
+            let g:gruvbox_color_column = 'dark0'
+
+            " Changes vertical split background color. Possible values are any of gruvbox palette.
+            " Default: bg0
+            let g:gruvbox_vert_split = 'bg0'
+
+            " Enables italic for comments.
+            " Default: 1
+            let g:gruvbox_italicize_comments = '0'
+
+            " Enables italic for strings.
+            " Default: 0
+            let g:gruvbox_italicize_strings = '0'
+
+            " Inverts selected text.
+            " Default: 1
+            let g:gruvbox_invert_selection = '0'
+
+            " Inverts GitGutter and Syntastic signs. Useful to rapidly focus on.
+            " Default: 0
+            let g:gruvbox_invert_signs = '0'
+
+            " Inverts indent guides. Could be nice paired with set list so it would highlight only tab symbols instead of it's background.
+            " Default: 0
+            let g:gruvbox_invert_indent_guides = '0'
+
+            " Inverts tabline highlights, providing distinguishable tabline-fill.
+            " Default: 0
+            let g:gruvbox_invert_tabline = '0'
+
+            " Extrahighlighted strings
+            " Default: 0
+            let g:gruvbox_improved_strings = '0'
+
+            " Extrahighlighted warnings
+            " Default: 0
+            let g:gruvbox_improved_warnings = '0'
+
+            " Delegates guisp colorings to guifg or guibg. This is handy for terminal vim.
+            " Uses guifg or guibg for colors originally assigned to guisp.
+            " guisp concerns the colors of underlines and strikethroughs.
+            " Terminal vim cannot color underlines and strikethroughs, only gVim can.
+            " This option instructs vim to color guifg or guibg as a fallback.
+            "
+            " Default: 'NONE'
+            " Possible Values: 'fg', 'bg'
+            let g:gruvbox_guisp_fallback = 'fg'
+        " }}}
+
+        colorscheme gruvbox
+
+        highlight! CursorLine guibg=#282828 ctermbg=235
+        highlight! Visual guibg=#504945 ctermbg=239
+        highlight! link Folded CursorLine
+        highlight! link FoldColumn CursorLine
+
+        " highlight! Folded guibg=#32302f ctermbg=236
+        " highlight! FoldColumn guibg=#32302f ctermbg=236
+
+        highlight! link ALEErrorSign GruvboxRed
+        highlight! link ALEWarningSign GruvboxYellow
 
         highlight link Flashy Visual
     " }}}
