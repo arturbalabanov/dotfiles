@@ -22,7 +22,7 @@ disabled = true
 
 [python]
 symbol = " "
-format = '[(${symbol}[$virtualenv](bold green) )](green)'
+format = '[(${symbol}[$virtualenv](bold bright-green) )](bright-green)'
 
 [git_branch]
 format = "[$symbol$branch(:$remote_branch)]($style) "
