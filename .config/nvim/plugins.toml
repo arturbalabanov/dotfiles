@@ -58,9 +58,6 @@
     '''
 
     [[plugins]]
-    repo = 'w0ng/vim-hybrid'
-
-    [[plugins]]
     repo = 'morhetz/gruvbox'
 
     [[plugins]]
@@ -119,8 +116,10 @@
         let g:ale_sign_column_always = 1
         let g:ale_sign_error = '✗'
         let g:ale_sign_warning = ''
+
+        let g:ale_virtualtext_cursor = 'disabled'
         
-        let g:ale_python_flake8_args = '--max-line-length=120 --ignore=F403'
+        " let g:ale_python_flake8_options = '--max-line-length=120 --ignore=F403'
         
         if &diff
             let g:ale_enabled = 0
@@ -139,15 +138,9 @@
 
         let g:ale_fix_on_save = 1
 
-        nnoremap <silent> <C-l><C-j> :<C-u>ALENext<CR>
-        nnoremap <silent> <C-l><C-k> :<C-u>ALEPrevious<CR>
+        nnoremap <silent> <C-S-j> :<C-u>ALENext<CR>
+        nnoremap <silent> <C-S-k> :<C-u>ALEPrevious<CR>
     '''
-
-    [[plugins]]
-    repo = 'othree/eregex.vim'
-
-    [[plugins]]
-    repo = 'tpope/vim-abolish'
 
     [[plugins]]
     repo = 'djoshea/vim-autoread'
@@ -157,27 +150,6 @@
 
     [[plugins]]
     repo = 'sheerun/vim-polyglot'
-
-    [[plugins]]
-    repo = 'AndrewRadev/splitjoin.vim'
-    on_cmd = ['SplitjoinSplit', 'SplitjoinJoin']
-    hook_add = '''
-        let g:splitjoin_trailing_comma = 1
-        let g:splitjoin_python_brackets_on_separate_lines = 1
-
-        " Mappings
-        let g:splitjoin_split_mapping = ''
-        let g:splitjoin_join_mapping = ''
-
-        nnoremap <silent> sj :SplitjoinSplit<cr>
-        nnoremap <silent> sk :SplitjoinJoin<cr>
-    '''
-
-    [[plugins]]
-    repo = 'AaronLasseigne/yank-code'
-    hook_add = '''
-        map <leader>y <plug>YankCode
-    '''
 # }}}
 # Dependancies {{{
     [[plugins]]
@@ -201,14 +173,13 @@
     repo = 'tomtom/tlib_vim'
     lazy = 1
 
+    # A dependancy for telescope
     [[plugins]]
-    repo = 'nixprime/cpsm'
+    repo = 'nvim-lua/plenary.nvim'
     lazy = 1
-    build = 'PY3=ON ./install.sh'
 
     [[plugins]]
-    repo = 'Shougo/neomru.vim'
-    lazy = 1
+    repo = 'nvim-tree/nvim-web-devicons'
 # }}}
 # Lazy-loaded {{{
     [[plugins]]
@@ -233,77 +204,6 @@
         let g:NERDTreeRespectWildIgnore=1
     '''
 
-    # [[plugins]]
-    # repo = 'christoomey/vim-tmux-navigator'
-    # on_cmd = [
-    #     'TmuxNavigateLeft',
-    #     'TmuxNavigateRight',
-    #     'TmuxNavigateUp',
-    #     'TmuxNavigateDown',
-    #     'TmuxNavigatePrevious'
-    # ]
-    # hook_add = '''
-    #     nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
-    #     nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
-    #     nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
-    #     nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
-    # '''
-    # hook_source = '''
-    #     let g:tmux_navigator_no_mappings = 1
-    #     let g:tmux_navigator_disable_when_zoomed = 1
-    # '''
-
-    [[plugins]]
-    repo = 'sjl/gundo.vim'
-    on_cmd = 'GundoToggle'
-    hook_add = '''
-        nnoremap <F4> :GundoToggle<CR>
-    '''
-    hook_source = '''
-        let g:gundo_tree_statusline = "Gundo"
-        let g:gundo_preview_statusline = "Gundo Preview"
-        let g:gundo_right = 1
-    '''
-
-    [[plugins]]
-    repo = 'majutsushi/tagbar'
-    on_cmd = 'TagbarToggle'
-    hook_add = '''
-        nnoremap <F3> :TagbarToggle<CR>
-    '''
-
-    [[plugins]]
-    repo = 'junegunn/limelight.vim'
-    on_cmd = 'Limelight'
-    hook_source = '''
-        let g:limelight_conceal_ctermfg = 'black'
-    '''
-
-    [[plugins]]
-    repo = 'junegunn/goyo.vim'
-    depends = 'limelight.vim'
-    on_cmd = 'Goyo'
-    hook_source = '''
-        let g:goyo_margin_top=0
-        let g:goyo_margin_bottom=0
-        let g:goyo_linenr=2
-
-        function! GoyoBefore()
-            silent !tmux set status off
-            normal zR
-            set nonumber
-            " Limelight
-        endfunction
-
-        function! GoyoAfter()
-            silent !tmux set status on
-            set number
-            " Limelight!
-        endfunction
-
-        let g:goyo_callbacks = [function('GoyoBefore'), function('GoyoAfter')]
-    '''
-
     [[plugins]]
     repo = 'haya14busa/vim-operator-flashy'
     depends = 'vim-operator-user'
@@ -326,19 +226,6 @@
     [[plugins]]
     repo = 'guns/xterm-color-table.vim'
     on_cmd = 'XtermColorTable'
-
-    [[plugins]]
-    repo = 'arturbalabanov/context-edit'
-    depends = 'context_filetype.vim'
-    on_func = 'ContextEdit'
-    hook_add = '''
-        nnoremap <silent> <F6> :<C-U>call ContextEdit()<CR>
-    '''
-
-    [[plugins]]
-    depends = 'vim-fugitive'
-    repo = 'gregsexton/gitv'
-    on_cmd = 'Gitv'
 
     [[plugins]]
     repo = 'tomtom/tcomment_vim'
@@ -372,58 +259,6 @@
     '''
 
     [[plugins]]
-    repo = 'jpalardy/vim-slime'
-    on_map = [['nx', '<Plug>']]
-    hook_source = '''
-        let g:slime_target = "tmux"    
-        let g:slime_no_mappings = 1
-    '''
-    hook_add = '''
-        xmap <C-c> <Plug>SlimeRegionSend
-        nmap <C-c> <Plug>SlimeLineSend
-    '''
-
-    [[plugins]]
-    repo = 'tpope/vim-projectionist'
-    on_cmd = ['A', 'AS', 'AV', 'AT', 'AD', 'Pcd', 'Plcd', 'ProjectDo']
-    hook_add = '''
-        " Jump to the alternate file
-        nnoremap <leader>a :A<CR>
-    '''
-
-    [[plugins]]
-    repo = 'tpope/vim-dispatch'
-    on_cmd = ['Make', 'Copen', 'Dispatch', 'FocusDispatch', 'Start', 'Spawn']
-    hook_add = '''
-        nnoremap <F9> :Dispatch<CR>
-        inoremap <F9> <Esc>:Dispatch<CR>a
-    '''
-
-    [[plugins]]
-    repo = 'chrisbra/unicode.vim'
-    on_cmd = [
-        'Digraphs',
-        'UnicodeSearch',
-        'UnicodeSearch!',
-        'UnicodeName',
-        'UnicodeTable',
-        'DownloadUnicode',
-        'UnicodeCache'
-    ]
-    on_map = [
-        ['nx', '<C-X><C-G>'],
-        ['nx', '<C-X><C-Z>'],
-        ['nx', '<F4>']
-    ]
-    on_func = [
-        'unicode#FindUnicodeBy',
-        'unicode#FindDigraphBy',
-        'unicode#Digraph',
-        'unicode#UnicodeName'
-    ]
-
-
-    [[plugins]]
     repo = 'rhysd/git-messenger.vim'
     on_cmd = [
         'GitMessenger'
@@ -436,28 +271,11 @@
 # Filetype-specific {{{
     # Python {{{
         [[plugins]]
-        repo = 'github/copilot.vim'
-        on_ft = 'python'
-        hook_source = '''
-            let g:copilot_filetypes = {
-                \ '*': v:false,
-                \ 'python': v:true,
-                \ }
-
-            let g:copilot_no_tab_map = v:true
-            imap <silent><script><expr> <C-o> copilot#Accept("")
-        '''
-
-        [[plugins]]
         repo = 'vim-python/python-syntax'
         on_ft = 'python'
         hook_source = '''
             let g:python_highlight_all = 1
         '''
-
-        # [[plugins]]
-        # repo = 'tmhedberg/SimpylFold'
-        # on_ft = 'python'
 
         [[plugins]]
         repo = 'davidhalter/jedi-vim'
@@ -473,50 +291,11 @@
             let g:jedi#smart_auto_mappings = 0
         '''
 
-        # When editing other filetypes, after the plugin has been activated,
-        # a lot of errors appear every time an edit has been made
-        # [[plugins]]
-        # repo = 'ColinKennedy/vim-python-function-expander'
-        # on_ft = 'python'
-
         [[plugins]]
         repo = 'zchee/deoplete-jedi'
         depends = 'deoplete.nvim'
         on_ft = 'python'
         on_event = 'InsertEnter'
-
-        [[plugins]]
-        repo = 'python-mode/python-mode'
-        on_ft = 'python'
-        hook_source = '''
-            " Disable nearly all the functions of python-mode since I use other
-            " plugins for them. Ones far younger and more powerful!
-
-            let g:pymode_doc = 1
-            let g:pymode_doc_bind = '<C-d>'
-
-            call pymode#default('g:pymode_doc', 0)
-            call pymode#default("g:pymode_indent", 0)
-            call pymode#default("g:pymode_motion", 0)
-            call pymode#default("g:pymode_options", 0)
-            call pymode#default('g:pymode_virtualenv', 0)
-            call pymode#default('g:pymode_run', 0)
-            call pymode#default('g:pymode_lint', 0)
-            call pymode#default('g:pymode_rope', 0)
-
-            call pymode#default("g:pymode_folding", 0)
-            " call pymode#default("g:pymode_folding", 1)
-            " call pymode#default("g:pymode_folding_nest_limit", 1000)
-            " call pymode#default("g:pymode_folding_regex", '^\s*\%(class\|def\|async\s\+def\) .\+\(:\s\+\w\)\@!')
-
-            " I'm using it only for the breakpoints. For now.
-
-            call pymode#default('g:pymode_breakpoint', 1)
-            call pymode#default('g:pymode_breakpoint_bind', '<C-b>')
-            call pymode#default('g:pymode_breakpoint_cmd', 'import ptpdb; ptpdb.set_trace()')
-
-            call pymode#default("g:pymode_trim_whitespaces", 1)
-        '''
 
         [[plugins]]
         repo = 'plytophogy/vim-virtualenv'
@@ -557,11 +336,6 @@
         on_ft = 'go'
         on_event = 'InsertEnter'
     # }}}
-    # Ruby {{{
-        [[plugins]]
-        repo = 'vim-ruby/vim-ruby'
-        on_ft = 'ruby'
-    # }}}
     # Lua {{{
         [[plugins]]
         repo = 'xolox/vim-lua-ftplugin'
@@ -580,47 +354,6 @@
         repo = 'alcesleo/vim-uppercase-sql'
         on_ft = ['sql', 'pgsql']
     # }}}
-    # CoffeeScript {{{
-        [[plugins]]
-        repo = 'kchmck/vim-coffee-script'
-        on_ft = 'coffee'
-    # }}}
-    # HTML {{{
-        [[plugins]]
-        repo = 'mattn/emmet-vim'
-        on_ft = 'html'
-        hook_source = '''
-            " TODO: Use SuperTab. `` is actually quite useful
-            let g:user_emmet_install_global = 0
-
-            autocmd FileType html EmmetInstall
-
-            let g:user_emmet_expandabbr_key = '``'
-            let g:user_emmet_next_key = '`j'
-            let g:user_emmet_prev_key = '`k'
-            let g:use_emmet_complete_tag = 1
-        '''
-    # }}}
-    # Haml {{{
-        [[plugins]]
-        repo = 'tpope/vim-haml'
-        on_ft = 'haml'
-    # }}}
-    # CSS {{{
-        [[plugins]]
-        repo = 'hail2u/vim-css3-syntax'
-        on_ft = 'css'
-    # }}}
-    # Sass {{{
-        [[plugins]]
-        repo = 'cakebaker/scss-syntax.vim'
-        on_ft = ['scss', 'sass']
-    # }}}
-    # Less {{{
-        [[plugins]]
-        repo = 'groenewege/vim-less'
-        on_ft = 'less'
-    # }}}
     # Markdown {{{
         [[plugins]]
         repo = 'plasticboy/vim-markdown'
@@ -629,15 +362,6 @@
             " The folding works just fine, however it's triggered on save and that's annoying
             " Ideally (TODO) I should keep it but fix this behaviour
             let g:vim_markdown_folding_disabled = 1
-        '''
-    # }}}
-    # ReStructuredText {{{
-        # TODO: Add build instructions
-        [[plugins]]
-        repo = 'Rykka/InstantRst'
-        on_cmd = 'InstantRst'
-        hook_source = '''
-            let g:instant_rst_browser = $BROWSER
         '''
     # }}}
     # TOML {{{
@@ -655,98 +379,20 @@
         repo = 'keith/tmux.vim'
         on_ft = 'tmux'
     # }}}
-    # zsh {{{
-        [[plugins]]
-        repo = 'zchee/deoplete-zsh'
-        depends = 'deoplete.nvim'
-        on_ft = 'zsh'
-        on_event = 'InsertEnter'
-    # }}}
     # git {{{
         [[plugins]]
         repo = 'tpope/vim-git'
         on_ft = ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail']
     # }}}
-    # Lark {{{
+    # Logs {{{
         [[plugins]]
-        repo = 'lark-parser/vim-lark-syntax'
-        on_ft = 'lark'
+        repo = 'MTDL9/vim-log-highlighting'
+        on_ft = 'log'
     # }}}
 # }}}
 # Shougo's glorious plugins {{{
     [[plugins]]
     repo = 'Shougo/dein.vim'
-
-    [[plugins]]
-    repo = 'Shougo/denite.nvim'
-    on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
-    depends = ['cpsm', 'neomru.vim']
-    hook_source = '''
-        call denite#custom#option('default', {
-           \ 'prompt': '❯',
-           \ 'highlight_matched_char': 'Underlined',
-           \ 'highlight_mode_normal': 'CursorLine',
-           \ 'statusline': 0,
-           \ 'vertical_preview': 1,
-           \ })
-
-        call denite#custom#var('file/rec', 'command', ['rg', '--files', '--glob', '!.git', '--color', 'never'])
-        call denite#custom#var('file/rec', 'matchers', ['matcher/cpsm'])
-
-        call denite#custom#var('file_mru', 'command', ['rg', '--files', '--glob', '!.git', '--color', 'never'])
-        call denite#custom#var('file_mru', 'matchers', ['matcher/cpsm', 'matcher/project_files'])
-
-        call denite#custom#var('grep', 'command', ['rg'])
-        call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading', '--smart-case'])
-        call denite#custom#var('grep', 'recursive_opts', [])
-        call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
-        call denite#custom#var('grep', 'separator', ['--'])
-        call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
-
-        call denite#custom#alias('source', 'search_models', 'grep')
-        " call denite#custom#var('search_models', 'command', ['rg', '^class (\w+).*$', '-g', '**/models/*.py', '-g', 'models.py', '-r', '$1', '.'])
-        call denite#custom#var('search_models', 'command', ['rg', 'class'])
-
-        function! s:denite_my_settings() abort
-            nnoremap <silent><buffer><expr> <CR> denite#do_map('do_action')
-            nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
-            nnoremap <silent><buffer><expr> p denite#do_map('do_action', 'preview')
-
-            nnoremap <silent><buffer><expr> t denite#do_map('do_action', 'tabswitch')
-            nnoremap <silent><buffer><expr> s denite#do_map('do_action', 'splitswitch')
-            nnoremap <silent><buffer><expr> v denite#do_map('do_action', 'vsplitswitch')
-
-            nmap <silent><buffer><expr> <Esc> denite#do_map('quit')
-        endfunction
-
-        function! s:denite_filter_my_settings() abort
-            call deoplete#custom#buffer_option('auto_complete', v:false)
-            imap <silent><buffer> <Esc> <Plug>(denite_filter_quit)
-            imap <silent><buffer> jj <Plug>(denite_filter_update)
-        endfunction
-
-        autocmd FileType denite call s:denite_my_settings()
-        autocmd FileType denite-filter call s:denite_filter_my_settings()
-    '''
-    hook_add = '''
-        nnoremap <silent> <C-p> :<C-u>Denite file/rec -split=floating -start-filter<CR>
-        nnoremap <silent> <C-h> :<C-u>Denite help -start-filter<CR>
-        nnoremap <silent> <C-f> :<C-u>Denite -no-empty grep:.<CR>
-        nnoremap <silent> <C-m> :<C-u>Denite -start-filter search_models:.::!<CR>
-        nnoremap <silent> <leader>* :<C-u>DeniteCursorWord grep:.<CR>
-        cnoremap <silent> <C-r> :<C-u>Denite command_history -start-filter<CR>
-        nnoremap <silent> <C-s> :<C-u>Denite spell -split=floating<CR>
-        nnoremap <silent> <C-o> :<C-u>Denite outline -smartcase=true -split=floating -start-filter<CR>
-    '''
-
-    # [[plugins]]
-    # repo = 'rafi/vim-denite-z'
-    # depends = 'denite.nvim'
-    # on_cmd = ['Denite', 'DeniteBufferDir', 'DeniteCursorWord ', 'DeniteProjectDir ']
-    # hook_source = '''
-    #     call denite#custom#var('z', 'order', 'frecent')
-    #     call denite#custom#source('z', 'sorters', ['sorter_z'])
-    # '''
 
     [[plugins]]
     repo = 'Shougo/context_filetype.vim'
@@ -773,25 +419,49 @@
             return !col || getline('.')[col - 1]  =~ '\s'
         endfunction "}}}
 
-        " "Auto close the "preview" (dostring) window after the completion is done
-        " augroup go_autoclose_preview
-        "     autocmd!
-        "     autocmd CompleteDone * silent! pclose!
-        "     autocmd InsertLeave * silent! pclose!
-        " augroup END
-
         " Disable the "preview" (docstring) window after the completion is done
         set completeopt-=preview
     '''
+# }}}
+# Telescope {{{
+    [[plugins]]
+    repo = 'pschmitt/telescope-yadm.nvim'
+    depends = ['telescope.nvim']
+    on_cmd = ['Telescope']
 
-    # It's buggy with autocompletion in Python (e.g. when setting the arguments
-    # of argparse methods). I don't use it that much, so I'll just disable it
-    # for now.
-    # [[plugins]]
-    # repo = 'Shougo/echodoc.vim'
-    # on_event = 'CompleteDone'
-    # hook_add = '''
-    #     set noshowmode  " Don't show --INSERT-- in the command_line
-    #     let g:echodoc#enable_at_startup = 1
-    # '''
+    [[plugins]]
+    repo = 'nvim-telescope/telescope.nvim'
+    rev = '0.1.x'
+    depends = ['plenary.nvim']
+    on_cmd = ['Telescope']
+    lua_source = '''
+        local telescope = require("telescope")
+
+        telescope.setup{
+            defaults = {
+                sorting_strategy = "ascending",
+                layout_config = {
+                    horizontal = {
+                        width = 0.9,
+                        prompt_position = "top"
+                    }
+                },
+                mappings = {
+                    i = {
+                        ["<esc>"] = require('telescope.actions').close,
+                    }
+                }
+            }
+        }
+
+        telescope.load_extension("yadm_files")
+        telescope.load_extension("git_or_yadm_files")
+    '''
+    hook_add = '''
+        nnoremap <silent> <C-p> <cmd>Telescope find_files<CR>
+        nnoremap <silent> <C-h> <cmd>Telescope help_tags<CR>
+        nnoremap <silent> <C-f> <cmd>Telescope live_grep<cr>
+        nnoremap <silent> <leader>* <cmd>Telescope grep_string<cr>
+        nnoremap <silent> <C-d> <cmd>Telescope yadm_files<CR>
+    '''
 # }}}

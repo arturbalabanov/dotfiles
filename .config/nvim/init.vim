@@ -49,13 +49,7 @@
 
     " Python support
     let g:python_host_prog='/usr/bin/python2'
-    
-    let is_default_py3_version_recent_enough = system("/usr/bin/python3 -c 'import sys; assert sys.version_info >= (3, 6)'")
-    if v:shell_error != 0
-        let g:python3_host_prog='/usr/bin/python3.6'
-    else
-        let g:python3_host_prog='/usr/bin/python3'
-    endif
+    let g:python3_host_prog='/usr/bin/python3'
 
     " Map the leader keys
     let mapleader=","
@@ -146,22 +140,6 @@
     inoremap <leader>, <C-o>m`<C-o>A,<C-o>``
     nnoremap <leader>, m`A,<Esc>``
 
-    " Toggle spellcheck
-    let g:myLang = 0
-    let g:myLangList = ['nospell', 'en_gb', 'bg']
-    function! MySpellLang() " {{{
-        let g:myLang = g:myLang + 1
-
-        if g:myLang >= len(g:myLangList)
-            let g:myLang = 0
-            setlocal nospell
-        else
-            let &l:spelllang = g:myLangList[g:myLang]
-            setlocal spell
-        endif
-    endfunction " }}}
-    nnoremap <silent> <leader>s :<C-U>call MySpellLang()<CR>
-
     " Sudo to write
     cnoremap w!! w !sudo tee % >/dev/null
 
@@ -226,6 +204,12 @@
 " Interface {{{
     " Colors {{{
         syntax on
+
+        " Disable syntax for very large files
+        augroup large_files
+            au!
+            au BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | endif
+        augroup END
 
         if (has("nvim"))
             let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -349,7 +333,7 @@
             let g:gruvbox_guisp_fallback = 'fg'
         " }}}
 
-        colorscheme gruvbox
+	    colorscheme gruvbox
 
         highlight! CursorLine guibg=#282828 ctermbg=235
         highlight! Visual guibg=#504945 ctermbg=239
@@ -362,20 +346,65 @@
         highlight! link ALEErrorSign GruvboxRed
         highlight! link ALEWarningSign GruvboxYellow
 
+        highlight! link logLevelInfo GruvboxGreenBold
+        highlight! link logLevelWarning GruvboxYellowBold
+        highlight! link logLevelError GruvboxRedBold
+
         highlight link Flashy Visual
+    " }}}
+    " Folding {{{
+        fu! CustomFoldText() " {{{
+            "get first non-blank line
+            let fs = v:foldstart
+            while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
+            endwhile
+            if fs > v:foldend
+                let line = getline(v:foldstart)
+            else
+                let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
+            endif
+
+            let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
+            let foldSize = 1 + v:foldend - v:foldstart
+            let foldSizeStr = " " . foldSize . " lines "
+            let foldLevelStr = repeat("+", v:foldlevel)
+            let lineCount = line("$")
+            let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
+            let expansionString = repeat(" ", w - strwidth(foldSizeStr.line.foldLevelStr.foldPercentage))
+            return line . expansionString . foldSizeStr . foldPercentage . foldLevelStr
+        endf "}}}
+
+        set foldtext=CustomFoldText()
+        set foldmethod=indent
+        set foldignore=
+        set foldnestmax=2
+
+        let javaScript_fold=1
+
+        " It's easier to use space...
+        nnoremap <space> za
+
+        " Focus the current folding
+        nnoremap <leader>z zMzvzz
     " }}}
 
     set nonumber
+    set cursorline
+    set colorcolumn=100
+    set textwidth=100
 
-    " set number
-    " augroup numbertoggle
-    "     autocmd!
-    "     autocmd BufEnter,FocusGained * if expand('%:t:r') !~ '^_*\(NERD_tree\|Tagbar\|Gundo\)' | setlocal number | endif
-    "     autocmd BufLeave,FocusLost * setlocal nonumber
-    " augroup END
+    " Enable spellcheck
+    let g:spelllang = 'en_gb'
+    set spell
+
+    " Only show cursorline in the current buffer and in normal mode.
+    augroup cline
+        au!
+        au WinLeave,InsertEnter * set nocursorline
+        au WinEnter,InsertLeave * set cursorline
+    augroup END
 
     set ruler
-    set cursorline
     set mouse=a
 " }}}
 " Tabs and spaces {{{
@@ -387,8 +416,10 @@
     " https://vim.fandom.com/wiki/Indent_with_tabs,_align_with_spaces
 
     set smartindent
+    set expandtab     " insert spaces when hitting TABs
     set shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
     set tabstop=4     " an hard TAB displays as 4 columns
+    set softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
     set shiftround    " round indent to multiple of 'shiftwidth'
 " }}}
 " Searching {{{
@@ -414,48 +445,8 @@
     nnoremap n nzzzv
     nnoremap N Nzzzv
 " }}}
-" Folding {{{
-    set foldlevelstart=0
-    fu! CustomFoldText() " {{{
-        "get first non-blank line
-        let fs = v:foldstart
-        while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
-        endwhile
-        if fs > v:foldend
-            let line = getline(v:foldstart)
-        else
-            let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
-        endif
-
-        let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
-        let foldSize = 1 + v:foldend - v:foldstart
-        let foldSizeStr = " " . foldSize . " lines "
-        let foldLevelStr = repeat("+", v:foldlevel)
-        let lineCount = line("$")
-        let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
-        let expansionString = repeat(" ", w - strwidth(foldSizeStr.line.foldLevelStr.foldPercentage))
-        return line . expansionString . foldSizeStr . foldPercentage . foldLevelStr
-    endf "}}}
-    set foldtext=CustomFoldText()
-    set foldmethod=indent
-    set foldignore=
-
-    let javaScript_fold=1
-
-    " It's easier to use space...
-    nnoremap <space> za
-
-    " Focus the current folding
-    nnoremap <leader>z zMzvzz
-" }}}
 " Quick editing {{{
-    " TODO: Try to simulate denite's tabswitch
-    let tmux_theme_name = system('grep "TMUX_POWERLINE_THEME" ~/.tmux-powerlinerc | sed -r "s/^.*?([\"''])(.*?)\1\s*$/\2/"')
-    let tmux_theme_name = substitute(tmux_theme_name, '\n$', '', '')
-
-    let zsh_theme_name = system('grep "ZSH_THEME" ~/.zshrc | sed -r "s/^.*?([\"''])(.*?)\1\s*$/\2/"')
-    let zsh_theme_name = substitute(zsh_theme_name, '\n$', '', '')
-
+    " TODO: Replace this with telescope + yadm
     let quick_edit_prefix = '<leader>e'
     let quick_edit_files = {
         \ 'vr': "$MYVIMRC",
@@ -465,10 +456,7 @@
         \ 'zl': "~/.zshrc_local",
         \ 'zp': "~/.zprofile",
         \ 'za': "~/.aliases",
-        \ 'zt': "~/.oh-my-zsh/custom/themes/" . zsh_theme_name . ".zsh-theme",
         \ 'tr': "~/.tmux.conf",
-        \ 'tc': "~/.tmux-powerlinerc",
-        \ 'tt': "~/.tmux/tmux-powerline/themes/" . tmux_theme_name . ".sh",
         \ 'xr': "~/.Xresources",
         \ 'xl': "~/.Xresources_local",
         \ }
@@ -491,20 +479,6 @@
     set splitbelow
     set splitright
 
-    " Only show cursorline in the current buffer and in normal mode.
-    augroup cline
-        au!
-        au WinLeave,InsertEnter * set nocursorline
-        au WinEnter,InsertLeave * set cursorline
-    augroup END
-
-    " Only show line numbers numbers and the ALE gutter in the current buffer.
-    " augroup linenum
-    "     au!
-    "     au WinLeave * setlocal nonumber | :sign unplace *
-    "     au WinEnter * setlocal number | :ALELint
-    " augroup END
-
     " Resizing splits
     nnoremap <left>  <c-w><
     nnoremap <right> <c-w>>
@@ -512,232 +486,18 @@
     nnoremap <down>  <c-w>+
 " }}}
 " Filetype specific settings {{{
-    " Automaticlly set filetypes {{{
-        augroup auto_ft
-            au!
-            au BufRead, BufNewFile /etc/nginx/*,/usr/local/nginx/conf/* if &ft == '' | setfiletype nginx | endif
-        augroup END
-        let g:tex_flavor = "latex"
-    " }}}
-    " Git {{{
-        augroup ft_gitcommit
-            au!
-            au FileType gitcommit let &l:spelllang = 'en_gb' | setlocal spell
-        augroup END
-    " }}}
-    " C {{{
-        augroup ft_c
-            au!
-            au FileType c setlocal foldmethod=syntax
-        augroup END
-    "}}}
-    " C++ {{{
-        augroup ft_cpp
-            au!
-            au FileType cpp setlocal foldmethod=syntax
-        augroup END
-    "}}}
-    " CoffeeScript {{{
-        augroup ft_coffee
-            au!
-            au FileType coffee setlocal foldmethod=indent
-            au FileType coffee setlocal shiftwidth=2
-            au FileType coffee setlocal tabstop=2
-            au FileType coffee setlocal expandtab
-            au FileType coffee setlocal softtabstop=2
-            au FileType coffee setlocal shiftround
-        augroup END
-    " }}}
-    " Django {{{
-        augroup ft_django
-            au!
-            au BufNewFile,BufRead urls.py           setlocal nowrap
-            au BufNewFile,BufRead urls.py           normal! zR
-            au BufNewFile,BufRead dashboard.py      normal! zR
-            au BufNewFile,BufRead local_settings.py normal! zR
-
-            au BufNewFile,BufRead admin.py     setlocal filetype=python.django
-            au BufNewFile,BufRead urls.py      setlocal filetype=python.django
-            au BufNewFile,BufRead models.py    setlocal filetype=python.django
-            au BufNewFile,BufRead views.py     setlocal filetype=python.django
-            au BufNewFile,BufRead settings.py  setlocal filetype=python.django
-            au BufNewFile,BufRead settings.py  setlocal foldmethod=marker
-            au BufNewFile,BufRead forms.py     setlocal filetype=python.django
-            au BufNewFile,BufRead common_settings.py  setlocal filetype=python.django
-            au BufNewFile,BufRead common_settings.py  setlocal foldmethod=marker
-        augroup END
-    " }}}
-    " Vimscript {{{
-        augroup ft_viml
-            au!
-            au FileType vim setlocal shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
-            au FileType vim setlocal tabstop=4     " an hard TAB displays as 4 columns
-            au FileType vim setlocal expandtab     " insert spaces when hitting TABs
-            au FileType vim setlocal softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
-            au FileType vim setlocal foldmethod=marker
-        augroup END
-    " }}}
-    " Tmux {{{
-        augroup ft_tmux
-            au!
-            au FileType tmux setlocal foldmethod=marker
-        augroup END
-    " }}}
-    " zsh {{{
-        augroup ft_zsh
-            au!
-            au FileType zsh setlocal foldmethod=marker
-        augroup END
-    " }}}
-    " Python {{{
-        augroup ft_python
-            au!
-            au FileType python setlocal shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
-            au FileType python setlocal tabstop=4     " an hard TAB displays as 4 columns
-            au FileType python setlocal expandtab     " insert spaces when hitting TABs
-            au FileType python setlocal softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
-            au FileType python setlocal shiftround    " round indent to multiple of 'shiftwidth'
-            au FileType python setlocal autoindent    " align the new line indent with the previous line
-            au FileType python setlocal colorcolumn=100
-            au FileType python setlocal foldnestmax=2
-        augroup END
-    " }}}
-    " TOML {{{
-        augroup ft_toml
-            au!
-            au FileType toml setlocal shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
-            au FileType toml setlocal tabstop=4     " an hard TAB displays as 4 columns
-            au FileType toml setlocal expandtab     " insert spaces when hitting TABs
-            au FileType toml setlocal softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
-            au FileType toml setlocal foldmethod=marker
-        augroup END
-    " }}}
-    " CTP {{{
-        augroup ft_ctp
-            au!
-            au FileType ctp setlocal shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
-            au FileType ctp setlocal tabstop=4     " an hard TAB displays as 4 columns
-            au FileType ctp setlocal expandtab     " insert spaces when hitting TABs
-            au FileType ctp setlocal softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
-            au FileType ctp setlocal shiftround    " round indent to multiple of 'shiftwidth'
-            au FileType ctp setlocal autoindent    " align the new line indent with the previous line
-        augroup END
-    " }}}
-    " JavaScript {{{
-        augroup ft_js
-            au!
-            au FileType javascript setlocal foldmethod=syntax
-            au FileType javascript setlocal shiftwidth=4
-            au FileType javascript setlocal tabstop=4
-            au FileType javascript setlocal expandtab
-            au FileType javascript setlocal softtabstop=4
-            au FileType javascript setlocal shiftround
-        augroup END
-    " }}}
-    " Clojure {{{
-        augroup ft_clojure
-            au!
-            au FileType clojure setlocal foldmethod=syntax
-        augroup END
-    " }}}
-    " HTML {{{
-        augroup ft_html
-            au!
-            au FileType htmldjango.html setlocal shiftwidth=2
-            au FileType htmldjango.html setlocal tabstop=2
-            au FileType htmldjango.html setlocal expandtab
-            au FileType htmldjango.html setlocal softtabstop=2
-            au FileType htmldjango.html setlocal shiftround
-        augroup END
-    " }}}
-    " Jade {{{
-        augroup ft_jade
-            au!
-            au FileType jade setlocal nofoldenable
-            au FileType jade setlocal shiftwidth=2
-            au FileType jade setlocal tabstop=2
-            au FileType jade setlocal expandtab
-            au FileType jade setlocal softtabstop=2
-            au FileType jade setlocal shiftround
-        augroup END
-    " }}}
-    " Markdown {{{
-        augroup ft_mkd
-            au!
-            au FileType mkd setlocal textwidth=80
-            au FileType mkd nnoremap <buffer> <leader><space> :Goyo<CR>
-        augroup END
-    " }}}
-    " reStructuredText {{{
-        augroup ft_rst
-            au!
-            au FileType rst setlocal textwidth=79
-            au FileType rst setlocal colorcolumn=80
-            au FileType rst nnoremap <buffer> <leader><space> :Goyo<CR>
-        augroup END
-    " }}}
-    " LaTeX {{{
-        augroup ft_tex
-            au!
-            au FileType tex setlocal textwidth=80
-            au FileType tex setlocal foldmethod=manual
-        augroup END
-    " }}}
-    " CSS {{{
-        augroup ft_css
-            au!
-            au FileType css setlocal foldmethod=syntax
-        augroup END
-    " }}}
-    " SCSS {{{
-        augroup ft_scss
-            au!
-            au FileType scss setlocal foldmethod=marker
-            au FileType scss setlocal foldmarker={,}
-            au FileType scss setlocal shiftwidth=2
-            au FileType scss setlocal tabstop=2
-            au FileType scss setlocal expandtab
-            au FileType scss setlocal softtabstop=2
-            au FileType scss setlocal shiftround
-        augroup END
-    " }}}
-    " Sass {{{
-        augroup ft_sass
-            au!
-            au FileType sass setlocal foldmethod=indent
-            au FileType sass setlocal shiftwidth=2
-            au FileType sass setlocal tabstop=2
-            au FileType sass setlocal expandtab
-            au FileType sass setlocal softtabstop=2
-            au FileType sass setlocal shiftround
-        augroup END
-    " }}}
-    " Lua {{{
-        augroup ft_lua
-            au!
-            au FileType lua setlocal foldmethod=marker
-            au FileType lua setlocal shiftwidth=4  " operation >> indents 4 columns; << unindents 4 columns
-            au FileType lua setlocal tabstop=4     " an hard TAB displays as 4 columns
-            au FileType lua setlocal expandtab     " insert spaces when hitting TABs
-            au FileType lua setlocal softtabstop=4 " insert/delete 4 spaces when hitting a TAB/BACKSPACE
-            au FileType lua setlocal shiftround    " round indent to multiple of 'shiftwidth'
-            au FileType lua setlocal autoindent    " align the new line indent with the previous line
-        augroup END
-    " }}}
-    " Logfiles {{{
-        augroup ft_log
-            au!
-            " The syntax highlighting is nice but slows down vim tremendously
-            " in log files
-            au FileType log syntax clear
-        augroup END
-    " }}}
-    " Nonvim {{{
-        augroup nonvim
-            au!
-            au BufRead *.png,*.jpg,*.pdf,*.gif,*.scpt sil exe "!xdg-open " . shellescape(expand("%:p")) | bd | let &ft=&ft | redraw!
-        augroup END
-    " }}}
+    augroup ft_viml
+        au!
+        au FileType vim setlocal foldmethod=marker
+    augroup END
+    augroup ft_tmux
+        au!
+        au FileType tmux setlocal foldmethod=marker
+    augroup END
+    augroup ft_python
+        au!
+        au FileType python setlocal foldnestmax=2
+    augroup END
 " }}}
 " Utils {{{
     set t_ut=
