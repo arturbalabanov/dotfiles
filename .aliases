@@ -1,8 +1,5 @@
 # vim: ft=zsh
 
-distro=$(lsb_release -i | sed 's/Distributor ID:\s*//')
-
-
 if type lsd > /dev/null; then
 	alias ls='lsd'
 else
@@ -32,12 +29,6 @@ alias raliases='source ~/.aliases'
 alias rm='rm -rf'
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
 alias cb-copy="xclip -selection clipboard"
-
-if [[ $distro == "Ubuntu" ]]; then
-	alias yank="yank-cli -- xclip -selection clipboard"
-else
-	alias yank="yank -- xclip -selection clipboard"
-fi
 
 if type thefuck > /dev/null; then
 	eval $(thefuck --alias)
@@ -87,7 +78,15 @@ function gd() {
 }
 
 function venv {
-	venv_path=$(poetry env info -p)
+    if [[ -f "poetry.lock" ]]; then
+        venv_path=$(poetry env info -p)
+    elif [[ -f "Pipfile.lock" ]]; then
+        venv_path=$(pipenv --venv)
+    else
+        echo "No poetry.lock or Pipfile.lock found :("
+        return 1
+    fi
+
 	source $venv_path/bin/activate
 }
 
@@ -101,3 +100,9 @@ function review_pass {
 		echo -n $password | xclip -selection clipboard
 	fi
 }
+
+if [[ $OSTYPE == 'darwin'* ]]; then
+    if type brew > /dev/null; then
+        alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
+    fi
+fi

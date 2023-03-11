@@ -67,3 +67,14 @@ opt.wildignore:append('**/.mypy_cache/**')
 -- disable netrw because we use nvim-tree
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+
+-- Python support
+local py_venv_path = vim.fn.system {
+        'poetry',
+        'env',
+        'info',
+        '-p',
+        '-C',
+        vim.fn.stdpath("config"),
+    }:gsub("%s*$", "")
+vim.g.python3_host_prog = py_venv_path .. '/bin/python'

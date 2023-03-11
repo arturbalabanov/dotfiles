@@ -9,7 +9,7 @@ local utils = require("user.utils")
 
 telescope.setup {
     defaults = {
-        path_display = { "smart" },
+        -- path_display = { "smart" },
         sorting_strategy = "ascending",
         set_env = { ["COLORTERM"] = "truecolor" }, -- default = nil,
         border = true,
@@ -50,12 +50,13 @@ telescope.setup {
 
 }
 
-utils.nkeymap("<C-p>", builtin.find_files)
-utils.nkeymap("<C-h>", builtin.help_tags)
-utils.nkeymap("<C-f>", builtin.live_grep)
+utils.nkeymap("<leader><leader>", vim.cmd.Telescope)
+utils.nkeymap("<leader>p", builtin.find_files)
+utils.nkeymap("<leader>h", builtin.help_tags)
+utils.nkeymap("<leader>f", builtin.live_grep)
 utils.nkeymap("<leader>*", builtin.grep_string)
 
--- TODO
--- telescope.load_extension("yadm_files")
--- telescope.load_extension("git_or_yadm_files")
--- utils.nkeymap("<C-d>", vim.cmd.Telescope("yadm_files"))
+telescope.load_extension("yadm_files")
+telescope.load_extension("git_or_yadm_files")
+
+utils.nkeymap("<leader>c", function() vim.cmd.Telescope("yadm_files") end)
