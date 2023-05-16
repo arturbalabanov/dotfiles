@@ -14,7 +14,9 @@ alias vim='nvim'
 alias s='sudo'
 alias se='sudoedit'
 alias pac='pikaur'
-alias open='xdg-open'
+if [[ $OSTYPE == 'linux'* ]]; then
+    alias open='xdg-open'
+fi
 alias wget='wget -c'
 alias lynx='lynx -lss=~/.lynx.lss'
 alias ..='cd ..'
@@ -78,6 +80,10 @@ function gd() {
 }
 
 function venv {
+    if $(pdm venv activate 2>/dev/null); then
+        return 0
+    fi
+
     if [[ -f "poetry.lock" ]]; then
         venv_path=$(poetry env info -p)
     elif [[ -f "Pipfile.lock" ]]; then

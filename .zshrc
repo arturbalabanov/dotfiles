@@ -1,3 +1,23 @@
+# OS Detection {{{
+# From: https://stackoverflow.com/a/27776822
+case "$(uname -sr)" in
+    Darwin*)
+        os="macos"
+        ;;
+
+    Linux*Microsoft*)
+        os='wsl'  # Windows Subsystem for Linux
+        ;;
+
+    Linux*)
+        os='linux'
+        ;;
+
+    CYGWIN*|MINGW*|MINGW32*|MSYS*)
+        os="windows"
+        ;;
+esac
+# }}}
 # Oh my ZSH {{{
 export ZSH=$HOME/.oh-my-zsh
 
@@ -34,10 +54,6 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 export LESS="$LESS -x4"  # less uses 4 space tab witdh
 # }}}
 # VIM Mode {{{
-NORMAL_MODE_INDICATOR="%{$fg_bold[green]%}-%{$fg[green]%}- NORMAL --%{$reset_color%}"
-INSERT_MODE_INDICATOR="%{$fg_bold[blue]%}-%{$fg[blue]%}- INSERT --%{$reset_color%}"
-VISUAL_MODE_INDICATOR="%{$fg_bold[magenta]%}-%{$fg[magenta]%}- VISUAL --%{$reset_color%}"
-
 function _set_cursor_shape {
 	shape="$1"
 
@@ -66,20 +82,6 @@ function _set_cursor_shape {
 	esac
 }
 
-function _vim_mode_prompt_info() {
-	case $KEYMAP in
-		vicmd)
-			echo "$NORMAL_MODE_INDICATOR"
-			;;
-		viins||main)
-			echo "$INSERT_MODE_INDICATOR"
-			;;
-		vivis)
-			echo "$VISUAL_MODE_INDICATOR"
-			;;
-	esac
-}
-
 function zle-keymap-select zle-line-init {
 	case $KEYMAP in
 		vicmd)
@@ -104,8 +106,6 @@ function zle-line-finish {
 zle -N zle-line-init
 zle -N zle-keymap-select
 zle -N zle-line-finish
-
-RPS1='$(_vim_mode_prompt_info)'
 
 # Vimode keybindings
 bindkey -M viins 'jj' vi-cmd-mode
@@ -175,7 +175,10 @@ bindkey "^s" prepend-sudo
 # }}}
 # Environment Variables {{{
 export EDITOR="nvim"
-export BROWSER="google-chrome-stable"
+
+if [[ $os == "linux" ]]; then
+    export BROWSER="google-chrome-stable"
+fi
 
 export PATH="$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin:$HOME/node_modules/.bin"
 export MANPATH="$MANPATH:$HOME/.local/man"
@@ -207,6 +210,11 @@ if type pyenv > /dev/null; then
 
 	eval "$(pyenv init --path)"
 	eval "$(pyenv init -)"
+fi
+
+
+if type terraform > /dev/null; then
+    complete -o nospace -C $(where terraform) terraform
 fi
 # }}}
 # Source other configs {{{

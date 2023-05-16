@@ -9,8 +9,7 @@ if not status_ok then
 end
 
 configs.setup {
-    ensure_installed = { "lua", "python" }, -- put the language you want in this array
-    -- ensure_installed = "all", -- one of "all" or a list of languages
+    ensure_installed = "all",
     sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
     highlight = {
         enable = true,
@@ -37,11 +36,11 @@ vim.treesitter.set_query("python", "folds", [[
     (class_definition) @fold
 ]])
 
--- vim.treesitter.set_query("go", "folds", [[
---    (function_declaration) @fold
---    (method_declaration) @fold
---    (type_declaration) @fold
---]])
+vim.treesitter.set_query("go", "folds", [[
+    (function_declaration) @fold
+    (method_declaration) @fold
+    (type_declaration) @fold
+]])
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"

@@ -14,8 +14,8 @@ opt.showmode = false
 opt.ruler = false
 opt.cmdheight = 1
 opt.cursorline = true
-opt.colorcolumn = "100"
-opt.number = true
+opt.colorcolumn = "130"
+opt.number = false
 opt.signcolumn = "yes"
 opt.numberwidth = 4
 opt.scrolloff = 8
@@ -31,6 +31,7 @@ opt.spell = false
 opt.textwidth = 100
 opt.whichwrap:append("<,>,[,],h,l") -- keys allowed to move to the previous/next line when the beginning/end of line is reached
 opt.iskeyword:append("-") -- treats words with `-` as single words
+opt.iskeyword:remove(":") -- make sure words seperated by `:` are treated as different words
 opt.formatoptions:remove({ "c", "r", "o" }) -- This is a sequence of letters which describes how automatic formatting is to be done
 
 -- indentation
@@ -44,7 +45,11 @@ opt.softtabstop = 4
 -- search
 opt.hlsearch = true
 opt.incsearch = true
+opt.ignorecase = true
 opt.smartcase = true
+
+-- folding
+opt.foldenable = false
 
 -- other
 opt.wildignore:append('*.pyc')

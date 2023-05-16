@@ -29,7 +29,7 @@ cmp.setup({
     },
     formatting = {
         format = require('lspkind').cmp_format({
-            with_text = false,
+            with_text = true,
         }),
     },
     mapping = cmp.mapping.preset.insert({

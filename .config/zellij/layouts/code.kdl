@@ -1,0 +1,93 @@
+layout {
+    cwd "/Users/artur/dev/"
+
+    pane_template name="py_vim" {
+        command "pipenv"
+        args "shell" "vim"
+    }
+
+    pane_template name="py_shell" {
+        command "pipenv"
+        args "shell" "clear"
+    }
+
+    swap_tiled_layout name="code" {
+        tab {
+            pane split_direction="vertical" {
+                pane split_direction="horizontal" size="80%" {
+                    pane 
+                    pane size=5
+                }
+                pane stacked=true {
+                    pane
+                    pane
+                    pane
+                    pane
+                    pane
+                    pane
+                    pane
+                    pane
+                    pane
+                }
+            }
+        }
+    }
+
+    default_tab_template name="ui_tab" {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab_template name="py_code_tab" {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+
+        pane split_direction="vertical" name="0" {
+            pane split_direction="horizontal" size="80%" name="00" {
+                py_vim name="editor" focus=true
+                py_shell name="git" size=5
+            }
+
+            pane stacked=true {
+                py_shell name="tests"
+            }
+        }
+
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab_template name="code_tab" {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+
+        pane split_direction="vertical" name="0" {
+            pane split_direction="horizontal" size="80%" name="00" {
+                pane name="editor" focus=true edit="."
+                pane name="git" size=5
+            }
+
+            pane stacked=true {
+                pane name="tests"
+            }
+        }
+
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    py_code_tab name="Hub" cwd="hub" focus=true
+    py_code_tab name="Drivers" cwd="drivers"
+
+    code_tab name="Platform" cwd="platform-go"
+    code_tab name="Internal Services" cwd="internal-services"
+}

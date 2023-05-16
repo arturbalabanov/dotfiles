@@ -8,6 +8,21 @@ alias -g NH='--no-headless'
 
 # export PIPX_DEFAULT_PYTHON="$PYENV_ROOT/versions/3.10.6/bin/python"
 
+function ssh {
+    if [[ $TERM == "xterm-kitty" ]]; then
+        TERM="xterm-256color"
+        command ssh $@
+        TERM="xterm-kitty"
+    else
+        command ssh $@
+    fi
+}
+
+unalias gg
+function gg {
+    (cd ~/dev/greengrass-hub && pipenv run cli $@)
+}
+
 function repl {
 	if [[ "$#" -lt 2 ]]; then
 		echo "usage: $0 <shell> <env> [service=platform]" >&2

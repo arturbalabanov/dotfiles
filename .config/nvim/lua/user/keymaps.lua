@@ -30,3 +30,9 @@ utils.vkeymap("L", "g_")
 
 -- Toggle folds with <Tab>
 utils.nkeymap("<Tab>", "za")
+
+-- Toggle the line numbers with <F1>
+utils.nkeymap("<F1>", ":set invnumber<CR>")
+
+-- Clear highlight search with ,/
+utils.nkeymap(",/", cmd.nohlsearch)

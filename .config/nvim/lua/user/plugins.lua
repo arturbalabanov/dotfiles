@@ -50,6 +50,7 @@ return packer.startup(function(use)
         use "jose-elias-alvarez/null-ls.nvim"
         use "jay-babu/mason-null-ls.nvim"
 
+        use { 'echasnovski/mini.nvim' }
         use { "ellisonleao/gruvbox.nvim" }
         use {
             'nvim-lualine/lualine.nvim',
@@ -75,7 +76,11 @@ return packer.startup(function(use)
 
         use {
             "pschmitt/telescope-yadm.nvim",
-            requires = "nvim-telescope/telescope.nvim"
+            requires = "nvim-telescope/telescope.nvim",
+        }
+        use {
+            "nvim-telescope/telescope-live-grep-args.nvim",
+            requires = "nvim-telescope/telescope.nvim",
         }
 
         use {
@@ -86,11 +91,16 @@ return packer.startup(function(use)
             end
         }
 
+        use {
+            'nvim-treesitter/playground'
+        }
+
         use 'hrsh7th/vim-vsnip'
         use 'onsails/lspkind.nvim'
 
         use 'hrsh7th/nvim-cmp'
         use 'hrsh7th/cmp-nvim-lsp'
+        use "folke/neodev.nvim"
         use 'hrsh7th/cmp-buffer'
         use 'hrsh7th/cmp-path'
         use 'hrsh7th/cmp-cmdline'
@@ -100,6 +110,8 @@ return packer.startup(function(use)
             "folke/trouble.nvim",
             requires = "nvim-tree/nvim-web-devicons",
         }
+
+        use 'glepnir/lspsaga.nvim'
 
         -- Automatically set up your configuration after cloning packer.nvim
         -- Put this at the end after all plugins
