@@ -22,21 +22,21 @@ esac
 export ZSH=$HOME/.oh-my-zsh
 
 if type starship > /dev/null; then
-	eval "$(starship init zsh)"
+    eval "$(starship init zsh)"
 else
-	ZSH_THEME="artur" 
+    ZSH_THEME="artur" 
 fi
 
 export DISABLE_AUTO_UPDATE="true"
 export DISABLE_AUTO_TITLE="true"
 export HIST_STAMPS="dd.mm.yyyy"
 
-plugins=(git git-extras zsh-syntax-highlighting vi-mode zle-vi-visual)
+plugins=(zsh-syntax-highlighting vi-mode zle-vi-visual pdm)
 source $ZSH/oh-my-zsh.sh
 # }}}
 # Terminal wizardry {{{
 if type dircolors > /dev/null; then
-	eval $(dircolors ~/.dircolors)
+    eval $(dircolors ~/.dircolors)
 fi
 
 # Stupid Ctrl-S!
@@ -55,52 +55,52 @@ export LESS="$LESS -x4"  # less uses 4 space tab witdh
 # }}}
 # VIM Mode {{{
 function _set_cursor_shape {
-	shape="$1"
+    shape="$1"
 
-	case $shape in
-		block)
-			echo -ne '\e[2 q'
-			;;
-		block_blink)
-			echo -ne '\e[1 q'
-			;;
-		underscore)
-			echo -ne '\e[4 q'
-			;;
-		underscore_blink)
-			echo -ne '\e[3 q'
-			;;
-		line)
-			echo -ne '\e[6 q'
-			;;
-		line_blink)
-			echo -ne '\e[6 q'
-			;;
-		*)
-			return 1
-			;;
-	esac
+    case $shape in
+        block)
+            echo -ne '\e[2 q'
+            ;;
+        block_blink)
+            echo -ne '\e[1 q'
+            ;;
+        underscore)
+            echo -ne '\e[4 q'
+            ;;
+        underscore_blink)
+            echo -ne '\e[3 q'
+            ;;
+        line)
+            echo -ne '\e[6 q'
+            ;;
+        line_blink)
+            echo -ne '\e[6 q'
+            ;;
+        *)
+            return 1
+            ;;
+    esac
 }
 
 function zle-keymap-select zle-line-init {
-	case $KEYMAP in
-		vicmd)
-			_set_cursor_shape "block"
-			;;
-		viins||main)
-			_set_cursor_shape "line"
-			;;
-		vivis)
-			_set_cursor_shape "block"
-			;;
-	esac
+    case $KEYMAP in
+        vicmd)
+            _set_cursor_shape "block"
+            ;;
+        viins||main)
+            _set_cursor_shape "line"
+            ;;
+        vivis)
+            _set_cursor_shape "block"
+            ;;
+    esac
 
-	zle reset-prompt
-	zle -R
+    zle reset-prompt
+    zle -R
 }
 
 function zle-line-finish {
-	_set_cursor_shape "block"
+    _set_cursor_shape "block"
 }
 
 zle -N zle-line-init
@@ -116,25 +116,25 @@ bindkey -M vicmd 'L' end-of-line
 bindkey -M vicmd 'L' end-of-line
 
 tmux-select-pane-up () {
-	tmux select-pane -U
+    tmux select-pane -U
 }
 zle -N tmux-select-pane-up
 bindkey -M vicmd 'gk' tmux-select-pane-up
 
 tmux-select-pane-down () {
-	tmux select-pane -D
+    tmux select-pane -D
 }
 zle -N tmux-select-pane-down
 bindkey -M vicmd 'gj' tmux-select-pane-down
 
 tmux-select-pane-left () {
-	tmux select-pane -L
+    tmux select-pane -L
 }
 zle -N tmux-select-pane-left
 bindkey -M vicmd 'gh' tmux-select-pane-left
 
 tmux-select-pane-right () {
-	tmux select-pane -R
+    tmux select-pane -R
 }
 zle -N tmux-select-pane-right
 bindkey -M vicmd 'gl' tmux-select-pane-right
@@ -164,10 +164,10 @@ bindkey '^Z' fancy-ctrl-z
 # Ctrl-S -> insert sudo at the beginning of the line
 function prepend-sudo {
   if [[ $BUFFER == "sudo "* ]]; then
-	BUFFER=$(echo $BUFFER | sed 's/^sudo //')
+    BUFFER=$(echo $BUFFER | sed 's/^sudo //')
   else
     BUFFER="sudo $BUFFER"
-	CURSOR+=5
+    CURSOR+=5
   fi
 }
 zle -N prepend-sudo
@@ -190,9 +190,9 @@ fi
 # }}}
 # External Tools {{{
 if [[ -r "$HOME/.local/share/z/z.sh" ]]; then
-	source "$HOME/.local/share/z/z.sh"
+    source "$HOME/.local/share/z/z.sh"
 elif [[ -r "/usr/share/z/z.sh" ]]; then
-	source "/usr/share/z/z.sh"
+    source "/usr/share/z/z.sh"
 fi
 
 # Enable bash completion scripts
@@ -201,15 +201,15 @@ autoload -U +X bashcompinit && bashcompinit
 
 # Auto-complete for pipx
 if type pipx > /dev/null; then
-	eval "$(register-python-argcomplete pipx)"
+    eval "$(register-python-argcomplete pipx)"
 fi
 
 if type pyenv > /dev/null; then
-	export PYENV_ROOT="$HOME/.pyenv"
-	export PATH="$PYENV_ROOT/bin:$PATH"
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
 
-	eval "$(pyenv init --path)"
-	eval "$(pyenv init -)"
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
 fi
 
 
@@ -218,11 +218,119 @@ if type terraform > /dev/null; then
 fi
 # }}}
 # Source other configs {{{
-if [[ -f "$HOME/.aliases" ]]; then
-	source $HOME/.aliases
+if [[ -f "$HOME/.zshrc_local" ]]; then
+    source "$HOME/.zshrc_local"
+fi
+# }}}
+# Aliases {{{
+if type lsd > /dev/null; then
+    alias ls='lsd'
+else
+    alias ls='ls --color=auto'
+fi
+alias ll='ls -lh'
+alias la='ll -a'
+alias grep='grep --color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
+alias tree='tree -C'
+alias vi='nvim'
+alias vim='nvim'
+alias s='sudo'
+alias se='sudoedit'
+alias pac='pikaur'
+if [[ $OSTYPE == 'linux'* ]]; then
+    alias open='xdg-open'
+fi
+alias wget='wget -c'
+alias lynx='lynx -lss=~/.lynx.lss'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias info='info --vi-keys'      # GNU info act like man command
+alias emacs='emacs -nw'          # cli mode
+alias cdtmp='cd $(mktemp -d)'
+alias rm='rm -rf'
+alias dad="curl -k https://icanhazdadjoke.com/ && echo"
+alias cb-copy="xclip -selection clipboard"
+
+if type thefuck > /dev/null; then
+    eval $(thefuck --alias)
+else
+    alias fuck='eval "sudo $(fc -ln -1)"'
 fi
 
-if [[ -f "$HOME/.zshrc_local" ]]; then
-	source "$HOME/.zshrc_local"
+# Global aliases are a zsh-specific feature
+if [ -n "$ZSH_VERSION" ]; then
+    alias -g G='| grep -i'
+    alias -g L='| less'
+    alias -g H='| head'
+    alias -g T='| tail'
+fi
+
+function mkcd() { mkdir -p "$@" && cd "$_"; }
+function yadm_update() {
+    local commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
+    yadm commit -am "$commit_msg" && yadm push;
+}
+
+function git-diff2() {
+    # Stolen from: https://stackoverflow.com/a/4864668/2456167
+    echo "here"
+    return 1
+
+    inside_git_repo=$(git rev-parse --is-inside-work-tree 2>/dev/null)
+
+    if [[ ! $inside_git_repo ]]; then 
+        echo "error: not inside a git repo" >&2
+        return 1
+    fi
+    
+    pager=$(git config --get core.pager)
+    if [[ -z "$pager" ]]; then
+        pager=less
+    fi
+
+    if [[ "$#" -eq 0 ]]; then
+        (
+            git diff --color
+            git ls-files --others --exclude-standard |
+                while read -r i; do git diff --color -- /dev/null "$i"; done
+        ) | $pager
+    else
+        git diff "$@"
+    fi
+}
+
+function venv {
+    if [[ -f "pdm.lock" ]]; then
+        venv_path=$(pdm venv --path in-project)
+    elif [[ -f "poetry.lock" ]]; then
+        venv_path=$(poetry env info -p)
+    elif [[ -f "Pipfile.lock" ]]; then
+        venv_path=$(pipenv --venv)
+    else
+        echo "No pdm.lock, poetry.lock or Pipfile.lock found :("
+        return 1
+    fi
+
+    source $venv_path/bin/activate
+}
+
+function review_pass {
+    filename=$(find ~/7bridges -name populate_dev_users.py)
+    password=$(cat $filename| grep set_password | sed "s/.*set_password('\(.*\)')/\1/")
+
+    echo $password
+
+    if type xclip > /dev/null; then
+        echo -n $password | xclip -selection clipboard
+    fi
+}
+
+if [[ $OSTYPE == 'darwin'* ]]; then
+    if type brew > /dev/null && type pyenv > /dev/null; then
+        alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
+    fi
 fi
 # }}}
