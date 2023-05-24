@@ -185,24 +185,24 @@ null_ls.setup({
     sources = {
         -- diagnostics
         null_ls.builtins.diagnostics.ruff.with{
-            only_local = true,
+            prefer_local = true,
         },
         null_ls.builtins.diagnostics.flake8.with{
-            only_local = true,
+            prefer_local = true,
         },
         null_ls.builtins.diagnostics.mypy.with{
-            only_local = true,
+            prefer_local = true,
         },
 
         -- formatting
         null_ls.builtins.formatting.ruff.with{
-            only_local = true,
+            prefer_local = true,
         },
         null_ls.builtins.formatting.black.with{
-            only_local = true,
+            prefer_local = true,
         },
         null_ls.builtins.formatting.isort.with{
-            only_local = true
+            prefer_local = true
         },
     },
     on_attach = on_attach,
