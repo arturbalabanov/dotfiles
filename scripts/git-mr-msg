@@ -1,0 +1,8 @@
+#!/bin/bash
+
+git log --reverse --no-merges --grep="^Problem:" master.. --format="----------------
+
+
+**%h**
+
+%B" | grep -v -E "^refs" | sed 's_^\(Problem:\|Solution:\)_**\1**_' | tail -n+4 | head -n-2

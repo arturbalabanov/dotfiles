@@ -1,0 +1,18 @@
+#!/bin/bash
+
+git checkout master && git pull && git checkout - && git rebase master
+
+if [[ $? -eq 0 ]]; then
+    git push --force
+    exit 0
+fi
+
+echo -e "\n\n\nMERGE CONFLICTS:"
+git --no-pager diff --name-only --diff-filter=U
+
+read -p "Do you want to resolve these conflicts? [Y/n] " -n 1 -r reply
+reply=${reply:-y}  # set the default value to 'y'
+
+if [[ $reply =~ ^[Yy]$ ]]; then
+    git mergetool
+fi

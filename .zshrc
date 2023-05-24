@@ -274,34 +274,6 @@ function yadm_update() {
     yadm commit -am "$commit_msg" && yadm push;
 }
 
-function git-diff2() {
-    # Stolen from: https://stackoverflow.com/a/4864668/2456167
-    echo "here"
-    return 1
-
-    inside_git_repo=$(git rev-parse --is-inside-work-tree 2>/dev/null)
-
-    if [[ ! $inside_git_repo ]]; then 
-        echo "error: not inside a git repo" >&2
-        return 1
-    fi
-    
-    pager=$(git config --get core.pager)
-    if [[ -z "$pager" ]]; then
-        pager=less
-    fi
-
-    if [[ "$#" -eq 0 ]]; then
-        (
-            git diff --color
-            git ls-files --others --exclude-standard |
-                while read -r i; do git diff --color -- /dev/null "$i"; done
-        ) | $pager
-    else
-        git diff "$@"
-    fi
-}
-
 function venv {
     if [[ -f "pdm.lock" ]]; then
         venv_path=$(pdm venv --path in-project)

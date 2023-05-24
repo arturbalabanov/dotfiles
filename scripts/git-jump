@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [[ $# -eq 1 ]]; then
+    git stash
+    git checkout $1
+elif [[ $# -eq 0 ]]; then
+    git checkout -
+    git stash pop
+fi

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+git add . && git commit --amend --no-edit
+
+
+if [[ $? -eq 0 && $* == *--push* ]]; then
+	git push --force
+fi

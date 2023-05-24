@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ $# -gt 0 ]]; then
+	graph_models_args="$@"
+else
+	graph_models_args="--all-applications --disable-fields"
+fi
+
+dot_file=$(mktemp --suffix='.dot')
+./manage.py graph_models $graph_models_args --no-inheritance > $dot_file
+
+png_file=$(mktemp --suffix='.png')
+dot -Tpng $dot_file -o $png_file
+
+xdg-open $png_file

@@ -1,0 +1,255 @@
+#!/usr/bin/env python3
+
+"""
+Generate JIRA and GitLab references and insert them in the commit message.
+
+The following refences will be generated (if available):
+
+* Pivotal story URL -- generated from the ID in the branch name
+* JIRA issue(s) -- taken from the branch name
+* GitLab Merge Request -- taken from the clipboard (expects a
+  GitLab Merge Request URL, can contain a link to a comment)
+* GitLab comment -- taken from the clipboard (expects a GitLab Comment URL)
+
+Which references to search for is determined on which 'features' are available
+-- controlled by the ENABLED_FEATURES variable.
+
+If any references are found, a 'refs' section will be inserted in the commit
+message with them.
+
+Can be used the same as git-commit -- all the options for git-commit will work
+with this script as well.
+"""
+
+# REQUIREMENTS: xclip
+
+import abc
+import argparse
+import re
+import subprocess
+import sys
+import tempfile
+import textwrap
+from typing import Callable
+
+
+def get_stdout(bash_cmd):
+    result = subprocess.run(bash_cmd.split(), stdout=subprocess.PIPE)
+    return result.stdout.decode("utf-8").strip()
+
+
+def prefix_format(commit_message: str, references: list[str]) -> str:
+    return f"{': '.join(references)}: {commit_message}"
+
+
+def suffix_format(commit_message: str, references: list[str]) -> str:
+    return f"{commit_message} ({', '.join(references)})"
+
+
+def refs_list_format(commit_message: str, references: list[str]) -> str:
+    refs_list = "\n".join(f"* {reference}" for reference in references)
+
+    return textwrap.dedent(
+        f"""{commit_message}
+
+        refs:
+
+        {refs_list}"""
+    )
+
+
+class Feature(abc.ABC):
+    def __init__(self, branch_name: str, clipboard: str | None = None):
+        self.branch_name = branch_name
+        self.clipboard = clipboard or ""
+
+    @abc.abstractmethod
+    def get_refs(self) -> list[str]:
+        ...
+
+
+class JiraIssuesFeature(Feature):
+    JIRA_ISSUES_RE = re.compile(r"([A-Z]{2,}\-\d+)")
+
+    def get_refs(self):
+        return self.JIRA_ISSUES_RE.findall(self.branch_name)
+
+
+class ChangeTypeFeature(Feature):
+    def get_refs(self):
+        if "/" not in self.branch_name:
+            return []
+
+        type = self.branch_name.split("/")[0]
+
+        # 'feature' is an alias for 'feat'
+        if type == "feature":
+            return ["feat"]
+
+        if type in ("feat", "bug", "chore"):
+            return [type]
+
+        return []
+
+
+class PivotalStoryFeature(Feature):
+    PIVOTAL_STORY_ID_RE = re.compile(r"^\w/[^/]+/#?(\d+)$")
+    PIVOTAL_URL_TEMPLATE = (
+        "https://www.pivotaltracker.com/n/projects/1447360/stories/{story_id}"
+    )
+
+    def get_refs(self):
+        story_id_match = self.PIVOTAL_STORY_ID_RE.search(self.branch_name)
+
+        if story_id_match is None:
+            return []
+
+        return "Pivotal Story: {}".format(
+            self.PIVOTAL_URL_TEMPLATE.format(story_id=story_id_match.group(1)),
+        )
+
+
+class GitlabFeature(Feature):
+    GITLAB_URL_RE = re.compile(
+        r"""
+        ^https?://(?:git|gitlab)\.[\w\-\.]+\.(?:com|net)
+        /(?P<group>[\w-]+)
+        /(?P<project>[\w-]+)
+        (?:/\-)?
+        /merge_requests/(?P<mr_id>\d+)
+        (?P<comment>\#note_\d+)?
+    """,
+        flags=re.VERBOSE | re.IGNORECASE,
+    )
+
+
+class GitlabMergeRequestFeature(GitlabFeature):
+    def get_refs(self):
+        gitlab_url_match = self.GITLAB_URL_RE.search(self.clipboard)
+
+        if gitlab_url_match is None:
+            return []
+
+        return [
+            "GitLab Merge Request: {group}/{project}!{mr_id}".format(
+                group=gitlab_url_match.group("group"),
+                project=gitlab_url_match.group("project"),
+                mr_id=gitlab_url_match.group("mr_id"),
+            )
+        ]
+
+
+class GitLabDiscussionFeature(GitlabFeature):
+    def get_refs(self):
+        gitlab_url_match = self.GITLAB_URL_RE.search(self.clipboard)
+
+        if gitlab_url_match is None or gitlab_url_match.group("comment") is None:
+            return []
+
+        return ["GitLab Discussion: {}".format(self.clipboard)]
+
+
+# commit_message + list[reference] -> formatted_commit_message
+Formatter = Callable[[str, list[str]], str]
+
+ENABLED_FEATURES: list[tuple[Formatter, type[Feature]]] = [
+    # PivotalStoryFeature,
+    # GitlabMergeRequestFeature,
+    # GitLabDiscussionFeature,
+    (prefix_format, ChangeTypeFeature),
+    (suffix_format, JiraIssuesFeature),
+]
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        prog="git cmt",
+        description=__doc__.strip(),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "-m",
+        "--message",
+        dest="commit_msg",
+        metavar="<msg>",
+        required=False,
+        help="The commit message. If not provided, an editor will open",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Debug mode (only print the formatted message, do not commit)",
+    )
+
+    # If we use something like `git cmt -am "Commit message"`, argparse won't
+    # assign a value to commit_msg since there is no defined `-a` argument.
+    # Instead, it will pass `-am` to git, which will result to a regular commit
+    # without appending the necessary references. To fix this, we check for
+    # "combined arguments" with `m` in them and just remove it from there and
+    # add it as a seperate argument, basically converting `-am` to `-a -m`.
+
+    args = []
+    for arg in sys.argv[1:]:
+        if re.search(r"^\-\w+", arg) and "m" in arg:
+            args_without_msg = arg.replace("m", "")
+
+            if args_without_msg != "-":
+                args.append(args_without_msg)
+
+            args.append("-m")
+        else:
+            args.append(arg)
+
+    return parser.parse_known_args(args)
+
+
+def get_clipboard_contents() -> str:
+    try:
+        return get_stdout("xclip -selection clipboad -o")
+    except FileNotFoundError:
+        try:
+            return get_stdout("pbpaste")
+        except FileNotFoundError:
+            print("Error: no clipboard manager command found, install xclip or pbpaste")
+            sys.exit(1)
+
+
+def format_commit_message(commit_message: str) -> str:
+    branch_name = get_stdout("git rev-parse --abbrev-ref HEAD")
+    clipboard_contents = get_clipboard_contents()
+
+    formatted_commit_message = commit_message
+
+    for formatter, feature_cls in ENABLED_FEATURES:
+        feature = feature_cls(branch_name, clipboard_contents)
+        refs = feature.get_refs()
+
+        if refs:
+            formatted_commit_message = formatter(formatted_commit_message, refs)
+
+    return formatted_commit_message
+
+
+def main(args, git_args):
+    formatted_message = format_commit_message(args.commit_msg or "")
+
+    if args.debug:
+        print("----------------")
+        print(formatted_message)
+        print("----------------")
+        return
+
+    with tempfile.NamedTemporaryFile("w") as commit_file:
+        commit_file.write(formatted_message)
+        commit_file.seek(0)
+
+        commit_method_flag = "--file" if args.commit_msg else "--template"
+
+        subprocess.call(
+            ["git", "commit", commit_method_flag, commit_file.name, *git_args]
+        )
+
+
+if __name__ == "__main__":
+    args, git_args = parse_args()
+    main(args, git_args)

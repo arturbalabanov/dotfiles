@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+x_resolution="1920"
+y_resolution="1280"
+refresh_rate="60"
+
+display=$(xrandr | head -n 10 | grep connected | grep primary | cut -d " " -f 1 )                                                                                   
+mode_line="$(cvt $x_resolution $y_resolution $refresh_rate | grep Modeline)"
+
+mode_name="${x_resolution}x${y_resolution}_$refresh_rate"
+mode_string="$(echo $mode_line | cut -d " " -f 1,2 --complement)"
+
+xrandr --newmode $mode_name $mode_string
+xrandr --addmode $display $mode_name
+xrandr --output $display --mode $mode_name
