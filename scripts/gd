@@ -1,14 +1,11 @@
 #!/bin/bash
 
 # Stolen from: https://stackoverflow.com/a/4864668/2456167
-echo "here"
-return 1
-
 inside_git_repo=$(git rev-parse --is-inside-work-tree 2>/dev/null)
 
 if [[ ! $inside_git_repo ]]; then 
     echo "error: not inside a git repo" >&2
-    return 1
+    exit 1
 fi
 
 pager=$(git config --get core.pager)
