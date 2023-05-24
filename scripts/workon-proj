@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+# encoding: utf-8
+
+import subprocess
+import uuid
+import sys
+import os
+import re
+
+from pathlib import Path
+
+import jinja2
+
+
+TMUXP_DIR = Path.home() / '.tmuxp'
+AUTOLOAD_SESSIONS = ['util']
+
+
+def cleanup(tempfiles):
+    for filepath in tempfiles:
+        filepath.unlink()
+
+
+def exec_cmd(cmd, with_stdout=True):
+    stdout = None if with_stdout else subprocess.DEVNULL
+    subprocess.call(cmd, shell=True, stdout=stdout)
+
+
+def load_session(session_name, session_args, tempfiles, in_background=False):
+    # TODO: Use a real temp file
+    tempfile = Path('/tmp') / '{}.yaml'.format(uuid.uuid4().hex)
+    session_config = TMUXP_DIR / '{}.yaml'.format(session_name)
+
+    if not session_config.is_file():
+        print("Invalid session name: {!r}".format(session_name))
+        sys.exit(1)
+
+    with session_config.open() as in_f, tempfile.open('w') as out_f:
+        t = jinja2.Template(in_f.read())
+        out_f.write(t.render(args=session_args))
+
+    tempfiles.append(tempfile)
+
+    if not in_background:
+        exec_cmd('tmuxp load {}'.format(tempfile))
+
+    # tmuxp_process = pexpect.spawn('/bin/bash -c "tmuxp load {}"'.format(tempfile))
+
+    # # The session already exists
+    # tmuxp_process.expect('{} is already running. Attach?'.format(session_name))
+    # tmuxp_process.sendline('n' if in_background else 'y')
+    #
+    # tmuxp_process.expect('Already inside TMUX, switch to session?')
+    # tmuxp_process.sendline('n' if in_background else 'y')
+
+
+def list_all_sessions():
+    for filepath in TMUXP_DIR.iterdir():
+        if filepath.is_file() and filepath.suffix == '.yaml':
+            print(filepath.stem)
+
+
+def get_group(regex, string, group_name):
+    if isinstance(regex, str):
+        regex = re.compile(regex)
+
+    match = regex.search(string)
+
+    if match is not None:
+        return match.group(group_name)
+
+    return None
+
+
+def parse_args():
+    FLAG_NAMES_MAPPING = {
+        'l': 'list_sessions',
+    }
+
+    session_name_regex = re.compile(r'^(?P<name>\w+)$')
+    session_arg_regex = re.compile(r'^\-\-(?P<name>\w[\w-]*)$')
+    flag_regex = re.compile(r'^\-(?P<name>\w[\w-]*)$')
+
+    cmd_args = sys.argv[1:]
+
+    sessions_to_load = []
+    flag_names = []
+
+    for arg in cmd_args:
+        session_name = get_group(session_name_regex, arg, 'name')
+        if session_name is not None:
+            sessions_to_load.append({'name': session_name, 'args': []})
+
+        session_arg = get_group(session_arg_regex, arg, 'name')
+        if session_arg is not None:
+            try:
+                sessions_to_load[-1]['args'].append(session_arg.replace('-', '_'))
+            except IndexError:
+                print("The session argument '{}' must follow a session name".format(arg))
+                sys.exit(1)
+
+        flag = get_group(flag_regex, arg, 'name')
+        if flag is not None:
+            try:
+                flag_names.append(FLAG_NAMES_MAPPING[flag])
+            except KeyError:
+                print("Invalid flag '{}'".format(arg))
+                sys.exit(1)
+
+    return {'sessions': sessions_to_load, 'flags': flag_names}
+
+
+def launch(sessions):
+    for session_name in AUTOLOAD_SESSIONS:
+        if session_name not in sessions:
+            sessions.append({'name': session_name, 'args': []})
+
+    tempfiles = []
+    keyboard_interrupt = False
+
+    try:
+        exec_cmd("wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz", with_stdout=False)
+        for i, session in enumerate(sessions):
+            in_background = (i > 0) or 'TMUX' in os.environ
+            load_session(session['name'], session['args'], tempfiles, in_background)
+    except KeyboardInterrupt:
+        keyboard_interrupt = True
+    finally:
+        cleanup(tempfiles)
+        if keyboard_interrupt:
+            sys.exit(130)
+
+
+def main():
+    args = parse_args()
+
+    if 'list_sessions' in args['flags']:
+        list_all_sessions()
+    elif args['sessions']:
+        launch(args['sessions'])
+    else:
+        print("Invalid usage")
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()

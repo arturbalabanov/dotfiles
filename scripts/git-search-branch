@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ $# -eq 1 ]]; then
+	search_regex=$1
+else
+	echo "Invalid arguments"
+	exit 1
+fi
+
+
+curr_branch=$(git branch --show-current)
+diverge_commit=$(git merge-base master $curr_branch)
+
+git log -G $search_regex -p $diverge_commit..HEAD

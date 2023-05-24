@@ -1,0 +1,30 @@
+#!/bin/bash
+
+read -p "WARNING: You should be rebasing, not merging. Are you sure you want to proceed? [y/N] " -n 1 -r reply
+reply=${reply:-n}  # set the default value to 'n'
+
+if [[ $reply =~ ^[Nn]$ ]]; then
+	exit 1
+fi
+
+git checkout master && git pull && git checkout - && git merge master
+
+if [[ $? -eq 0 ]]; then
+    git add . && git commit --no-edit && git push
+    exit 0
+fi
+
+echo -e "\n\n\nMERGE CONFLICTS:"
+git --no-pager diff --name-only --diff-filter=U
+
+read -p "Do you want to resolve these conflicts? [Y/n] " -n 1 -r reply
+reply=${reply:-y}  # set the default value to 'y'
+
+if [[ $reply =~ ^[Yy]$ ]]; then
+    git mergetool
+
+    if [[ $? -eq 0 && -z $(git diff --diff-filter=U) ]]; then
+        git commit --no-edit && git push
+        exit 0
+    fi
+fi

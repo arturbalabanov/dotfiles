@@ -1,0 +1,11 @@
+#!/bin/bash
+
+curr_branch=$(git branch --show-current)
+diverge_commit=$(git merge-base master $curr_branch)
+
+echo "Commits in branch:"
+git rev-list $diverge_commit..HEAD --pretty=oneline
+
+echo "Overall diff:"
+
+git diff $diverge_commit..HEAD
