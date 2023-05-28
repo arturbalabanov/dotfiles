@@ -58,6 +58,8 @@ return packer.startup(function(use)
         }
         use { 'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons' }
 
+        use "tpope/vim-fugitive"
+
         use {
             'nvim-tree/nvim-tree.lua',
             requires = {
@@ -82,6 +84,19 @@ return packer.startup(function(use)
             "nvim-telescope/telescope-live-grep-args.nvim",
             requires = "nvim-telescope/telescope.nvim",
         }
+        use({
+            "aaronhallaert/advanced-git-search.nvim",
+            requires = {
+                "nvim-telescope/telescope.nvim",
+                -- to show diff splits and open commits in browser
+                "tpope/vim-fugitive",
+                -- to open commits in browser with fugitive
+                "tpope/vim-rhubarb",
+                -- optional: to replace the diff from fugitive with diffview.nvim
+                -- (fugitive is still needed to open in browser)
+                -- "sindrets/diffview.nvim",
+            },
+        })
 
         use {
             'nvim-treesitter/nvim-treesitter',
@@ -114,7 +129,6 @@ return packer.startup(function(use)
         use 'glepnir/lspsaga.nvim'
 
         -- Automatically set up your configuration after cloning packer.nvim
-        -- Put this at the end after all plugins
         if PACKER_BOOTSTRAP then
             require("packer").sync()
         end
