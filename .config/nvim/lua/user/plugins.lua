@@ -4,13 +4,13 @@ local fn = vim.fn
 local install_path = fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
 if fn.empty(fn.glob(install_path)) > 0 then
     PACKER_BOOTSTRAP = fn.system {
-            "git",
-            "clone",
-            "--depth",
-            "1",
-            "https://github.com/wbthomason/packer.nvim",
-            install_path,
-        }
+        "git",
+        "clone",
+        "--depth",
+        "1",
+        "https://github.com/wbthomason/packer.nvim",
+        install_path,
+    }
     print "Installing packer close and reopen Neovim..."
     vim.cmd [[packadd packer.nvim]]
 end
@@ -41,81 +41,103 @@ packer.init {
 }
 
 return packer.startup(function(use)
-        use "wbthomason/packer.nvim"
-        use 'lewis6991/impatient.nvim'
+    use "wbthomason/packer.nvim"
+    use 'lewis6991/impatient.nvim'
 
-        use "neovim/nvim-lspconfig"
-        use "williamboman/mason.nvim"
-        use "williamboman/mason-lspconfig.nvim"
-        use "jose-elias-alvarez/null-ls.nvim"
-        use "jay-babu/mason-null-ls.nvim"
+    use "neovim/nvim-lspconfig"
+    use "williamboman/mason.nvim"
+    use "williamboman/mason-lspconfig.nvim"
+    use "jose-elias-alvarez/null-ls.nvim"
+    use "jay-babu/mason-null-ls.nvim"
 
-        use { 'echasnovski/mini.nvim' }
-        use { "ellisonleao/gruvbox.nvim" }
-        use {
-            'nvim-lualine/lualine.nvim',
-            requires = { 'nvim-tree/nvim-web-devicons' }
+    use { 'echasnovski/mini.nvim' }
+    use { "ellisonleao/gruvbox.nvim" }
+    use {
+        'nvim-lualine/lualine.nvim',
+        requires = { 'nvim-tree/nvim-web-devicons' }
+    }
+    use { 'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons' }
+
+    use {
+        'nvim-tree/nvim-tree.lua',
+        requires = {
+            'nvim-tree/nvim-web-devicons',
+        },
+        tag = 'nightly'
+    }
+
+    use {
+        'nvim-telescope/telescope.nvim', tag = '0.1.1',
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'nvim-tree/nvim-web-devicons'
         }
-        use { 'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons' }
+    }
 
-        use {
-            'nvim-tree/nvim-tree.lua',
-            requires = {
-                'nvim-tree/nvim-web-devicons',
-            },
-            tag = 'nightly'
-        }
+    use {
+        "pschmitt/telescope-yadm.nvim",
+        requires = "nvim-telescope/telescope.nvim",
+    }
+    use {
+        "nvim-telescope/telescope-live-grep-args.nvim",
+        requires = "nvim-telescope/telescope.nvim",
+    }
 
-        use {
-            'nvim-telescope/telescope.nvim', tag = '0.1.1',
-            requires = {
-                'nvim-lua/plenary.nvim',
-                'nvim-tree/nvim-web-devicons'
-            }
-        }
-
-        use {
-            "pschmitt/telescope-yadm.nvim",
-            requires = "nvim-telescope/telescope.nvim",
-        }
-        use {
-            "nvim-telescope/telescope-live-grep-args.nvim",
-            requires = "nvim-telescope/telescope.nvim",
-        }
-
-        use {
-            'nvim-treesitter/nvim-treesitter',
-            run = function()
-                local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
-                ts_update()
-            end
-        }
-
-        use {
-            'nvim-treesitter/playground'
-        }
-
-        use 'hrsh7th/vim-vsnip'
-        use 'onsails/lspkind.nvim'
-
-        use 'hrsh7th/nvim-cmp'
-        use 'hrsh7th/cmp-nvim-lsp'
-        use "folke/neodev.nvim"
-        use 'hrsh7th/cmp-buffer'
-        use 'hrsh7th/cmp-path'
-        use 'hrsh7th/cmp-cmdline'
-        use 'hrsh7th/cmp-vsnip'
-
-        use {
-            "folke/trouble.nvim",
-            requires = "nvim-tree/nvim-web-devicons",
-        }
-
-        use 'glepnir/lspsaga.nvim'
-
-        -- Automatically set up your configuration after cloning packer.nvim
-        -- Put this at the end after all plugins
-        if PACKER_BOOTSTRAP then
-            require("packer").sync()
+    use {
+        'nvim-treesitter/nvim-treesitter',
+        run = function()
+            local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+            ts_update()
         end
-    end)
+    }
+
+    use {
+        'nvim-treesitter/playground'
+    }
+
+    use 'hrsh7th/vim-vsnip'
+    use 'onsails/lspkind.nvim'
+
+    use 'hrsh7th/nvim-cmp'
+    use 'hrsh7th/cmp-nvim-lsp'
+    use "folke/neodev.nvim"
+    use 'hrsh7th/cmp-buffer'
+    use 'hrsh7th/cmp-path'
+    use 'hrsh7th/cmp-cmdline'
+    use 'hrsh7th/cmp-vsnip'
+
+    use {
+        "folke/trouble.nvim",
+        requires = "nvim-tree/nvim-web-devicons",
+    }
+
+    use {
+        "darfink/vim-plist"
+    }
+
+    use 'glepnir/lspsaga.nvim'
+    use {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+            require("copilot").setup({
+                suggestion = {
+                    auto_trigger = true,
+                    keymap = {
+                        accept = "<C-j>",
+                        next = "<C-l>",
+                        prev = "<C-h>",
+                        dismiss = "<C-Esc>",
+                    },
+                }
+            })
+        end,
+    }
+
+    -- Automatically set up your configuration after cloning packer.nvim
+    -- Put this at the end after all plugins
+    if PACKER_BOOTSTRAP then
+        require("packer").sync()
+    end
+end)

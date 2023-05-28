@@ -231,7 +231,11 @@ fi
 alias ll='ls -lh'
 alias la='ll -a'
 alias grep='grep --color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
-alias tree='tree -C'
+if type lsd > /dev/null; then
+    alias tree='ls -l --tree'
+else
+    alias tree='tree -C'
+fi
 alias vi='nvim'
 alias vim='nvim'
 alias s='sudo'
