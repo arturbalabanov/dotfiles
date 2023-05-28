@@ -1,0 +1,9 @@
+[user]
+	email = arturbalabanov97@gmail.com
+	name = Artur Balabanov
+
+[credential]
+	helper = store
+
+[core]
+	hooksPath = /home/artur/.git-hooks
