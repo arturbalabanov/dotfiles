@@ -1,0 +1,12 @@
+{
+    "Code Section": {
+        "prefix": "section",
+        "body": [
+            "# ==============================",
+            "# ${1:Section Name}",
+            "# ==============================",
+            "${0}"
+        ],
+        "description": "Comment to seperate different sections of code"
+    }
+}

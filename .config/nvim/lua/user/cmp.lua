@@ -18,10 +18,13 @@ local feedkey = function(key, mode)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
+local luasnip = require("luasnip")
+local cmp_context = require('cmp.config.context')
+
 cmp.setup({
     snippet = {
         expand = function(args)
-            vim.fn["vsnip#anonymous"](args.body)
+            luasnip.lsp_expand(args.body)
         end,
     },
     window = {
@@ -32,45 +35,85 @@ cmp.setup({
             with_text = true,
         }),
     },
+    sorting = {
+        comparators = {
+            cmp.config.compare.kind,
+            cmp.config.compare.exact,
+            cmp.config.compare.sort_text,
+        },
+    },
     mapping = cmp.mapping.preset.insert({
-        ['<C-b>'] = cmp.mapping.scroll_docs( -4),
+        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        ['<C-Space>'] = cmp.mapping.complete(),
-        ['<C-e>'] = cmp.mapping.abort(),
+        ['<Esc>'] = cmp.mapping.abort(),
         -- Accept currently selected item. Set `select` to `false`
         -- to only confirm explicitly selected items.
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
         ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_next_item()
-            elseif vim.fn["vsnip#available"](1) == 1 then
-                feedkey("<Plug>(vsnip-expand-or-jump)", "")
+            elseif luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
             elseif has_words_before() then
                 cmp.complete()
             else
-                -- The fallback function sends an already mapped key.
-                -- In this case, it's probably `<Tab>`.
-
                 fallback()
             end
         end, { "i", "s" }),
 
-        ["<S-Tab>"] = cmp.mapping(function()
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif vim.fn["vsnip#jumpable"]( -1) == 1 then
-                feedkey("<Plug>(vsnip-jump-prev)", "")
+            elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
+            else
+                fallback()
             end
         end, { "i", "s" }),
     }),
     sources = cmp.config.sources({
+        {
+            {
+                name = 'luasnip',
+                -- TODO: Prioritise user snippets over third party ones
+
+                -- Disable snippet completion in comments and strings
+                entry_filter = function(entry, ctx)
+                    return not (
+                        cmp_context.in_treesitter_capture('string')
+                        or cmp_context.in_treesitter_capture('comment')
+                    )
+                end,
+            },
+        },
         { name = 'nvim_lsp' },
-        { name = 'vsnip' },
+        {
+            name = 'buffer', -- only enable buffer completion in comments
+            entry_filter = function(entry, ctx)
+                return cmp_context.in_treesitter_capture('comment')
+            end,
+        },
     })
-    -- {
-    --    { name = 'buffer' },
-    -- }
 })
 
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(':', {})
+cmp.setup.cmdline('/', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+        { name = 'buffer' },
+    },
+})
+
+cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources {
+        {
+            { name = 'path' },
+        },
+        {
+            name = 'cmdline',
+            option = {
+                ignore_cmds = { 'Man', '!' },
+            },
+        },
+    }
+})

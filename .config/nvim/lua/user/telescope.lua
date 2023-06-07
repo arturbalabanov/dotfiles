@@ -9,6 +9,16 @@ local telescope_builtin = require('telescope.builtin')
 local utils = require("user.utils")
 local lga_actions = require("telescope-live-grep-args.actions")
 local lga_shortcuts = require("telescope-live-grep-args.shortcuts")
+local sorters = require("telescope.sorters")
+
+local telescope_extensions_to_load = {
+    "yadm_files",
+    "git_or_yadm_files",
+    "live_grep_args",
+    "advanced_git_search",
+    "zoxide",
+    "frecency",
+}
 
 
 telescope.setup {
@@ -18,28 +28,36 @@ telescope.setup {
         layout_strategy = "horizontal",
         set_env = { ["COLORTERM"] = "truecolor" }, -- default = nil,
         border = true,
-        wrap_results = true,
+        wrap_results = false,
         file_ignore_patterns = {
             "^.git/",
-        },
-        borderchars = {
-            prompt = { "─", "│", " ", "│", "╭", "┬", "│", "│" },
-            results = { "─", "│", "─", "│", "├", "┤", "┴", "╰" },
-            preview = { "─", "│", "─", " ", "─", "╮", "╯", "─" },
         },
         layout_config = {
             horizontal = {
                 width = 0.9,
-                prompt_position = "top"
+                prompt_position = "top",
             },
+            vertical = {
+                prompt_position = "top",
+                mirror = true,
+                width = 0.9,
+            },
+            scroll_speed = 1,
         },
         mappings = {
             i = {
                 ["<esc>"] = actions.close,
+                ["<C-t>"] = actions.select_tab,
+                ["<C-q>"] = actions.send_to_qflist,
+                ["<C-f>"] = actions.preview_scrolling_down,
+                ["<C-p>"] = actions.preview_scrolling_up,
             },
             n = {
                 ["t"] = actions.select_tab,
+                ["q"] = actions.send_to_qflist,
                 ["p"] = actions_layout.toggle_preview,
+                ["<C-f>"] = actions.preview_scrolling_down,
+                ["<C-p>"] = actions.preview_scrolling_up,
             },
         }
     },
@@ -48,17 +66,19 @@ telescope.setup {
             hidden = true,
         },
         live_grep = {
+            layout_strategy = 'vertical',
             disable_coordinates = true,
-            additional_args = { '--trim' }
+            additional_args = { '--trim' },
         },
         grep_string = {
+            layout_strategy = 'vertical',
             disable_coordinates = true,
-            additional_args = { '--trim' }
+            additional_args = { '--trim' },
         },
         colorscheme = {
             theme = "dropdown",
             enable_preview = true,
-            previewer = false
+            previewer = false,
         },
         builtin = {
             -- theme = "dropdown",
@@ -81,14 +101,16 @@ telescope.setup {
     },
     extensions = {
         live_grep_args = {
+            layout_strategy = 'vertical',
             auto_quoting = true,
-            mappings = { -- extend mappings
+            mappings = {
+                -- extend mappings
                 n = {
                     ["f"] = lga_actions.quote_prompt({ postfix = " -t" }),
                 },
             },
             disable_coordinates = true,
-            additional_args = { '--trim' }
+            additional_args = { '--trim' },
         },
         advanced_git_search = {
             -- Fugitive or diffview
@@ -101,25 +123,55 @@ telescope.setup {
             git_diff_flags = {},
             -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
             show_builtin_git_pickers = false,
+        },
+        frecency = {
+            ignore_patterns = { "*/node_modules/*", '*/.git/*' },
+            default_workspace = 'CWD',
+            workspaces = {
+                ["conf"] = vim.fn.expand("$HOME/.config"),
+                ["dev"]  = vim.fn.expand("$HOME/dev"),
+            },
+            show_unindexed = true,
+            show_scores = true,
+            show_filter_column = false,
+        },
+        zoxide = {
+            mappings = {
+                default = {
+                    action = function(selection)
+                        vim.cmd.lchdir(selection.path)
+                        telescope.extensions.frecency.frecency({ workspace = 'CWD' })
+                    end,
+                },
+                ["<C-f>"] = {
+                    action = function(selection)
+                        telescope.extensions.live_grep_args.live_grep_args({
+                            search_dirs = { selection.path },
+                            cwd = selection.path,
+                        })
+                    end,
+                },
+            },
         }
     }
-
 }
 
-telescope.load_extension("yadm_files")
-telescope.load_extension("git_or_yadm_files")
-telescope.load_extension("live_grep_args")
-telescope.load_extension("advanced_git_search")
+for _, extension_name in pairs(telescope_extensions_to_load) do
+    telescope.load_extension(extension_name)
+end
 
-utils.nkeymap("<leader><leader>", telescope_builtin.builtin)
-utils.vkeymap("<leader><leader>", telescope_builtin.builtin)
-utils.nkeymap("<leader>p", telescope_builtin.find_files)
+utils.nkeymap("<leader>t", telescope_builtin.builtin)
 utils.nkeymap("<leader>h", telescope_builtin.help_tags)
+utils.nkeymap('<leader>q', telescope_builtin.quickfix)
 
+-- utils.nkeymap("<leader>p", telescope_builtin.find_files)
 -- utils.nkeymap("<leader>f", telescope_builtin.live_grep)
 -- utils.nkeymap("<leader>*", telescope_builtin.grep_string)
 
+utils.nkeymap("<leader>p", telescope.extensions.frecency.frecency)
+utils.nkeymap("<leader><leader>", telescope.extensions.zoxide.list)
 utils.nkeymap("<leader>f", telescope.extensions.live_grep_args.live_grep_args)
+utils.nkeymap("<leader>*", lga_shortcuts.grep_word_under_cursor)
 utils.nkeymap("<leader>*", lga_shortcuts.grep_word_under_cursor)
 utils.vkeymap("<leader>*", lga_shortcuts.grep_visual_selection)
 

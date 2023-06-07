@@ -26,7 +26,7 @@ lualine.setup {
     options = {
         icons_enabled = true,
         theme = theme,
-        component_separators = { left = '│', right = '│' },
+        component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         disabled_filetypes = {
             statusline = {},
@@ -42,13 +42,26 @@ lualine.setup {
         }
     },
     sections = {
-        lualine_a = { { 'mode', fmt = function(str) return str:sub(1, 1) end } },
-        lualine_b = { 'diagnostics' },
-        lualine_c = { {
-            'filename',
-            path = 1, -- Relative path
+        lualine_a = { {
+            'mode',
+            fmt = function(str) return str:sub(1, 1) end, -- Only show the first letter
         } },
-        lualine_x = { lsp_location },
+        lualine_b = { 'diagnostics' },
+        lualine_c = { 'branch', {
+            'diff',
+            colored = true, -- Displays a colored diff status if set to true
+            diff_color = {
+                -- Same color values as the general color option can be used here.
+                added    = { fg = 'dark_green', gui = 'bold' },       -- Changes the diff's added color
+                modified = { fg = 'yellow', gui = 'bold' },           -- Changes the diff's modified color
+                removed  = { fg = 'red', gui = 'bold' },              -- Changes the diff's removed color you
+            },
+            symbols = { added = '+', modified = '~', removed = '-' }, -- Changes the symbols used by the diff.
+        } },
+        lualine_x = { {
+            'filename',
+            path = 1, -- Relative path to CWD
+        } },
         lualine_y = { 'encoding', 'fileformat', 'filetype' },
         lualine_z = { 'progress', 'location' }
     },

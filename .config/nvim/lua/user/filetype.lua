@@ -1,14 +1,29 @@
-local set_indentation = function(filetype, intentation_length)
+local ft_indentation = {
+    terraform = 2,
+    yaml = 2,
+}
+
+local ft_options = {
+    zsh = {
+        foldmethod = 'marker',
+    }
+}
+
+for filetype, indent_size in pairs(ft_indentation) do
+    ft_options[filetype] = ft_options[filetype] or {}
+    ft_options[filetype].tabstop = indent_size
+    ft_options[filetype].shiftwidth = indent_size
+    ft_options[filetype].softtabstop = indent_size
+end
+
+for filetype, options in pairs(ft_options) do
     vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup('IndentationRules', { clear = true }),
+        group = vim.api.nvim_create_augroup('UserFileTypeSpecificOptions', { clear = false }),
         pattern = filetype,
         callback = function()
-            vim.opt_local.shiftwidth = intentation_length
-            vim.opt_local.tabstop = intentation_length
-            vim.opt_local.softtabstop = intentation_length
+            for option, value in pairs(options) do
+                vim.opt_local[option] = value
+            end
         end
     })
 end
-
-set_indentation("terraform", 2)
--- set_indentation("yaml", 2)
