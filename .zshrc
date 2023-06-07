@@ -54,6 +54,21 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 export LESS="$LESS -x4"  # less uses 4 space tab witdh
 # }}}
 # VIM Mode {{{
+function _get_zsh_vim_mode {
+    case $KEYMAP in
+        vicmd)
+            echo -n 'normal'
+            ;;
+        viins||main)
+            echo -n 'insert'
+            ;;
+        vivis)
+            echo -n 'visual'
+            ;;
+    esac
+}
+
+
 function _set_cursor_shape {
     shape="$1"
 
@@ -83,17 +98,21 @@ function _set_cursor_shape {
 }
 
 function zle-keymap-select zle-line-init {
-    case $KEYMAP in
-        vicmd)
+    vim_mode=$(_get_zsh_vim_mode)
+
+    case $vim_mode in
+        normal)
             _set_cursor_shape "block"
             ;;
-        viins||main)
+        insert)
             _set_cursor_shape "line"
             ;;
-        vivis)
+        visual)
             _set_cursor_shape "block"
             ;;
     esac
+
+    _write_vi_mode_to_file_per_process
 
     zle reset-prompt
     zle -R
@@ -101,18 +120,21 @@ function zle-keymap-select zle-line-init {
 
 function zle-line-finish {
     _set_cursor_shape "block"
+    _write_vi_mode_to_file_per_process
+}
+
+function _write_vi_mode_to_file_per_process {
+    echo $(_get_zsh_vim_mode) > /tmp/zsh_vim_mode_$$
 }
 
 zle -N zle-line-init
 zle -N zle-keymap-select
 zle -N zle-line-finish
 
-# Vimode keybindings
+# Vim mode keybindings
 bindkey -M viins 'jj' vi-cmd-mode
 
 bindkey -M vicmd 'H' beginning-of-line
-bindkey -M vicmd 'L' end-of-line
-
 bindkey -M vicmd 'L' end-of-line
 
 tmux-select-pane-up () {
@@ -174,7 +196,9 @@ zle -N prepend-sudo
 bindkey "^s" prepend-sudo
 # }}}
 # Environment Variables {{{
-export EDITOR="nvim"
+if type nvim > /dev/null; then
+    export EDITOR="nvim"
+fi
 
 if [[ $os == "linux" ]]; then
     export BROWSER="google-chrome-stable"
@@ -189,17 +213,27 @@ if type go > /dev/null; then
 fi
 # }}}
 # External Tools {{{
-if [[ -r "$HOME/.local/share/z/z.sh" ]]; then
-    source "$HOME/.local/share/z/z.sh"
-elif [[ -r "/usr/share/z/z.sh" ]]; then
-    source "/usr/share/z/z.sh"
-fi
-
 # Enable bash completion scripts
 autoload -U +X compinit && compinit
 autoload -U +X bashcompinit && bashcompinit
 
-# Auto-complete for pipx
+if type pyenv > /dev/null; then
+    if [[ $os == 'macos' ]] && type brew > /dev/null; then
+        alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
+    fi
+fi
+
+if type fzf > /dev/null; then
+    if [[ $os == "macos" ]] && type brew > /dev/null; then
+        [[ $- == *i* ]] && source "$(brew --prefix)/opt/fzf/shell/completion.zsh" 2> /dev/null
+        source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
+    fi
+fi
+
+if type zoxide > /dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
 if type pipx > /dev/null; then
     eval "$(register-python-argcomplete pipx)"
 fi
@@ -212,9 +246,24 @@ if type pyenv > /dev/null; then
     eval "$(pyenv init -)"
 fi
 
-
 if type terraform > /dev/null; then
     complete -o nospace -C $(where terraform) terraform
+fi
+
+if [[ $os == 'macos' ]] && type brew > /dev/null; then
+    brew_nvm_path="$(brew --prefix)/opt/nvm"
+
+    if [[ -d $brew_nvm_path ]]; then
+        export NVM_DIR="$HOME/.nvm"
+
+        if [[ -f "$brew_nvm_path/nvm.sh" ]]; then
+            source "$brew_nvm_path/nvm.sh"
+        fi
+
+        if [[ -f "$brew_nvm_path/etc/bash_completion.d/nvm" ]]; then
+            source "$brew_nvm_path/etc/bash_completion.d/nvm"
+        fi
+    fi
 fi
 # }}}
 # Source other configs {{{
@@ -241,7 +290,7 @@ alias vim='nvim'
 alias s='sudo'
 alias se='sudoedit'
 alias pac='pikaur'
-if [[ $OSTYPE == 'linux'* ]]; then
+if [[ $os == 'linux' ]]; then
     alias open='xdg-open'
 fi
 alias wget='wget -c'
@@ -292,21 +341,4 @@ function venv {
 
     source $venv_path/bin/activate
 }
-
-function review_pass {
-    filename=$(find ~/7bridges -name populate_dev_users.py)
-    password=$(cat $filename| grep set_password | sed "s/.*set_password('\(.*\)')/\1/")
-
-    echo $password
-
-    if type xclip > /dev/null; then
-        echo -n $password | xclip -selection clipboard
-    fi
-}
-
-if [[ $OSTYPE == 'darwin'* ]]; then
-    if type brew > /dev/null && type pyenv > /dev/null; then
-        alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
-    fi
-fi
 # }}}

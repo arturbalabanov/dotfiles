@@ -43,8 +43,10 @@ packer.init {
 return packer.startup(function(use)
     use "wbthomason/packer.nvim"
     use 'lewis6991/impatient.nvim'
+    use 'nvim-lua/plenary.nvim'
 
     use "neovim/nvim-lspconfig"
+    -- TODO: Remove mason
     use "williamboman/mason.nvim"
     use "williamboman/mason-lspconfig.nvim"
     use "jose-elias-alvarez/null-ls.nvim"
@@ -58,6 +60,8 @@ return packer.startup(function(use)
     }
     use { 'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons' }
 
+
+    use "tpope/vim-fugitive"
     use {
         'nvim-tree/nvim-tree.lua',
         requires = {
@@ -78,11 +82,23 @@ return packer.startup(function(use)
         "pschmitt/telescope-yadm.nvim",
         requires = "nvim-telescope/telescope.nvim",
     }
+
     use {
         "nvim-telescope/telescope-live-grep-args.nvim",
         requires = "nvim-telescope/telescope.nvim",
     }
 
+    use({
+        "aaronhallaert/advanced-git-search.nvim",
+        requires = {
+            "nvim-telescope/telescope.nvim",
+            "tpope/vim-fugitive", -- to show diff splits and open commits in browser
+            "tpope/vim-rhubarb",  -- to open commits in browser with fugitive
+            -- optional: to replace the diff from fugitive with diffview.nvim
+            -- (fugitive is still needed to open in browser)
+            -- "sindrets/diffview.nvim",
+        },
+    })
     use {
         'nvim-treesitter/nvim-treesitter',
         run = function()
@@ -90,50 +106,105 @@ return packer.startup(function(use)
             ts_update()
         end
     }
+    use {
+        'jvgrootveld/telescope-zoxide',
+        requires = { 'nvim-telescope/telescope.nvim' },
+    }
+    use {
+        "nvim-telescope/telescope-frecency.nvim",
+        requires = { "kkharji/sqlite.lua" }
+    }
 
     use {
         'nvim-treesitter/playground'
     }
 
-    use 'hrsh7th/vim-vsnip'
+    use {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        after = "nvim-treesitter",
+        requires = "nvim-treesitter/nvim-treesitter",
+    }
+
+    use {
+        "lukas-reineke/indent-blankline.nvim",
+        after = "nvim-treesitter",
+        requires = "nvim-treesitter/nvim-treesitter",
+        config = function()
+            require("indent_blankline").setup {
+                buftype_exclude = { "terminal" },
+                show_current_context = true,
+                -- show_current_context_start = true,
+            }
+        end
+    }
+
     use 'onsails/lspkind.nvim'
+    use "folke/neodev.nvim"
 
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'
-    use "folke/neodev.nvim"
     use 'hrsh7th/cmp-buffer'
     use 'hrsh7th/cmp-path'
     use 'hrsh7th/cmp-cmdline'
-    use 'hrsh7th/cmp-vsnip'
+
+    use "rafamadriz/friendly-snippets"
+    use({
+        "L3MON4D3/LuaSnip",
+        -- follow latest release.
+        tag = "v1.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+        -- install jsregexp (optional!:).
+        run = "make install_jsregexp",
+        dependencies = { "rafamadriz/friendly-snippets" },
+    })
+    use 'saadparwaiz1/cmp_luasnip'
+
+    use 'ray-x/lsp_signature.nvim'
+    use 'KostkaBrukowa/definition-or-references.nvim'
 
     use {
         "folke/trouble.nvim",
         requires = "nvim-tree/nvim-web-devicons",
     }
 
-    use {
-        "darfink/vim-plist"
-    }
-
+    use "darfink/vim-plist"
     use 'glepnir/lspsaga.nvim'
+
     use {
         "zbirenbaum/copilot.lua",
         cmd = "Copilot",
         event = "InsertEnter",
-        config = function()
-            require("copilot").setup({
-                suggestion = {
-                    auto_trigger = true,
-                    keymap = {
-                        accept = "<C-j>",
-                        next = "<C-l>",
-                        prev = "<C-h>",
-                        dismiss = "<C-Esc>",
-                    },
-                }
-            })
-        end,
     }
+
+    use {
+        "nvim-neotest/neotest",
+        requires = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+            "antoinemadec/FixCursorHold.nvim"
+        }
+    }
+    use {
+        "nvim-neotest/neotest-python",
+        requires = {
+            "nvim-neotest/neotest",
+            "nvim-treesitter/nvim-treesitter",
+        },
+    }
+    use { "akinsho/toggleterm.nvim", tag = '*' }
+    use "chentoast/marks.nvim"
+
+    use {
+        "rcarriga/nvim-notify",
+        config = function() vim.notify = require("notify") end,
+    }
+
+    use {
+        "folke/noice.nvim",
+        requires = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify", 'nvim-treesitter/nvim-treesitter', }
+    }
+
+    use "rebelot/heirline.nvim"
+    use 'lewis6991/gitsigns.nvim'
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins

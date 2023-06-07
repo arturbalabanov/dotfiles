@@ -24,14 +24,15 @@ opt.splitbelow = true
 opt.splitright = true
 opt.completeopt = { 'menu', 'menuone', 'preview' }
 opt.updatetime = 300 -- faster completion (4000ms default)
+opt.laststatus = 3   -- Make the statusline global
 
 -- text
 opt.wrap = false
 opt.spell = false
 opt.textwidth = 100
-opt.whichwrap:append("<,>,[,],h,l") -- keys allowed to move to the previous/next line when the beginning/end of line is reached
-opt.iskeyword:append("-") -- treats words with `-` as single words
-opt.iskeyword:remove(":") -- make sure words seperated by `:` are treated as different words
+opt.whichwrap:append("<,>,[,],h,l")         -- keys allowed to move to the previous/next line when the beginning/end of line is reached
+opt.iskeyword:append("-")                   -- treats words with `-` as single words
+opt.iskeyword:remove(":")                   -- make sure words seperated by `:` are treated as different words
 opt.formatoptions:remove({ "c", "r", "o" }) -- This is a sequence of letters which describes how automatic formatting is to be done
 
 -- indentation
@@ -75,11 +76,18 @@ vim.g.loaded_netrwPlugin = 1
 
 -- Python support
 -- local py_venv_path = vim.fn.system {
-    --    'poetry',
-    --    'env',
-    --    'info',
-    --    '-p',
-    --    '-C',
-    --    vim.fn.stdpath("config"),
+--    'poetry',
+--    'env',
+--    'info',
+--    '-p',
+--    '-C',
+--    vim.fn.stdpath("config"),
 --    }:gsub("%s*$", "")
 -- vim.g.python3_host_prog = py_venv_path .. '/bin/python'
+
+vim.cmd [[
+    augroup highlight_on_yank_user
+        autocmd!
+        autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup="Search", timeout=100}
+    augroup end
+]]

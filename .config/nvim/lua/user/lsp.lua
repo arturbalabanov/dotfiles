@@ -1,10 +1,3 @@
-local status_ok, neodev = pcall(require, "neodev")
-if not status_ok then
-    return
-end
-
-neodev.setup({})
-
 local status_ok, lspconfig = pcall(require, "lspconfig")
 if not status_ok then
     return
@@ -15,10 +8,13 @@ if not status_ok then
     return
 end
 
-local configs = require('lspconfig/configs')
-local util = require('lspconfig/util')
+local status_ok, def_or_refs = pcall(require, "definition-or-references")
+if not status_ok then
+    return
+end
 
-local path = util.path
+local utils = require("user.utils")
+
 
 lspsaga.setup({
     lightbulb = {
@@ -31,20 +27,78 @@ lspsaga.setup({
     }
 })
 
+-- ref: https://github.com/KostkaBrukowa/nvim-config/blob/master/lua/dupa/definitions_or_references/entries.lua
+local function lsp_refs_in_telescope(result)
+    local entry_display = require("telescope.pickers.entry_display")
+    local make_entry = require("telescope.make_entry")
 
--- Mappings.
--- See `:help vim.diagnostic.*` for documentation on any of the below functions
-local opts = { noremap = true, silent = true }
+    local cwd = vim.loop.cwd()
 
-vim.keymap.set('n', '<leader>r', function() vim.cmd.Lspsaga('rename') end, opts)
-vim.keymap.set('n', '<leader>a', function() vim.cmd.Lspsaga('code_action') end, opts)
-vim.keymap.set('n', 'gd', function() vim.cmd.Lspsaga('goto_definition') end, opts)
-vim.keymap.set('n', 'gp', function() vim.cmd.Lspsaga('peek_definition') end, opts)
-vim.keymap.set('n', 'gD', function() vim.cmd.Lspsaga('hover_doc') end, opts)
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+    local function make_telescope_entries_from()
+        local configuration = {
+            { max_width = 40 },
+            {},
+        }
+
+        local displayer = entry_display.create({ separator = " ", items = configuration })
+
+        local make_display = function(entry)
+            local rel_filename = require("plenary.path"):new(entry.filename):make_relative(cwd)
+            local trimmed_text = entry.text:gsub("^%s*(.-)%s*$", "%1")
+
+            return displayer({
+                { rel_filename, "TelescopeResultsIdentifier" },
+                { trimmed_text },
+            })
+        end
+
+        return function(entry)
+            local rel_filename = require("plenary.path"):new(entry.filename):make_relative(cwd)
+
+            return make_entry.set_default_entry_mt({
+                value = entry,
+                ordinal = rel_filename .. " " .. entry.text,
+                display = make_display,
+
+                bufnr = entry.bufnr,
+                filename = entry.filename,
+                lnum = entry.lnum,
+                col = entry.col - 1,
+                text = entry.text,
+                start = entry.start,
+                finish = entry.finish,
+            }, {})
+        end
+    end
+
+    require("telescope.pickers")
+        .new({}, {
+            prompt_title = "LSP References",
+            finder = require("telescope.finders").new_table({
+                results = vim.lsp.util.locations_to_items(result, "utf-16"),
+                entry_maker = make_telescope_entries_from(),
+            }),
+            sorter = require("telescope.config").values.generic_sorter({}),
+            previewer = require("telescope.config").values.qflist_previewer({}),
+            layout_strategy = 'vertical',
+            initial_mode = "normal",
+            wrap_results = false,
+        })
+        :find()
+end
+
+def_or_refs.setup({
+    on_references_result = lsp_refs_in_telescope,
+})
+
+utils.nkeymap('gd', def_or_refs.definition_or_references)
+utils.nkeymap('<leader>r', function() vim.cmd.Lspsaga('rename') end)
+utils.nkeymap('<leader>a', function() vim.cmd.Lspsaga('code_action') end)
+utils.nkeymap('gp', function() vim.cmd.Lspsaga('peek_definition') end)
+utils.nkeymap('gD', function() vim.cmd.Lspsaga('hover_doc') end)
+utils.nkeymap('<leader>e', vim.diagnostic.open_float)
+utils.nkeymap('[d', vim.diagnostic.goto_prev)
+utils.nkeymap(']d', vim.diagnostic.goto_next)
 
 -- Diagnostics
 vim.diagnostic.config {
@@ -108,7 +162,23 @@ end, {})
 --             })
 --         end
 --     end
+--
+
+local lsp_signature_config = {
+    max_height = 3,
+    max_width = 120,
+    handler_opts = {
+        border = "shadow" -- double, rounded, single, shadow, none, or a table of borders
+    },
+    floating_window = true,
+
+    hint_enable = false,
+    -- hint_scheme = "Keyword", -- highlight the virtual text as if it was a Keyword, so that it's more visible
+}
+
 local on_attach = function(client, bufnr)
+    require("lsp_signature").on_attach(lsp_signature_config, bufnr)
+
     vim.api.nvim_create_autocmd('BufWritePre', {
         group = vim.api.nvim_create_augroup('LspFormatting', { clear = false }),
         buffer = bufnr,
@@ -120,38 +190,6 @@ local on_attach = function(client, bufnr)
             end
         end
     })
-end
-
-local function get_python_path(workspace)
-    -- Use activated virtualenv.
-    if vim.env.VIRTUAL_ENV then
-        return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
-    end
-
-    -- Find and use virtualenv via various venv tools
-
-    -- pdm:
-    local match = vim.fn.glob(path.join(workspace, 'pdm.lock'))
-    if match ~= '' then
-        return vim.fn.trim(vim.fn.system('pdm venv --python in-project'))
-    end
-
-    -- poetry:
-    local match = vim.fn.glob(path.join(workspace, 'poetry.lock'))
-    if match ~= '' then
-        local venv = vim.fn.trim(vim.fn.system('poetry env info -p'))
-        return path.join(venv, 'bin', 'python')
-    end
-
-    -- pipenv:
-    local match = vim.fn.glob(path.join(workspace, 'Pipfile.lock'))
-    if match ~= '' then
-        local venv = vim.fn.trim(vim.fn.system('pipenv --venv'))
-        return path.join(venv, 'bin', 'python')
-    end
-
-    -- Fallback to system Python.
-    return exepath('python3') or exepath('python') or 'python'
 end
 
 -- TODO: Get rid of Mason and just use local tools everywhere
@@ -184,24 +222,24 @@ local null_ls = require("null-ls")
 null_ls.setup({
     sources = {
         -- diagnostics
-        null_ls.builtins.diagnostics.ruff.with{
+        null_ls.builtins.diagnostics.ruff.with {
             prefer_local = true,
         },
-        null_ls.builtins.diagnostics.flake8.with{
+        null_ls.builtins.diagnostics.flake8.with {
             prefer_local = true,
         },
-        null_ls.builtins.diagnostics.mypy.with{
+        null_ls.builtins.diagnostics.mypy.with {
             prefer_local = true,
         },
 
         -- formatting
-        null_ls.builtins.formatting.ruff.with{
+        null_ls.builtins.formatting.ruff.with {
             prefer_local = true,
         },
-        null_ls.builtins.formatting.black.with{
+        null_ls.builtins.formatting.black.with {
             prefer_local = true,
         },
-        null_ls.builtins.formatting.isort.with{
+        null_ls.builtins.formatting.isort.with {
             prefer_local = true
         },
     },
@@ -209,14 +247,14 @@ null_ls.setup({
 })
 
 lspconfig.pyright.setup({
-    on_attach = function(client, buffer) 
+    on_attach = function(client, buffer)
         -- Disable all diagnostics from  pyright, use local tools like flake8, ruff etc. for that
         client.handlers["textDocument/publishDiagnostics"] = function(...) end
         return on_attach(client, buffer)
     end,
     capabilities = require('cmp_nvim_lsp').default_capabilities(),
     before_init = function(_, config)
-        config.settings.python.pythonPath = get_python_path(config.root_dir)
+        config.settings.python.pythonPath = utils.get_python_path(config.root_dir)
     end,
 })
 

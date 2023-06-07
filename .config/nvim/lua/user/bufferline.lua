@@ -6,7 +6,13 @@ end
 bufferline.setup({
     options = {
         mode = 'tabs',
-        separator_style = 'slant',
+        -- can also be a table containing 2 custom separators [focused and unfocused]. eg: { '|', '|' }
+        -- separator_style = "slant" | "slope" | "thick" | "thin" | { 'any', 'any' },
+        separator_style = 'thin',
+        indicator = {
+            icon = '▎',
+            style = 'icon',
+        },
         show_close_icon = false,
         offsets = {
             {
@@ -15,6 +21,11 @@ bufferline.setup({
                 highlight = "Directory",
                 separator = true
             }
-        }
+        },
     },
+    highlights = {
+        indicator_selected = {
+            fg = { highlight = "GruvboxBlue", attribute = "fg" },
+        },
+    }
 })

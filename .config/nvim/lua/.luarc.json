@@ -32,7 +32,12 @@
         "/Users/artur/.local/share/nvim/site/pack/packer/start/trouble.nvim/lua",
         "/Users/artur/.config/nvim/lua",
         "${3rd}/luv/library",
+        "${3rd}/luv/library",
+        "${3rd}/luv/library",
         "${3rd}/luv/library"
     ],
-    "workspace.checkThirdParty": false
+    "workspace.checkThirdParty": false,
+    "Lua": {
+        "workspace.checkThirdParty": false
+    }
 }

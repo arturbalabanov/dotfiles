@@ -1,6 +1,11 @@
+local status_ok, nvim_tree = pcall(require, "nvim-tree")
+if not status_ok then
+    return
+end
+
 local utils = require("user.utils")
 
-require("nvim-tree").setup({
+nvim_tree.setup({
     update_focused_file = {
         enable = true,
         update_root = false,
@@ -13,6 +18,7 @@ require("nvim-tree").setup({
                 { key = "J", action = "" },
                 { key = "K", action = "" },
                 { key = "m", action = "full_rename" },
+                { key = "q", action = "" },
                 -- { key = { "<CR>", "o", "<2-LeftMouse>" }, action = "edit" },
                 -- { key = "<C-e>",                          action = "edit_in_place" },
                 -- { key = "O",                              action = "edit_no_picker" },
@@ -53,7 +59,6 @@ require("nvim-tree").setup({
                 -- { key = "s",                              action = "system_open" },
                 -- { key = "f",                              action = "live_filter" },
                 -- { key = "F",                              action = "clear_live_filter" },
-                -- { key = "q",                              action = "close" },
                 -- { key = "W",                              action = "collapse_all" },
                 -- { key = "E",                              action = "expand_all" },
                 -- { key = "S",                              action = "search_node" },
