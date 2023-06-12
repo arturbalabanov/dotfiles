@@ -89,11 +89,6 @@ _G.packer_plugins = {
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/advanced-git-search.nvim",
     url = "https://github.com/aaronhallaert/advanced-git-search.nvim"
   },
-  ["bufferline.nvim"] = {
-    loaded = true,
-    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/bufferline.nvim",
-    url = "https://github.com/akinsho/bufferline.nvim"
-  },
   ["cmp-buffer"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/cmp-buffer",
@@ -179,11 +174,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/lspsaga.nvim",
     url = "https://github.com/glepnir/lspsaga.nvim"
-  },
-  ["lualine.nvim"] = {
-    loaded = true,
-    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/lualine.nvim",
-    url = "https://github.com/nvim-lualine/lualine.nvim"
   },
   ["marks.nvim"] = {
     loaded = true,
@@ -293,6 +283,11 @@ _G.packer_plugins = {
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/plenary.nvim",
     url = "https://github.com/nvim-lua/plenary.nvim"
   },
+  ["project.nvim"] = {
+    loaded = true,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/project.nvim",
+    url = "https://github.com/ahmedkhalf/project.nvim"
+  },
   ["sqlite.lua"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/sqlite.lua",
@@ -303,6 +298,11 @@ _G.packer_plugins = {
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/telescope-frecency.nvim",
     url = "https://github.com/nvim-telescope/telescope-frecency.nvim"
   },
+  ["telescope-glyph.nvim"] = {
+    loaded = true,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/telescope-glyph.nvim",
+    url = "https://github.com/ghassan0/telescope-glyph.nvim"
+  },
   ["telescope-live-grep-args.nvim"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/telescope-live-grep-args.nvim",
@@ -312,11 +312,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/telescope-yadm.nvim",
     url = "https://github.com/pschmitt/telescope-yadm.nvim"
-  },
-  ["telescope-zoxide"] = {
-    loaded = true,
-    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/telescope-zoxide",
-    url = "https://github.com/jvgrootveld/telescope-zoxide"
   },
   ["telescope.nvim"] = {
     loaded = true,
@@ -358,12 +353,12 @@ time([[Config for nvim-notify]], false)
 -- Load plugins in order defined by `after`
 time([[Sequenced loading]], true)
 vim.cmd [[ packadd nvim-treesitter ]]
+vim.cmd [[ packadd nvim-treesitter-textobjects ]]
 vim.cmd [[ packadd indent-blankline.nvim ]]
 
 -- Config for: indent-blankline.nvim
 try_loadstring("\27LJ\2\n€\1\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\4\0005\3\3\0=\3\5\2B\0\2\1K\0\1\0\20buftype_exclude\1\0\1\25show_current_context\2\1\2\0\0\rterminal\nsetup\21indent_blankline\frequire\0", "config", "indent-blankline.nvim")
 
-vim.cmd [[ packadd nvim-treesitter-textobjects ]]
 time([[Sequenced loading]], false)
 
 -- Command lazy-loads

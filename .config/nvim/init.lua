@@ -13,16 +13,16 @@ require "user.options"
 require "user.keymaps"
 require "user.plugins"
 
-require "user.neodev"
+require "user.autoreload_config"
 
+require "user.cinnamon"
+require "user.neodev"
 require "user.theme"
 require "user.mini"
--- TODO: Remove me once I'm fully happy with heirline
--- require "user.lualine"
-require "user.bufferline"
 require "user.nvim-tree"
 require "user.telescope"
 require "user.trouble"
+require "user.project_nvim"
 
 require "user.gitsigns"
 require "user.cmp"
@@ -34,6 +34,7 @@ require "user.toggleterm"
 require "user.luasnip"
 require "user.marks"
 require "user.heirline"
+require "user.chat_gpt"
 -- require "user.noice"
 
 require "user.filetype"

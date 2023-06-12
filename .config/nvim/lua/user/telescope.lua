@@ -6,18 +6,19 @@ end
 local actions = require("telescope.actions")
 local actions_layout = require("telescope.actions.layout")
 local telescope_builtin = require('telescope.builtin')
-local utils = require("user.utils")
 local lga_actions = require("telescope-live-grep-args.actions")
 local lga_shortcuts = require("telescope-live-grep-args.shortcuts")
-local sorters = require("telescope.sorters")
+
+local my_utils = require("user.utils")
 
 local telescope_extensions_to_load = {
     "yadm_files",
     "git_or_yadm_files",
     "live_grep_args",
     "advanced_git_search",
-    "zoxide",
     "frecency",
+    "projects",
+    "glyph",
 }
 
 
@@ -135,24 +136,25 @@ telescope.setup {
             show_scores = true,
             show_filter_column = false,
         },
-        zoxide = {
-            mappings = {
-                default = {
-                    action = function(selection)
-                        vim.cmd.lchdir(selection.path)
-                        telescope.extensions.frecency.frecency({ workspace = 'CWD' })
-                    end,
-                },
-                ["<C-f>"] = {
-                    action = function(selection)
-                        telescope.extensions.live_grep_args.live_grep_args({
-                            search_dirs = { selection.path },
-                            cwd = selection.path,
-                        })
-                    end,
-                },
-            },
-        }
+        -- TODO: Remove me once the same is integrated with projects_nvim
+        -- zoxide = {
+        --     mappings = {
+        --         default = {
+        --             action = function(selection)
+        --                 vim.cmd.lchdir(selection.path)
+        --                 telescope.extensions.frecency.frecency({ workspace = 'CWD' })
+        --             end,
+        --         },
+        --         ["<C-f>"] = {
+        --             action = function(selection)
+        --                 telescope.extensions.live_grep_args.live_grep_args({
+        --                     search_dirs = { selection.path },
+        --                     cwd = selection.path,
+        --                 })
+        --             end,
+        --         },
+        --     },
+        -- }
     }
 }
 
@@ -160,19 +162,19 @@ for _, extension_name in pairs(telescope_extensions_to_load) do
     telescope.load_extension(extension_name)
 end
 
-utils.nkeymap("<leader>t", telescope_builtin.builtin)
-utils.nkeymap("<leader>h", telescope_builtin.help_tags)
-utils.nkeymap('<leader>q', telescope_builtin.quickfix)
+my_utils.nkeymap("<leader>t", telescope_builtin.builtin)
+my_utils.nkeymap("<leader>h", telescope_builtin.help_tags)
+my_utils.nkeymap('<leader>q', telescope_builtin.quickfix)
 
 -- utils.nkeymap("<leader>p", telescope_builtin.find_files)
 -- utils.nkeymap("<leader>f", telescope_builtin.live_grep)
 -- utils.nkeymap("<leader>*", telescope_builtin.grep_string)
 
-utils.nkeymap("<leader>p", telescope.extensions.frecency.frecency)
-utils.nkeymap("<leader><leader>", telescope.extensions.zoxide.list)
-utils.nkeymap("<leader>f", telescope.extensions.live_grep_args.live_grep_args)
-utils.nkeymap("<leader>*", lga_shortcuts.grep_word_under_cursor)
-utils.nkeymap("<leader>*", lga_shortcuts.grep_word_under_cursor)
-utils.vkeymap("<leader>*", lga_shortcuts.grep_visual_selection)
+my_utils.nkeymap("<leader>p", telescope.extensions.frecency.frecency)
+my_utils.nkeymap("<leader><leader>", telescope.extensions.projects.projects)
+my_utils.nkeymap("<leader>f", telescope.extensions.live_grep_args.live_grep_args)
+my_utils.nkeymap("<leader>*", lga_shortcuts.grep_word_under_cursor)
+my_utils.nkeymap("<leader>*", lga_shortcuts.grep_word_under_cursor)
+my_utils.vkeymap("<leader>*", lga_shortcuts.grep_visual_selection)
 
-utils.nkeymap("<leader>c", telescope.extensions.yadm_files.yadm_files)
+my_utils.nkeymap("<leader>c", telescope.extensions.yadm_files.yadm_files)
