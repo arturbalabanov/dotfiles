@@ -3,12 +3,15 @@ if not status_ok then
     return
 end
 
-local utils = require("user.utils")
+local my_utils = require("user.utils")
 
 nvim_tree.setup({
+    sync_root_with_cwd = true,
+    respect_buf_cwd = true,
     update_focused_file = {
         enable = true,
-        update_root = false,
+        update_root = true,
+        -- update_root = true,
         ignore_list = {},
     },
     view = {
@@ -74,4 +77,4 @@ nvim_tree.setup({
 
 
 -- Plugin keymaps
-utils.nkeymap("<F2>", vim.cmd.NvimTreeToggle)
+my_utils.nkeymap("<F2>", vim.cmd.NvimTreeToggle)

@@ -1,3 +1,5 @@
+-- ref: https://github.com/rebelot/heirline.nvim/blob/master/cookbook.md
+
 local status_ok, heirline = pcall(require, "heirline")
 if not status_ok then
     return
@@ -6,13 +8,19 @@ end
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 
+local my_utils = require('user.utils')
+
 local colors = {
     bg = utils.get_highlight("GruvboxBg0").bg,
 
+    darker_gray = utils.get_highlight("GruvboxBg1").fg,
+    dark_gray = utils.get_highlight("GruvboxBg2").fg,
+    light_gray = utils.get_highlight("GruvboxBg3").fg,
+
+    gray = utils.get_highlight("GruvboxGray").fg,
     red = utils.get_highlight("GruvboxRed").fg,
     green = utils.get_highlight("GruvboxGreen").fg,
     blue = utils.get_highlight("GruvboxBlue").fg,
-    gray = utils.get_highlight("GruvboxGray").fg,
     orange = utils.get_highlight("GruvboxOrange").fg,
     purple = utils.get_highlight("GruvboxPurple").fg,
     aqua = utils.get_highlight("GruvboxAqua").fg,
@@ -27,11 +35,56 @@ local colors = {
 }
 
 ------------------------------
--- Compontents
+-- Common and Utils
 ------------------------------
 
 local Align = { provider = "%=" }
 local Space = { provider = " " }
+
+local WinSeparator = {
+    provider = "│",
+    hl = "WinSeparator",
+}
+
+local section = function(component, color)
+    local delimiter = Space
+
+    if component.condition ~= nil then
+        delimiter = { condition = component.condition, delimiter }
+    end
+
+    return utils.surround({ "", "" }, color, {
+        delimiter,
+        component,
+        delimiter,
+    })
+end
+
+local BufferModifiedIndicator = {
+    condition = function(self)
+        return vim.api.nvim_buf_get_option(self.bufnr, "modified")
+    end,
+    provider = " 雷",
+    hl = { fg = "green" },
+}
+
+local BufferLockOrTerminalIndicator = {
+    condition = function(self)
+        return not vim.api.nvim_buf_get_option(self.bufnr, "modifiable")
+            or vim.api.nvim_buf_get_option(self.bufnr, "readonly")
+    end,
+    provider = function(self)
+        if vim.api.nvim_buf_get_option(self.bufnr, "buftype") == "terminal" then
+            return "  "
+        else
+            return " "
+        end
+    end,
+    hl = { fg = "orange" },
+}
+------------------------------
+-- Statusline Components
+------------------------------
 
 local VimMode = {
     init = function(self)
@@ -91,7 +144,7 @@ local VimMode = {
         }
     },
     provider = function(self)
-        return " %2(" .. self.mode_names[self.mode] .. "%)"
+        return "%2(" .. self.mode_names[self.mode] .. "%)"
     end,
     hl = function(self)
         local mode = self.mode:sub(1, 1) -- get only the first mode character
@@ -156,6 +209,7 @@ local Diagnostics = {
 local FileNameBlock = {
     init = function(self)
         self.filename = vim.api.nvim_buf_get_name(0)
+        self.bufnr = vim.api.nvim_get_current_buf()
     end,
 }
 
@@ -196,20 +250,8 @@ local FileName = {
 }
 
 local FileFlags = {
-    {
-        condition = function()
-            return vim.bo.modified
-        end,
-        provider = "[+]",
-        hl = { fg = "green" },
-    },
-    {
-        condition = function()
-            return not vim.bo.modifiable or vim.bo.readonly
-        end,
-        provider = "",
-        hl = { fg = "orange" },
-    },
+    BufferModifiedIndicator,
+    BufferLockOrTerminalIndicator,
 }
 
 local FileChangedModifier = {
@@ -233,7 +275,7 @@ local Ruler = {
     -- %L = number of lines in the buffer
     -- %c = column number
     -- %P = percentage through file of displayed window
-    provider = "%l:%c% %2c %P",
+    provider = "%l:%c %P",
     hl = { bold = true },
 }
 
@@ -249,7 +291,7 @@ local ScrollBar = {
         local i = math.floor((curr_line - 1) / lines * #self.sbar) + 1
         return string.rep(self.sbar[i], 2)
     end,
-    hl = { fg = "blue" },
+    hl = { fg = "aqua", bg = "dark_gray" },
 }
 
 local FileType = {
@@ -260,32 +302,63 @@ local FileType = {
 }
 local FileEncoding = {
     provider = function()
-        return (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc
-    end
+        local encoding = (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc
+        return encoding ~= 'utf-8' and encoding
+    end,
+    hl = { fg = 'red', bold = true },
 }
 local FileFormat = {
     provider = function()
         -- TODO: Replace with icon
-        return vim.bo.fileformat
-    end
+        local file_format = vim.bo.fileformat
+        return file_format ~= 'unix' and file_format
+    end,
+    hl = { fg = 'red', bold = true },
+}
+
+local Project = {
+    -- NOTE: If not working, project_nvim uses this event specifically: VimEnter,BufEnter * ++nested
+    update   = { 'VimEnter', 'BufEnter' },
+    init     = function(self)
+        self.project_root = require("project_nvim.project").get_project_root()
+    end,
+    hl       = { fg = "blue", bold = true },
+
+    flexible = true,
+
+    {
+        provider = function(self)
+            if self.project_root == nil then
+                return nil
+            end
+
+            return vim.fn.fnamemodify(self.project_root, ":~")
+        end,
+    },
+    {
+        provider = function(self)
+            if self.project_root == nil then
+                return nil
+            end
+
+            return vim.fn.fnamemodify(self.project_root, ":t")
+        end,
+    }
 }
 
 local GitInfo = {
     condition = conditions.is_git_repo,
 
     init = function(self)
-        self.status_dict = vim.b.gitsigns_status_dict
+        self.status_dict = vim.api.nvim_buf_get_var(0, "gitsigns_status_dict")
         self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
     end,
 
-    hl = { fg = "orange" },
-
     {
-        -- git branch name
         provider = function(self)
             return " " .. self.status_dict.head
         end,
-        hl = { bold = true }
+        hl = { fg = "orange", bold = true },
     },
     -- You could handle delimiters, icons and counts similar to Diagnostics
     {
@@ -297,21 +370,21 @@ local GitInfo = {
     {
         provider = function(self)
             local count = self.status_dict.added or 0
-            return count > 0 and (" +" .. count)
+            return count > 0 and ("  " .. count)
         end,
         hl = { fg = "git_add" },
     },
     {
         provider = function(self)
             local count = self.status_dict.removed or 0
-            return count > 0 and (" -" .. count)
+            return count > 0 and ("  " .. count)
         end,
         hl = { fg = "git_del" },
     },
     {
         provider = function(self)
             local count = self.status_dict.changed or 0
-            return count > 0 and (" ~" .. count)
+            return count > 0 and ("  " .. count)
         end,
         hl = { fg = "git_change" },
     },
@@ -323,6 +396,188 @@ local GitInfo = {
     },
 }
 
+
+local MacroRecording = {
+    condition = function()
+        return vim.fn.reg_recording() ~= ""
+    end,
+    provider = function()
+        return "雷" .. vim.fn.reg_recording()
+    end,
+    hl = { fg = "red", bold = true },
+    update = {
+        "RecordingEnter",
+        "RecordingLeave",
+    }
+}
+
+
+
+------------------------------
+-- Tabline Compontents
+------------------------------
+
+local TabLineOffset = {
+    condition = function(self)
+        local win = vim.api.nvim_tabpage_list_wins(0)[1]
+        local bufnr = vim.api.nvim_win_get_buf(win)
+        self.winid = win
+
+        if vim.bo[bufnr].filetype == "NvimTree" then
+            self.title = "NvimTree"
+            return true
+            -- elseif vim.bo[bufnr].filetype == "TagBar" then
+            --     ...
+        end
+    end,
+
+    {
+        provider = function(self)
+            local title = self.title
+            local width = vim.api.nvim_win_get_width(self.winid)
+            local pad = math.ceil((width - #title) / 2)
+            return string.rep(" ", pad) .. title .. string.rep(" ", pad)
+        end,
+
+        hl = function(self)
+            if vim.api.nvim_get_current_win() == self.winid then
+                return {
+                    fg = "green",
+                    bold = true,
+                }
+            else
+                return {
+                    fg = "gray",
+                }
+            end
+        end,
+    },
+    WinSeparator,
+}
+
+local LSPActive = {
+    condition = conditions.lsp_attached,
+    update    = { 'LspAttach', 'LspDetach', "BufEnter" },
+
+    init      = function(self)
+        self.tabpage = vim.api.nvim_get_current_tabpage()
+        self.winnr = vim.api.nvim_tabpage_get_win(self.tabpage)
+        self.bufnr = vim.api.nvim_win_get_buf(self.winnr)
+        local filepath = vim.api.nvim_buf_get_name(self.bufnr)
+        self.filename = filepath == "" and "[No Name]" or vim.fn.fnamemodify(filepath, ":t")
+
+        self.clients = {}
+
+        for _, client in pairs(vim.lsp.get_active_clients({ bufnr = self.bufnr })) do
+            local client_info = {
+                name = client.name,
+                python_path = my_utils.get(client, 'config', 'settings', 'python', 'pythonPath'),
+                sources = my_utils.get(client, "registered") or {},
+            }
+
+            if client_info.python_path ~= nil then
+                -- :h is the parent :t is the last component
+                -- So since the pythonpath is <venv-path>/bin/python
+                -- this will return the dir name of the venv
+
+                client_info.venv_name = vim.fn.fnamemodify(client_info.python_path, ":h:h:t")
+            end
+
+            table.insert(self.clients, client_info)
+        end
+    end,
+
+    provider  = function()
+        return " "
+    end,
+
+    on_click  = {
+        callback = function(self)
+            local info_strings = {}
+
+            for _, client in pairs(self.clients) do
+                local info_string = "* `" .. client.name .. '`'
+
+                if client.venv_name ~= nil then
+                    info_string = info_string .. ' (venv: **' .. client.venv_name .. '**)'
+                end
+
+                for _, source_name in pairs(client.sources) do
+                    info_string = info_string .. "\n    * `" .. source_name .. '`'
+                end
+
+                table.insert(info_strings, info_string)
+            end
+
+            vim.notify(table.concat(info_strings, '\n'), "info", {
+                title = 'Running LSP Clients for `' .. self.filename .. '`',
+                on_open = function(win)
+                    local buf = vim.api.nvim_win_get_buf(win)
+                    vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+                end,
+            })
+        end,
+        update = true,
+        name = 'lsp_active_on_click',
+    },
+    hl        = { fg = "green", bold = true },
+}
+
+
+
+local TabPageBlock = {
+    init = function(self)
+        self.winnr = vim.api.nvim_tabpage_get_win(self.tabpage)
+        self.bufnr = vim.api.nvim_win_get_buf(self.winnr)
+        local filepath = vim.api.nvim_buf_get_name(self.bufnr)
+        self.filename = filepath == "" and "[No Name]" or vim.fn.fnamemodify(filepath, ":t")
+    end,
+
+
+    FileIcon,
+    {
+        provider = function(self)
+            return self.tabnr .. ": " .. self.filename
+        end,
+        hl = function(self)
+            if self.is_active then
+                return { fg = "green", bold = true }
+            else
+                return { fg = "gray" }
+            end
+        end,
+    },
+    BufferModifiedIndicator,
+    BufferLockOrTerminalIndicator,
+    {
+        condition = function(self)
+            return not vim.api.nvim_buf_get_option(self.bufnr, "modified")
+        end,
+        { provider = " " },
+        {
+            provider = "",
+            on_click = {
+                callback = function(_, minwid)
+                    vim.schedule(function()
+                        vim.cmd.tabclose(minwid)
+                        vim.cmd.redrawtabline()
+                    end)
+                end,
+                minwid = function(self)
+                    return self.tabnr
+                end,
+                name = "heirline_tabline_close_tab_callback",
+            },
+        },
+    },
+}
+
+
+TabPageBlock = utils.surround({ " ", " " }, "bg", { TabPageBlock })
+local TabPages = {
+    utils.make_tablist(TabPageBlock),
+}
+
 ------------------------------
 -- Lines Config
 ------------------------------
@@ -330,46 +585,50 @@ local GitInfo = {
 local StatusLine = {
     hl = { bg = "bg" },
 
-    VimMode,
-    Space,
-
-    GitInfo,
-    Space,
-
-    Diagnostics,
+    section(VimMode),
+    section(GitInfo, "darker_gray"),
+    section(Diagnostics),
+    section(FileNameBlock),
 
     Align,
+    MacroRecording,
+    {
+        FileEncoding,
+        Space,
+        FileFormat,
+        Space,
+        FileType,
+    },
 
-    FileNameBlock,
     Space,
 
-    FileEncoding,
-    Space,
-
-    FileFormat,
-    Space,
-
-    FileType,
-    Space,
-
-    Ruler,
-    Space,
-
-    ScrollBar
+    {
+        Ruler,
+        Space,
+        ScrollBar,
+    },
+    section({
+        Project,
+    }),
 }
+
+local TabLine = {
+    TabLineOffset,
+    TabPages,
+    Align,
+    LSPActive,
+    Space,
+    hl = { bg = "bg" }
+}
+
 
 heirline.setup({
     statusline = StatusLine,
+    tabline = TabLine,
     opts = {
         colors = colors,
     }
 })
 
--- vim.api.nvim_create_autocmd("BufWritePost", {
---     group = vim.api.nvim_create_augroup("user_testing_heirline_config", { clear = true }),
---     pattern = "heirline.lua",
---     callback = function()
---         vim.cmd.ReloadConfig()
---         vim.cmd.edit()
---     end
--- })
+vim.o.showtabline = 2
+vim.cmd([[au FileType * if index(['wipe', 'delete'], &bufhidden) >= 0 | set nobuflisted | endif]])

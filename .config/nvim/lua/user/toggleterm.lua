@@ -3,7 +3,7 @@ if not status_ok then
     return
 end
 
-local utils    = require('user.utils')
+local my_utils = require('user.utils')
 local Terminal = require('toggleterm.terminal').Terminal
 
 toggleterm.setup({
@@ -19,8 +19,8 @@ toggleterm.setup({
     shade_terminals = false,
 })
 
-utils.nkeymap([[<C-\>]], vim.cmd.ToggleTermToggleAll)
-utils.nkeymap('<S-CR>', function()
+my_utils.nkeymap([[<C-\>]], vim.cmd.ToggleTermToggleAll)
+my_utils.nkeymap('<S-CR>', function()
     vim.cmd.ToggleTermToggleAll()
     Terminal:new():open()
 end)
@@ -31,11 +31,11 @@ vim.api.nvim_create_autocmd("TermOpen", {
     callback = function(opts)
         local keymap_opts = { buffer = opts.buffer }
 
-        utils.tkeymap([[<C-\>]], vim.cmd.ToggleTerm, keymap_opts)
-        utils.tkeymap('<S-CR>', function() Terminal:new():open() end, keymap_opts)
+        my_utils.tkeymap([[<C-\>]], vim.cmd.ToggleTerm, keymap_opts)
+        my_utils.tkeymap('<S-CR>', function() Terminal:new():open() end, keymap_opts)
 
         -- Esc to normal mode (of the buffer as oposed to the shell)
-        utils.tkeymap('<Esc>', [[<C-\><C-n>]], keymap_opts)
+        my_utils.tkeymap('<Esc>', [[<C-\><C-n>]], keymap_opts)
 
         -- utils.tnkeymap("gh", [[execute wincmd h]])
         -- utils.tnkeymap("gj", [[<C-\><C-n>:wincmd j<CR>]])
@@ -43,7 +43,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
         -- utils.tnkeymap("gl", [[<C-\><C-n>:wincmd l<CR>]])
         -- utils.tnkeymap("K", [[<C-\><C-n>:tabn<CR>]])
         -- utils.tnkeymap("J", [[<C-\><C-n>:tabp<CR>]])
-        utils.tnkeymap("gh", function() vim.cmd.wincmd("h") end)
+        my_utils.tnkeymap("gh", function() vim.cmd.wincmd("h") end)
         -- utils.tnkeymap("gj", function() vim.cmd.wincmd("j") end)
         -- utils.tnkeymap("gk", function() vim.cmd.wincmd("k") end)
         -- utils.tnkeymap("gl", function() vim.cmd.wincmd("l") end)

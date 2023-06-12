@@ -15,14 +15,6 @@ if fn.empty(fn.glob(install_path)) > 0 then
     vim.cmd [[packadd packer.nvim]]
 end
 
--- Autocommand that reloads neovim whenever you save the plugins.lua file
-vim.cmd [[
-    augroup packer_user_config
-        autocmd!
-        autocmd BufWritePost plugins.lua source <afile> | PackerSync
-    augroup end
-]]
-
 -- Use a protected call so we don't error out on first use
 local status_ok, packer = pcall(require, "packer")
 if not status_ok then
@@ -54,12 +46,6 @@ return packer.startup(function(use)
 
     use { 'echasnovski/mini.nvim' }
     use { "ellisonleao/gruvbox.nvim" }
-    use {
-        'nvim-lualine/lualine.nvim',
-        requires = { 'nvim-tree/nvim-web-devicons' }
-    }
-    use { 'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons' }
-
 
     use "tpope/vim-fugitive"
     use {
@@ -100,19 +86,26 @@ return packer.startup(function(use)
         },
     })
     use {
+        "nvim-telescope/telescope-frecency.nvim",
+        requires = {
+            "kkharji/sqlite.lua",
+            "nvim-telescope/telescope.nvim",
+        }
+    }
+    use {
+        "ghassan0/telescope-glyph.nvim",
+        requires = {
+            'nvim-tree/nvim-web-devicons',
+            "nvim-telescope/telescope.nvim",
+        }
+    }
+
+    use {
         'nvim-treesitter/nvim-treesitter',
         run = function()
             local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
             ts_update()
         end
-    }
-    use {
-        'jvgrootveld/telescope-zoxide',
-        requires = { 'nvim-telescope/telescope.nvim' },
-    }
-    use {
-        "nvim-telescope/telescope-frecency.nvim",
-        requires = { "kkharji/sqlite.lua" }
     }
 
     use {
@@ -204,7 +197,17 @@ return packer.startup(function(use)
     }
 
     use "rebelot/heirline.nvim"
-    use 'lewis6991/gitsigns.nvim'
+    use "lewis6991/gitsigns.nvim"
+    use "ahmedkhalf/project.nvim"
+    use({
+        "jackMort/ChatGPT.nvim",
+        requires = {
+            "MunifTanjim/nui.nvim",
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope.nvim"
+        }
+    })
+    use "declancm/cinnamon.nvim"
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
