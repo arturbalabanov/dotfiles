@@ -13,6 +13,12 @@ if not status_ok then
     return
 end
 
+local status_ok, goto_preview = pcall(require, 'goto-preview')
+if not status_ok then
+    return
+end
+
+
 local my_utils = require("user.utils")
 
 
@@ -26,6 +32,27 @@ lspsaga.setup({
         enable = false,
     }
 })
+
+goto_preview.setup {
+    width = 120,                                         -- Width of the floating window
+    height = 15,                                         -- Height of the floating window
+    border = { "↖", "─", "┐", "│", "┘", "─", "└", "│" }, -- Border characters of the floating window
+    default_mappings = false,                            -- Bind default mappings
+    debug = false,                                       -- Print debug information
+    opacity = 0,                                         -- 0-100 opacity level of the floating window where 100 is fully transparent.
+    resizing_mappings = false,                           -- Binds arrow keys to resizing the floating window.
+    post_open_hook = nil,                                -- A function taking two arguments, a buffer and a window to be ran as a hook.
+    references = {                                       -- Configure the telescope UI for slowing the references cycling window.
+        telescope = require("telescope.themes").get_dropdown({ hide_preview = false })
+    },
+    -- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
+    focus_on_open = true,                                        -- Focus the floating window when opening it.
+    dismiss_on_move = false,                                     -- Dismiss the floating window when moving the cursor.
+    force_close = true,                                          -- passed into vim.api.nvim_win_close's second argument. See :h nvim_win_close
+    bufhidden = "wipe",                                          -- the bufhidden option to set on the floating window. See :h bufhidden
+    stack_floating_preview_windows = true,                       -- Whether to nest floating windows
+    preview_window_title = { enable = true, position = "left" }, -- Whether to set the preview window title as the filename
+}
 
 -- ref: https://github.com/KostkaBrukowa/nvim-config/blob/master/lua/dupa/definitions_or_references/entries.lua
 local function lsp_refs_in_telescope(result)
@@ -92,10 +119,14 @@ def_or_refs.setup({
 })
 
 my_utils.nkeymap("gd", def_or_refs.definition_or_references)
+
 my_utils.nkeymap("<leader>r", function() vim.cmd.Lspsaga("rename") end)
 my_utils.nkeymap("<leader>a", function() vim.cmd.Lspsaga("code_action") end)
-my_utils.nkeymap("gp", function() vim.cmd.Lspsaga("peek_definition") end)
 my_utils.nkeymap("gD", function() vim.cmd.Lspsaga("hover_doc") end)
+
+-- my_utils.nkeymap("gp", function() vim.cmd.Lspsaga("peek_definition") end)
+my_utils.nkeymap("gp", goto_preview.goto_preview_definition)
+
 my_utils.nkeymap("<leader>e", vim.diagnostic.open_float)
 my_utils.nkeymap("[d", vim.diagnostic.goto_prev)
 my_utils.nkeymap("]d", vim.diagnostic.goto_next)
@@ -230,24 +261,24 @@ null_ls.setup({
     sources = {
         -- diagnostics
         null_ls.builtins.diagnostics.ruff.with {
-            only_local = true,
+            prefer_local = true,
         },
         null_ls.builtins.diagnostics.flake8.with {
-            only_local = true,
+            prefer_local = true,
         },
         null_ls.builtins.diagnostics.mypy.with {
-            only_local = true,
+            prefer_local = true,
         },
 
         -- formatting
         null_ls.builtins.formatting.ruff.with {
-            only_local = true,
+            prefer_local = true,
         },
         null_ls.builtins.formatting.black.with {
-            only_local = true,
+            prefer_local = true,
         },
         null_ls.builtins.formatting.isort.with {
-            only_local = true
+            prefer_local = true
         },
     },
     on_attach = on_attach,
@@ -260,8 +291,11 @@ lspconfig.pyright.setup({
         return on_attach(client, buffer)
     end,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
-    before_init = function(_, config)
-        config.settings.python.pythonPath = my_utils.get_python_path(config.root_dir)
+    -- before_init = function(_, config)
+    --     config.settings.python.pythonPath = my_utils.get_python_path(config.root_dir)
+    -- end,
+    on_init = function(client)
+        client.config.settings.python.pythonPath = my_utils.get_python_path(client.config.root_dir)
     end,
 })
 

@@ -3,6 +3,8 @@ if not status_ok then
     return
 end
 
+vim.g.copilot_agent_command = "/Users/artur/.local/share/nvim/site/pack/packer/opt/copilot.lua/copilot/dist/agent.js"
+
 -- local NODE_VERSION_TO_USE = "v20.*"
 --
 -- local get_nvm_node_dir = function(path)
@@ -51,7 +53,6 @@ end
 --     nvm_dir = nvm_dir .. "/versions/node"
 --     local node = get_nvm_node_dir(nvm_dir)
 --
---     vim.notify(vim.inspect(node))
 --     if not node then
 --         return node_fallback()
 --     end

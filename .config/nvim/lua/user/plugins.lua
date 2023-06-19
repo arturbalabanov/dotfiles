@@ -1,9 +1,7 @@
-local fn = vim.fn
-
 -- Automatically install packer
-local install_path = fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
-if fn.empty(fn.glob(install_path)) > 0 then
-    PACKER_BOOTSTRAP = fn.system {
+local install_path = vim.fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+    PACKER_BOOTSTRAP = vim.fn.system {
         "git",
         "clone",
         "--depth",
@@ -161,6 +159,7 @@ return packer.startup(function(use)
 
     use "darfink/vim-plist"
     use 'glepnir/lspsaga.nvim'
+    use "rmagatti/goto-preview"
 
     use {
         "zbirenbaum/copilot.lua",
@@ -208,6 +207,7 @@ return packer.startup(function(use)
         }
     })
     use "declancm/cinnamon.nvim"
+    use "sindrets/diffview.nvim"
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins

@@ -125,6 +125,7 @@ telescope.setup {
             -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
             show_builtin_git_pickers = false,
         },
+        -- ref: https://github.com/nvim-telescope/telescope-frecency.nvim
         frecency = {
             ignore_patterns = { "*/node_modules/*", '*/.git/*' },
             default_workspace = 'CWD',
@@ -170,7 +171,18 @@ my_utils.nkeymap('<leader>q', telescope_builtin.quickfix)
 -- utils.nkeymap("<leader>f", telescope_builtin.live_grep)
 -- utils.nkeymap("<leader>*", telescope_builtin.grep_string)
 
-my_utils.nkeymap("<leader>p", telescope.extensions.frecency.frecency)
+my_utils.nkeymap("<leader>p", function()
+    local tabpage = vim.api.nvim_get_current_tabpage()
+    local tabnr = vim.api.nvim_tabpage_get_number(tabpage)
+    local winnr = vim.api.nvim_tabpage_get_win(tabpage)
+
+    if vim.fn.getcwd(winnr, tabnr) == vim.fn.expand("$HOME") then
+        telescope.extensions.frecency.frecency({ workspace = "conf" })
+    else
+        telescope.extensions.frecency.frecency()
+    end
+end)
+
 my_utils.nkeymap("<leader><leader>", telescope.extensions.projects.projects)
 my_utils.nkeymap("<leader>f", telescope.extensions.live_grep_args.live_grep_args)
 my_utils.nkeymap("<leader>*", lga_shortcuts.grep_word_under_cursor)

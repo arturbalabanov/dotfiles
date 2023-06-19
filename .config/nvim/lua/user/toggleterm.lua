@@ -19,11 +19,18 @@ toggleterm.setup({
     shade_terminals = false,
 })
 
-my_utils.nkeymap([[<C-\>]], vim.cmd.ToggleTermToggleAll)
-my_utils.nkeymap('<S-CR>', function()
-    vim.cmd.ToggleTermToggleAll()
-    Terminal:new():open()
-end)
+if vim.g.neovide then
+    my_utils.nkeymap([[<C-\>]], vim.cmd.ToggleTermToggleAll)
+    my_utils.nkeymap('<C-S-CR>', function()
+        vim.cmd.ToggleTermToggleAll()
+        Terminal:new():open()
+    end)
+else
+    my_utils.nkeymap([[<C-\>]], function()
+        vim.cmd.ToggleTermToggleAll()
+        Terminal:new():open()
+    end)
+end
 
 vim.api.nvim_create_autocmd("TermOpen", {
     group = vim.api.nvim_create_augroup('UserFileTypeSpecificOptions', { clear = true }),
@@ -37,17 +44,11 @@ vim.api.nvim_create_autocmd("TermOpen", {
         -- Esc to normal mode (of the buffer as oposed to the shell)
         my_utils.tkeymap('<Esc>', [[<C-\><C-n>]], keymap_opts)
 
-        -- utils.tnkeymap("gh", [[execute wincmd h]])
-        -- utils.tnkeymap("gj", [[<C-\><C-n>:wincmd j<CR>]])
-        -- utils.tnkeymap("gk", [[<C-\><C-n>:wincmd k<CR>]])
-        -- utils.tnkeymap("gl", [[<C-\><C-n>:wincmd l<CR>]])
-        -- utils.tnkeymap("K", [[<C-\><C-n>:tabn<CR>]])
-        -- utils.tnkeymap("J", [[<C-\><C-n>:tabp<CR>]])
         my_utils.tnkeymap("gh", function() vim.cmd.wincmd("h") end)
-        -- utils.tnkeymap("gj", function() vim.cmd.wincmd("j") end)
-        -- utils.tnkeymap("gk", function() vim.cmd.wincmd("k") end)
-        -- utils.tnkeymap("gl", function() vim.cmd.wincmd("l") end)
-        -- utils.tnkeymap("K", vim.cmd.tabn)
-        -- utils.tnkeymap("J", vim.cmd.tabp)
+        my_utils.tnkeymap("gj", function() vim.cmd.wincmd("j") end)
+        my_utils.tnkeymap("gk", function() vim.cmd.wincmd("k") end)
+        my_utils.tnkeymap("gl", function() vim.cmd.wincmd("l") end)
+        my_utils.tnkeymap("K", vim.cmd.tabn)
+        my_utils.tnkeymap("J", vim.cmd.tabp)
     end
 })
