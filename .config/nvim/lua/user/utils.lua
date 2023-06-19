@@ -279,4 +279,6 @@ function M.simple_notify(msg, level)
     vim.notify(msg, level, { render = "compact" })
 end
 
+M.partial = plenary_functional.partial
+
 return M

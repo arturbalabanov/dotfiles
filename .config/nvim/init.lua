@@ -15,7 +15,6 @@ require "user.plugins"
 
 require "user.autoreload_config"
 
--- require "user.cinnamon"
 require "user.neodev"
 require "user.theme"
 require "user.mini"
@@ -26,7 +25,6 @@ require "user.project_nvim"
 
 require "user.gitsigns"
 require "user.cmp"
-require "user.copilot"
 require "user.treesitter"
 require "user.lsp"
 require "user.neotest"
