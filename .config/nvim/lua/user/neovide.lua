@@ -1,3 +1,5 @@
+local my_utils = require("user.utils")
+
 vim.g.neovide_cursor_animation_length = 0
 vim.o.guifont = "Hack Nerd Font:h14"
 vim.opt.linespace = 0
@@ -14,7 +16,8 @@ vim.keymap.set('i', '<D-v>', '<ESC>l"+Pli') -- Paste insert mode
 
 vim.api.nvim_set_keymap('', '<D-v>', '+p<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('!', '<D-v>', '<C-R>+', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<D-v>', '<C-R>+', { noremap = true, silent = true })
+-- TODO: FIXME
+-- vim.api.nvim_set_keymap('t', '<D-v>', '<C-R>+', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<D-v>', '<C-R>+', { noremap = true, silent = true })
 
 vim.cmd.cd(vim.fn.expand('$HOME') .. '/.config/nvim')

@@ -35,3 +35,6 @@ my_utils.nkeymap("gk", { vim.cmd.wincmd, "k" })
 my_utils.nkeymap("gl", { vim.cmd.wincmd, "l" })
 my_utils.nkeymap("K", vim.cmd.tabn)
 my_utils.nkeymap("J", vim.cmd.tabp)
+
+my_utils.nkeymap("<C-u>", "gUiw")
+my_utils.ikeymap("<C-u>", "<C-o>gUiw")

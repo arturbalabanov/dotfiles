@@ -7,27 +7,68 @@ local M = {}
 local unpack = unpack or table.unpack
 
 
-M.run_shell_cmd = function(cmd)
-    local handle = io.popen(cmd)
-    local output = handle:read("*a")
+M.run_shell_cmd = function(cmd, opts)
+    local opts = plenary_tbl.apply_defaults(opts, { cwd = nil, show_error = true })
 
-    if output == nil then
+    if opts.cwd ~= nil then
+        vim.cmd.lcd(opts.cwd)
+    end
+
+    local status_ok, stdout = pcall(vim.fn.system, cmd)
+
+    stdout = vim.fn.trim(stdout or "")
+
+    if opts.cwd ~= nil then
+        vim.cmd.lcd("-")
+    end
+
+    if not status_ok or (vim.v.shell_error ~= 0) then
+        if opts.show_error then
+            local descr_lines = {
+                "command: " .. vim.inspect(cmd),
+                "shell_error: " .. vim.inspect(vim.v.shell_error),
+                "stdout: " .. stdout,
+            }
+
+            if opts.cwd ~= nil then
+                table.insert(descr_lines, "cwd: " .. opts.cwd)
+            end
+
+            vim.notify(table.concat(descr_lines, '\n'), "error", {
+                title = "Command execution failed"
+            })
+        end
+
         return nil
     end
 
-    local close_result = handle:close()
+    return vim.fn.trim(stdout)
 
-    if close_result == nil then
-        return nil
-    end
-
-    local success = { close_result }
-
-    if not success then
-        return nil
-    end
-
-    return vim.fn.trim(output)
+    -- local tmpfile = os.tmpname()
+    --
+    -- local full_cmd = cmd .. ' > ' .. tmpfile
+    -- local child_process = false
+    -- if opts.cwd ~= nil then
+    --     full_cmd = '(' .. "cd " .. opts.cwd .. "; " .. full_cmd .. ")"
+    --     child_process = true
+    -- end
+    --
+    -- -- ref: https://stackoverflow.com/a/30954739
+    -- local exit_code = os.execute(full_cmd) / 256
+    -- if child_process and exit_code > 128 then
+    --     exit_code = exit_code - 128
+    -- end
+    --
+    -- if exit_code ~= 0 then
+    --     return nil
+    -- end
+    --
+    -- local stdout_file = io.open(tmpfile)
+    -- local stdout = stdout_file:read("*all")
+    --
+    -- stdout_file:close()
+    --
+    -- return vim.fn.trim(stdout)
 end
 
 M.get_process_running_in_term = function(buffer)
@@ -162,16 +203,14 @@ function M.simple_autocmd(event_name, callback, opts)
     })
 end
 
-function M.get_python_path(workspace_dir)
+function M.get_python_path(project_dir)
     -- Use activated virtualenv.
     if vim.env.VIRTUAL_ENV then
         return Path:new(vim.env.VIRTUAL_ENV):joinpath('bin', 'python'):expand()
     end
 
-    local workspace_path = Path:new(workspace_dir)
-
     local function file_present_in_workspace(file_name)
-        local match = vim.fn.glob(workspace_path:joinpath(file_name):expand())
+        local match = vim.fn.glob(Path:new(project_dir):joinpath(file_name):expand())
         return match ~= ''
     end
 
@@ -179,32 +218,35 @@ function M.get_python_path(workspace_dir)
 
     -- pdm:
     if file_present_in_workspace('pdm.lock') then
-        venv_path = M.run_shell_cmd('pdm venv --python in-project')
+        local venv_path = M.run_shell_cmd('pdm venv --python in-project', { cwd = project_dir })
 
-        if venv_path ~= nil then
-            return venv_path
-        end
+        return venv_path
     end
 
     -- poetry:
     if file_present_in_workspace('poetry.lock') then
-        venv_path = M.run_shell_cmd('poetry env info -p')
+        local venv_path = M.run_shell_cmd('poetry env info -p', { cwd = project_dir })
 
         if venv_path ~= nil then
             return Path:new(venv_path):joinpath('bin', 'python'):expand()
+        else
+            return nil
         end
     end
 
     -- pipenv:
     if file_present_in_workspace('Pipfile.lock') then
-        venv_path = M.run_shell_cmd('pipenv --venv')
+        local venv_path = M.run_shell_cmd('pipenv --venv', { cwd = project_dir })
 
         if venv_path ~= nil then
             return Path:new(venv_path):joinpath('bin', 'python'):expand()
+        else
+            return nil
         end
     end
 
-    -- Fallback to system Python.
+    M.simple_notify("No virtual environment found in " .. project_dir .. ", falling back to system python", "warn")
+
     return exepath('python3') or exepath('python') or 'python'
 end
 

@@ -1,23 +1,3 @@
-# OS Detection {{{
-# From: https://stackoverflow.com/a/27776822
-case "$(uname -sr)" in
-    Darwin*)
-        os="macos"
-        ;;
-
-    Linux*Microsoft*)
-        os='wsl'  # Windows Subsystem for Linux
-        ;;
-
-    Linux*)
-        os='linux'
-        ;;
-
-    CYGWIN*|MINGW*|MINGW32*|MSYS*)
-        os="windows"
-        ;;
-esac
-# }}}
 # Oh my ZSH {{{
 export ZSH=$HOME/.oh-my-zsh
 
@@ -195,82 +175,6 @@ function prepend-sudo {
 zle -N prepend-sudo
 bindkey "^s" prepend-sudo
 # }}}
-# Environment Variables {{{
-if type nvim > /dev/null; then
-    export EDITOR="nvim"
-fi
-
-if [[ $os == "linux" ]]; then
-    export BROWSER="google-chrome-stable"
-fi
-
-export PATH="$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin:$HOME/node_modules/.bin"
-export MANPATH="$MANPATH:$HOME/.local/man"
-
-if type go > /dev/null; then
-    export GOPATH=$(go env GOPATH)
-    export PATH=$PATH:$GOPATH/bin
-fi
-# }}}
-# External Tools {{{
-# Enable bash completion scripts
-autoload -U +X compinit && compinit
-autoload -U +X bashcompinit && bashcompinit
-
-if type pyenv > /dev/null; then
-    if [[ $os == 'macos' ]] && type brew > /dev/null; then
-        alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
-    fi
-fi
-
-if type fzf > /dev/null; then
-    if [[ $os == "macos" ]] && type brew > /dev/null; then
-        [[ $- == *i* ]] && source "$(brew --prefix)/opt/fzf/shell/completion.zsh" 2> /dev/null
-        source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
-    fi
-fi
-
-if type zoxide > /dev/null; then
-    eval "$(zoxide init zsh)"
-fi
-
-if type pipx > /dev/null; then
-    eval "$(register-python-argcomplete pipx)"
-fi
-
-if type pyenv > /dev/null; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-
-    eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"
-fi
-
-if type terraform > /dev/null; then
-    complete -o nospace -C $(where terraform) terraform
-fi
-
-if [[ $os == 'macos' ]] && type brew > /dev/null; then
-    brew_nvm_path="$(brew --prefix)/opt/nvm"
-
-    if [[ -d $brew_nvm_path ]]; then
-        export NVM_DIR="$HOME/.nvm"
-
-        if [[ -f "$brew_nvm_path/nvm.sh" ]]; then
-            source "$brew_nvm_path/nvm.sh"
-        fi
-
-        if [[ -f "$brew_nvm_path/etc/bash_completion.d/nvm" ]]; then
-            source "$brew_nvm_path/etc/bash_completion.d/nvm"
-        fi
-    fi
-fi
-# }}}
-# Source other configs {{{
-if [[ -f "$HOME/.zshrc_local" ]]; then
-    source "$HOME/.zshrc_local"
-fi
-# }}}
 # Aliases {{{
 if type lsd > /dev/null; then
     alias ls='lsd'
@@ -281,7 +185,7 @@ alias ll='ls -lh'
 alias la='ll -a'
 alias grep='grep --color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
 if type lsd > /dev/null; then
-    alias tree='ls -l --tree'
+    alias tree='lsd -l --tree'
 else
     alias tree='tree -C'
 fi
@@ -290,9 +194,6 @@ alias vim='nvim'
 alias s='sudo'
 alias se='sudoedit'
 alias pac='pikaur'
-if [[ $os == 'linux' ]]; then
-    alias open='xdg-open'
-fi
 alias wget='wget -c'
 alias lynx='lynx -lss=~/.lynx.lss'
 alias ..='cd ..'
@@ -313,13 +214,10 @@ else
     alias fuck='eval "sudo $(fc -ln -1)"'
 fi
 
-# Global aliases are a zsh-specific feature
-if [ -n "$ZSH_VERSION" ]; then
-    alias -g G='| grep -i'
-    alias -g L='| less'
-    alias -g H='| head'
-    alias -g T='| tail'
-fi
+alias -g G='| grep -i'
+alias -g L='| less'
+alias -g H='| head'
+alias -g T='| tail'
 
 function mkcd() { mkdir -p "$@" && cd "$_"; }
 function yadm_update() {
@@ -341,4 +239,33 @@ function venv {
 
     source $venv_path/bin/activate
 }
+# }}}
+# Autocomlete setup {{{
+autoload -U +X compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+
+if type fzf > /dev/null && [[ $has_brew ]]; then
+    if [[ $- == *i* ]]; then
+        source "$(brew --prefix)/opt/fzf/shell/completion.zsh" 2> /dev/null
+    fi
+
+    source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
+fi
+
+if type zoxide > /dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
+if type pipx > /dev/null; then
+    eval "$(register-python-argcomplete pipx)"
+fi
+
+if type terraform > /dev/null; then
+    complete -o nospace -C $(where terraform) terraform
+fi
+# }}}
+# Source other configs {{{
+if [[ -f "$HOME/.zshrc_local" ]]; then
+    source "$HOME/.zshrc_local"
+fi
 # }}}

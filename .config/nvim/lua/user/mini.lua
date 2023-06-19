@@ -13,17 +13,22 @@ require('mini.splitjoin').setup({
 })
 
 
-local comment_keymap = "<C-/>"
+local function get_comment_keymap()
+    if vim.g.neovide then
+        return "<C-/>"
+    end
 
-if os.getenv("ZELLIJ") ~= nil then
-    -- NOTE: In some terminals (or in zellij) C-/ is triggered by C-_
-    comment_keymap = "<C-_>"
+    if vim.env.ZELLIJ ~= nil then
+        -- NOTE: In some terminals (or in zellij) C-/ is triggered by C-_
+        return "<C-_>"
+    end
+
+    return "<C-/>"
 end
-
 
 require('mini.comment').setup({
     mappings = {
-        comment = comment_keymap,
-        comment_line = comment_keymap,
+        comment = get_comment_keymap(),
+        comment_line = get_comment_keymap(),
     }
 })

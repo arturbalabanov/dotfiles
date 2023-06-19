@@ -15,7 +15,7 @@ require "user.plugins"
 
 require "user.autoreload_config"
 
-require "user.cinnamon"
+-- require "user.cinnamon"
 require "user.neodev"
 require "user.theme"
 require "user.mini"
@@ -35,6 +35,7 @@ require "user.luasnip"
 require "user.marks"
 require "user.heirline"
 require "user.chat_gpt"
+require "user.diffview"
 -- require "user.noice"
 
 require "user.filetype"

@@ -9,6 +9,7 @@ local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 
 local my_utils = require('user.utils')
+local null_ls_sources = require('null-ls.sources')
 
 local colors = {
     bg = utils.get_highlight("GruvboxBg0").bg,
@@ -153,9 +154,9 @@ local VimMode = {
     update = {
         "ModeChanged",
         pattern = "*:*",
-        callback = vim.schedule_wrap(function()
-            vim.cmd("redrawstatus")
-        end),
+        -- callback = vim.schedule_wrap(function()
+        --     vim.cmd("redrawstatus")
+        -- end),
     },
 }
 
@@ -246,7 +247,6 @@ local FileName = {
         end
         return filename
     end,
-    hl = { fg = utils.get_highlight("NvimTreeOpenedFile").fg, bold = true },
 }
 
 local FileFlags = {
@@ -254,20 +254,17 @@ local FileFlags = {
     BufferLockOrTerminalIndicator,
 }
 
-local FileChangedModifier = {
-    hl = function()
-        if vim.bo.modified then
-            -- use `force` because we need to override the child's hl foreground
-            return { fg = utils.get_highlight("NvimTreeModifiedFile").fg, bold = true, force = true }
-        end
+local BufferNumber = {
+    provider = function(self)
+        return self.bufnr .. ' '
     end,
 }
 
 FileNameBlock = utils.insert(FileNameBlock,
-    FileIcon,
-    utils.insert(FileChangedModifier, FileName), -- a new table where FileName is a child of FileNameModifier
+    utils.insert(FileIcon, BufferNumber),
+    FileName,
     FileFlags,
-    { provider = '%<' }                          -- this means that the statusline is cut here when there's not enough space
+    { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
 )
 
 local Ruler = {
@@ -350,7 +347,8 @@ local GitInfo = {
     condition = conditions.is_git_repo,
 
     init = function(self)
-        self.status_dict = vim.api.nvim_buf_get_var(0, "gitsigns_status_dict")
+        local bufnr = vim.api.nvim_get_current_buf()
+        self.status_dict = vim.api.nvim_buf_get_var(bufnr, "gitsigns_status_dict")
         self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
     end,
 
@@ -461,37 +459,96 @@ local LSPActive = {
 
     init      = function(self)
         self.tabpage = vim.api.nvim_get_current_tabpage()
+        self.tabnr = vim.api.nvim_tabpage_get_number(self.tabpage)
         self.winnr = vim.api.nvim_tabpage_get_win(self.tabpage)
         self.bufnr = vim.api.nvim_win_get_buf(self.winnr)
         local filepath = vim.api.nvim_buf_get_name(self.bufnr)
         self.filename = filepath == "" and "[No Name]" or vim.fn.fnamemodify(filepath, ":t")
+        self.filetype = vim.api.nvim_buf_get_option(self.bufnr, 'filetype')
 
         self.clients = {}
+        self.py_venv_name = nil
+        self.py_venv_version = nil
 
         for _, client in pairs(vim.lsp.get_active_clients({ bufnr = self.bufnr })) do
             local client_info = {
                 name = client.name,
                 python_path = my_utils.get(client, 'config', 'settings', 'python', 'pythonPath'),
-                sources = my_utils.get(client, "registered") or {},
+                sources = {},
             }
 
-            if client_info.python_path ~= nil then
-                -- :h is the parent :t is the last component
-                -- So since the pythonpath is <venv-path>/bin/python
-                -- this will return the dir name of the venv
+            if client.name == 'null-ls' or client.name == 'null_ls' then
+                local ft_available_sources = null_ls_sources.get_available(self.filetype)
 
-                client_info.venv_name = vim.fn.fnamemodify(client_info.python_path, ":h:h:t")
+                for _, source in pairs(ft_available_sources) do
+                    table.insert(client_info.sources, {
+                        name = source.name,
+                        is_active = true,
+                        is_registered = null_ls_sources.is_registered(source.name),
+                    })
+                end
+            end
+
+            if client_info.python_path ~= nil then
+                -- :h is the parent
+                -- :t is the last component
+                -- The pythonpath is <venv-path>/bin/python
+
+                local venv_dir_path = vim.fn.fnamemodify(client_info.python_path, ":h:h")
+                local venv_dir_name = vim.fn.fnamemodify(venv_dir_path, ":t")
+
+                if venv_dir_name == '.venv' then
+                    client_info.venv_name = vim.fn.fnamemodify(venv_dir_path, ":h:t")
+                else
+                    client_info.venv_name = venv_dir_name
+                end
+
+                self.py_venv_name = client_info.venv_name
+
+                local py_version_string = my_utils.run_shell_cmd(client_info.python_path .. ' --version')
+
+                if py_version_string == nil then
+                    self.py_venv_version = nil
+                else
+                    _, _, major, minor, patch = string.find(py_version_string, "%s*Python%s*(%d+).(%d+).(%d+)")
+                    self.py_venv_version = major .. '.' .. minor
+                end
             end
 
             table.insert(self.clients, client_info)
         end
     end,
+    {
+        provider = function(self)
+            local provider_string = " "
 
-    provider  = function()
-        return " "
-    end,
+            if self.py_venv_name ~= nil then
+                local py_version = (self.py_venv_version or "<UNKNOWN VERSION>")
+                provider_string = provider_string .. ' ' .. self.py_venv_name .. ' ' .. py_version
+            end
 
-    on_click  = {
+            return provider_string
+        end,
+    },
+    {
+        provider = function(self)
+            local provider_string = " "
+
+            if self.py_venv_name ~= nil then
+                provider_string = provider_string .. ' ' .. self.py_venv_name
+            end
+
+            return provider_string
+        end,
+    },
+    {
+        provider = function()
+            return " "
+        end,
+    },
+    flexible = true,
+
+    on_click = {
         callback = function(self)
             local info_strings = {}
 
@@ -502,15 +559,21 @@ local LSPActive = {
                     info_string = info_string .. ' (venv: **' .. client.venv_name .. '**)'
                 end
 
-                for _, source_name in pairs(client.sources) do
-                    info_string = info_string .. "\n    * `" .. source_name .. '`'
+                for _, source in pairs(client.sources) do
+                    source_string = "`" .. source.name .. "`"
+
+                    if not source.is_registered then
+                        source_string = "~" .. source_string .. "~"
+                    end
+
+                    info_string = info_string .. "\n    " .. source_string
                 end
 
                 table.insert(info_strings, info_string)
             end
 
             vim.notify(table.concat(info_strings, '\n'), "info", {
-                title = 'Running LSP Clients for `' .. self.filename .. '`',
+                title = 'Running LSP Clients for buffer ' .. self.bufnr,
                 on_open = function(win)
                     local buf = vim.api.nvim_win_get_buf(win)
                     vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
@@ -520,20 +583,10 @@ local LSPActive = {
         update = true,
         name = 'lsp_active_on_click',
     },
-    hl        = { fg = "green", bold = true },
+    hl       = { fg = "green", bold = true },
 }
 
-
-
-local TabPageBlock = {
-    init = function(self)
-        self.winnr = vim.api.nvim_tabpage_get_win(self.tabpage)
-        self.bufnr = vim.api.nvim_win_get_buf(self.winnr)
-        local filepath = vim.api.nvim_buf_get_name(self.bufnr)
-        self.filename = filepath == "" and "[No Name]" or vim.fn.fnamemodify(filepath, ":t")
-    end,
-
-
+local TabPageName = {
     FileIcon,
     {
         provider = function(self)
@@ -547,6 +600,32 @@ local TabPageBlock = {
             end
         end,
     },
+
+    on_click = {
+        callback = function(_, minwid)
+            vim.schedule(function()
+                vim.api.nvim_set_current_tabpage(minwid)
+                vim.cmd.redrawtabline()
+            end)
+        end,
+        minwid = function(self)
+            return self.tabpage
+        end,
+        name = "heirline_tabline_select_tab_callback",
+    },
+}
+
+local TabPageBlock = {
+    init = function(self)
+        self.tabnr = vim.api.nvim_tabpage_get_number(self.tabpage)
+        self.winnr = vim.api.nvim_tabpage_get_win(self.tabpage)
+        self.bufnr = vim.api.nvim_win_get_buf(self.winnr)
+        local filepath = vim.api.nvim_buf_get_name(self.bufnr)
+        self.filename = filepath == "" and "[No Name]" or vim.fn.fnamemodify(filepath, ":t")
+    end,
+
+
+    TabPageName,
     BufferModifiedIndicator,
     BufferLockOrTerminalIndicator,
     {
