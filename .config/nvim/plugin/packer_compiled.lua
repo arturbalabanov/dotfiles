@@ -124,7 +124,18 @@ _G.packer_plugins = {
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/cmp_luasnip",
     url = "https://github.com/saadparwaiz1/cmp_luasnip"
   },
+  ["copilot-cmp"] = {
+    config = { "\27LJ\2\n9\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\16copilot_cmp\frequire\0" },
+    load_after = {
+      ["copilot.lua"] = true
+    },
+    loaded = false,
+    needs_bufread = false,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/opt/copilot-cmp",
+    url = "https://github.com/zbirenbaum/copilot-cmp"
+  },
   ["copilot.lua"] = {
+    after = { "copilot-cmp" },
     commands = { "Copilot" },
     config = { "\27LJ\2\n,\0\0\3\0\2\0\0046\0\0\0'\2\1\0B\0\2\1K\0\1\0\17user.copilot\frequire\0" },
     loaded = false,
@@ -136,17 +147,12 @@ _G.packer_plugins = {
   ["definition-or-references.nvim"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/definition-or-references.nvim",
-    url = "https://github.com/KostkaBrukowa/definition-or-references.nvim"
+    url = "/Users/artur/dev/definition-or-references.nvim"
   },
   ["diffview.nvim"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/diffview.nvim",
     url = "https://github.com/sindrets/diffview.nvim"
-  },
-  ["friendly-snippets"] = {
-    loaded = true,
-    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/friendly-snippets",
-    url = "https://github.com/rafamadriz/friendly-snippets"
   },
   ["gitsigns.nvim"] = {
     loaded = true,
@@ -200,21 +206,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/marks.nvim",
     url = "https://github.com/chentoast/marks.nvim"
-  },
-  ["mason-lspconfig.nvim"] = {
-    loaded = true,
-    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/mason-lspconfig.nvim",
-    url = "https://github.com/williamboman/mason-lspconfig.nvim"
-  },
-  ["mason-null-ls.nvim"] = {
-    loaded = true,
-    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/mason-null-ls.nvim",
-    url = "https://github.com/jay-babu/mason-null-ls.nvim"
-  },
-  ["mason.nvim"] = {
-    loaded = true,
-    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/mason.nvim",
-    url = "https://github.com/williamboman/mason.nvim"
   },
   ["mini.nvim"] = {
     loaded = true,
@@ -374,12 +365,12 @@ time([[Config for nvim-notify]], false)
 -- Load plugins in order defined by `after`
 time([[Sequenced loading]], true)
 vim.cmd [[ packadd nvim-treesitter ]]
+vim.cmd [[ packadd nvim-treesitter-textobjects ]]
 vim.cmd [[ packadd indent-blankline.nvim ]]
 
 -- Config for: indent-blankline.nvim
 try_loadstring("\27LJ\2\n€\1\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\4\0005\3\3\0=\3\5\2B\0\2\1K\0\1\0\20buftype_exclude\1\0\1\25show_current_context\2\1\2\0\0\rterminal\nsetup\21indent_blankline\frequire\0", "config", "indent-blankline.nvim")
 
-vim.cmd [[ packadd nvim-treesitter-textobjects ]]
 time([[Sequenced loading]], false)
 
 -- Command lazy-loads

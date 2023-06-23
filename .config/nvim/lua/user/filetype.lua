@@ -1,6 +1,7 @@
 local ft_indentation = {
     terraform = 2,
     yaml = 2,
+    lua = 2,
 }
 
 local ft_options = {

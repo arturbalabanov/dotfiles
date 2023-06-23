@@ -1,5 +1,3 @@
-local my_utils = require("user.utils")
-
 -- Automatically install packer
 local install_path = vim.fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
@@ -29,6 +27,7 @@ packer.init {
     git = {
         clone_timeout = 300, -- Timeout, in seconds, for git clones
     },
+    autoremove = true,       -- Automatically remove unused dependencies
 }
 
 return packer.startup(function(use)
@@ -37,11 +36,7 @@ return packer.startup(function(use)
     use 'nvim-lua/plenary.nvim'
 
     use "neovim/nvim-lspconfig"
-    -- TODO: Remove mason
-    use "williamboman/mason.nvim"
-    use "williamboman/mason-lspconfig.nvim"
     use "jose-elias-alvarez/null-ls.nvim"
-    use "jay-babu/mason-null-ls.nvim"
 
     use { 'echasnovski/mini.nvim' }
     use { "ellisonleao/gruvbox.nvim" }
@@ -102,7 +97,8 @@ return packer.startup(function(use)
     use {
         'nvim-treesitter/nvim-treesitter',
         run = function()
-            local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+            -- local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+            local ts_update = require('nvim-treesitter.install').update({ with_sync = false })
             ts_update()
         end
     }
@@ -139,19 +135,18 @@ return packer.startup(function(use)
     use 'hrsh7th/cmp-path'
     use 'hrsh7th/cmp-cmdline'
 
-    use "rafamadriz/friendly-snippets"
     use({
         "L3MON4D3/LuaSnip",
         -- follow latest release.
         tag = "v1.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
         -- install jsregexp (optional!:).
         run = "make install_jsregexp",
-        dependencies = { "rafamadriz/friendly-snippets" },
     })
     use 'saadparwaiz1/cmp_luasnip'
 
     use 'ray-x/lsp_signature.nvim'
-    use 'KostkaBrukowa/definition-or-references.nvim'
+    -- use 'KostkaBrukowa/definition-or-references.nvim'
+    use "~/dev/definition-or-references.nvim"
 
     use {
         "folke/trouble.nvim",
@@ -166,7 +161,19 @@ return packer.startup(function(use)
         "zbirenbaum/copilot.lua",
         cmd = "Copilot",
         event = "InsertEnter",
-        config = my_utils.partial(require, "user.copilot"),
+        config = function() require("user.copilot") end
+    }
+
+    use {
+        "zbirenbaum/copilot-cmp",
+        requires = {
+            "zbirenbaum/copilot.lua",
+            "hrsh7th/nvim-cmp",
+        },
+        after = { "copilot.lua" },
+        config = function()
+            require("copilot_cmp").setup()
+        end
     }
 
     use {

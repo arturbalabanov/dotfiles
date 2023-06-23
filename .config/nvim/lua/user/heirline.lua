@@ -7,9 +7,11 @@ end
 
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
+local null_ls_sources = require('null-ls.sources')
 
 local my_utils = require('user.utils')
-local null_ls_sources = require('null-ls.sources')
+local py_venv = require('user.py_venv')
+
 
 local colors = {
     bg = utils.get_highlight("GruvboxBg0").bg,
@@ -46,20 +48,6 @@ local WinSeparator = {
     provider = "│",
     hl = "WinSeparator",
 }
-
-local section = function(component, color)
-    local delimiter = Space
-
-    if component.condition ~= nil then
-        delimiter = { condition = component.condition, delimiter }
-    end
-
-    return utils.surround({ "", "" }, color, {
-        delimiter,
-        component,
-        delimiter,
-    })
-end
 
 local BufferModifiedIndicator = {
     condition = function(self)
@@ -145,7 +133,7 @@ local VimMode = {
         }
     },
     provider = function(self)
-        return "%2(" .. self.mode_names[self.mode] .. "%)"
+        return "  " .. self.mode_names[self.mode] .. " "
     end,
     hl = function(self)
         local mode = self.mode:sub(1, 1) -- get only the first mode character
@@ -181,26 +169,25 @@ local Diagnostics = {
 
     {
         provider = function(self)
-            -- 0 is just another output, we can decide to print it or not!
-            return self.errors > 0 and (self.error_icon .. self.errors .. " ")
+            return self.errors > 0 and (" " .. self.error_icon .. self.errors)
         end,
         hl = { fg = "diag_error" },
     },
     {
         provider = function(self)
-            return self.warnings > 0 and (self.warn_icon .. self.warnings .. " ")
+            return self.warnings > 0 and (" " .. self.warn_icon .. self.warnings)
         end,
         hl = { fg = "diag_warn" },
     },
     {
         provider = function(self)
-            return self.info > 0 and (self.info_icon .. self.info .. " ")
+            return self.info > 0 and (" " .. self.info_icon .. self.info)
         end,
         hl = { fg = "diag_info" },
     },
     {
         provider = function(self)
-            return self.hints > 0 and (self.hint_icon .. self.hints)
+            return self.hints > 0 and (" " .. self.hint_icon .. self.hints)
         end,
         hl = { fg = "diag_hint" },
     },
@@ -261,6 +248,7 @@ local BufferNumber = {
 }
 
 FileNameBlock = utils.insert(FileNameBlock,
+    Space,
     utils.insert(FileIcon, BufferNumber),
     FileName,
     FileFlags,
@@ -352,13 +340,13 @@ local GitInfo = {
         self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
     end,
 
+    Space,
     {
         provider = function(self)
             return " " .. self.status_dict.head
         end,
         hl = { fg = "orange", bold = true },
     },
-    -- You could handle delimiters, icons and counts similar to Diagnostics
     {
         condition = function(self)
             return self.has_changes
@@ -392,6 +380,8 @@ local GitInfo = {
         end,
         provider = "",
     },
+    Space,
+    hl = { bg = "darker_gray" },
 }
 
 
@@ -453,6 +443,23 @@ local TabLineOffset = {
     WinSeparator,
 }
 
+
+local PyVenvInfo = {
+    update    = { 'LspAttach', 'LspDetach', "BufEnter" },
+    condition = conditions.lsp_attached,
+
+    init      = function(self)
+        bufnr = vim.api.nvim_get_current_buf()
+        self.py_venv = py_venv.get_python_venv(bufnr, { disable_notifications = true })
+    end,
+
+    hl        = { fg = "green", bold = true },
+
+    provider  = function(self)
+        return self.py_venv ~= nil and ' ' .. (self.py_venv.name or "<system>")
+    end,
+}
+
 local LSPActive = {
     condition = conditions.lsp_attached,
     update    = { 'LspAttach', 'LspDetach', "BufEnter" },
@@ -465,15 +472,12 @@ local LSPActive = {
         local filepath = vim.api.nvim_buf_get_name(self.bufnr)
         self.filename = filepath == "" and "[No Name]" or vim.fn.fnamemodify(filepath, ":t")
         self.filetype = vim.api.nvim_buf_get_option(self.bufnr, 'filetype')
-
+        self.py_venv = py_venv.get_python_venv(self.bufnr, { disable_notifications = true })
         self.clients = {}
-        self.py_venv_name = nil
-        self.py_venv_version = nil
 
         for _, client in pairs(vim.lsp.get_active_clients({ bufnr = self.bufnr })) do
             local client_info = {
                 name = client.name,
-                python_path = my_utils.get(client, 'config', 'settings', 'python', 'pythonPath'),
                 sources = {},
             }
 
@@ -481,86 +485,44 @@ local LSPActive = {
                 local ft_available_sources = null_ls_sources.get_available(self.filetype)
 
                 for _, source in pairs(ft_available_sources) do
+                    local source_method_names = {}
+
+                    for method_type, enabled in pairs(source.methods) do
+                        if enabled then
+                            local short_method_type = method_type:gsub("^NULL_LS_(.-)$", "%1"):lower()
+                            table.insert(source_method_names, short_method_type)
+                        end
+                    end
+
                     table.insert(client_info.sources, {
                         name = source.name,
+                        methods = source_method_names,
                         is_active = true,
                         is_registered = null_ls_sources.is_registered(source.name),
                     })
                 end
             end
 
-            if client_info.python_path ~= nil then
-                -- :h is the parent
-                -- :t is the last component
-                -- The pythonpath is <venv-path>/bin/python
-
-                local venv_dir_path = vim.fn.fnamemodify(client_info.python_path, ":h:h")
-                local venv_dir_name = vim.fn.fnamemodify(venv_dir_path, ":t")
-
-                if venv_dir_name == '.venv' then
-                    client_info.venv_name = vim.fn.fnamemodify(venv_dir_path, ":h:t")
-                else
-                    client_info.venv_name = venv_dir_name
-                end
-
-                self.py_venv_name = client_info.venv_name
-
-                local py_version_string = my_utils.run_shell_cmd(client_info.python_path .. ' --version')
-
-                if py_version_string == nil then
-                    self.py_venv_version = nil
-                else
-                    _, _, major, minor, patch = string.find(py_version_string, "%s*Python%s*(%d+).(%d+).(%d+)")
-                    self.py_venv_version = major .. '.' .. minor
-                end
-            end
-
             table.insert(self.clients, client_info)
         end
     end,
-    {
-        provider = function(self)
-            local provider_string = " "
+    provider  = "",
 
-            if self.py_venv_name ~= nil then
-                local py_version = (self.py_venv_version or "<UNKNOWN VERSION>")
-                provider_string = provider_string .. ' ' .. self.py_venv_name .. ' ' .. py_version
-            end
-
-            return provider_string
-        end,
-    },
-    {
-        provider = function(self)
-            local provider_string = " "
-
-            if self.py_venv_name ~= nil then
-                provider_string = provider_string .. ' ' .. self.py_venv_name
-            end
-
-            return provider_string
-        end,
-    },
-    {
-        provider = function()
-            return " "
-        end,
-    },
-    flexible = true,
-
-    on_click = {
+    on_click  = {
         callback = function(self)
             local info_strings = {}
 
             for _, client in pairs(self.clients) do
                 local info_string = "* `" .. client.name .. '`'
 
-                if client.venv_name ~= nil then
-                    info_string = info_string .. ' (venv: **' .. client.venv_name .. '**)'
-                end
-
                 for _, source in pairs(client.sources) do
-                    source_string = "`" .. source.name .. "`"
+                    local source_string = "`" .. source.name .. "`"
+
+                    if #source.methods >= 1 then
+                        local methods_string = table.concat(source.methods, ', ')
+
+                        source_string = source_string .. " (" .. methods_string .. ")"
+                    end
 
                     if not source.is_registered then
                         source_string = "~" .. source_string .. "~"
@@ -569,6 +531,17 @@ local LSPActive = {
                     info_string = info_string .. "\n    " .. source_string
                 end
 
+                table.insert(info_strings, info_string)
+            end
+
+            if self.py_venv ~= nil then
+                local info_string = 'venv: `' .. self.py_venv.name .. '`'
+
+                if self.py_venv.venv_manager_name ~= nil then
+                    info_string = info_string .. " via **" .. self.py_venv.venv_manager_name .. "**"
+                end
+
+                table.insert(info_strings, "")
                 table.insert(info_strings, info_string)
             end
 
@@ -583,7 +556,7 @@ local LSPActive = {
         update = true,
         name = 'lsp_active_on_click',
     },
-    hl       = { fg = "green", bold = true },
+    hl        = { fg = "green", bold = true },
 }
 
 local TabPageName = {
@@ -664,13 +637,15 @@ local TabPages = {
 local StatusLine = {
     hl = { bg = "bg" },
 
-    section(VimMode),
-    section(GitInfo, "darker_gray"),
-    section(Diagnostics),
-    section(FileNameBlock),
+    VimMode,
+    GitInfo,
+    Diagnostics,
+    FileNameBlock,
 
     Align,
     MacroRecording,
+    Space,
+    Project,
     {
         FileEncoding,
         Space,
@@ -685,16 +660,15 @@ local StatusLine = {
         Ruler,
         Space,
         ScrollBar,
-    },
-    section({
-        Project,
-    }),
+    }
 }
 
 local TabLine = {
     TabLineOffset,
     TabPages,
     Align,
+    PyVenvInfo,
+    Space,
     LSPActive,
     Space,
     hl = { bg = "bg" }
