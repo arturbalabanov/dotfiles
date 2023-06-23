@@ -11,17 +11,19 @@ nvim_tree.setup({
     update_focused_file = {
         enable = true,
         update_root = true,
-        -- update_root = true,
-        ignore_list = {},
+        ignore_list = {
+            ".null-ls_*",
+        },
     },
     view = {
         mappings = {
             list = {
-                { key = "t", action = "tabnew" },
-                { key = "J", action = "" },
-                { key = "K", action = "" },
-                { key = "m", action = "full_rename" },
-                { key = "q", action = "" },
+                { key = "t",     action = "tabnew" },
+                { key = "J",     action = "" },
+                { key = "K",     action = "" },
+                { key = "m",     action = "full_rename" },
+                { key = "q",     action = "" },
+                { key = "<S-R>", action = "refresh" },
                 -- { key = { "<CR>", "o", "<2-LeftMouse>" }, action = "edit" },
                 -- { key = "<C-e>",                          action = "edit_in_place" },
                 -- { key = "O",                              action = "edit_no_picker" },
@@ -41,7 +43,6 @@ nvim_tree.setup({
                 -- { key = "H",                              action = "toggle_dotfiles" },
                 -- { key = "B",                              action = "toggle_no_buffer" },
                 -- { key = "U",                              action = "toggle_custom" },
-                -- { key = "R",                              action = "refresh" },
                 -- { key = "a",                              action = "create" },
                 -- { key = "d",                              action = "remove" },
                 -- { key = "D",                              action = "trash" },

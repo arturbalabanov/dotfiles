@@ -18,9 +18,7 @@ if not status_ok then
     return
 end
 
-
 local my_utils = require("user.utils")
-
 
 lspsaga.setup({
     lightbulb = {
@@ -115,8 +113,34 @@ local function lsp_refs_in_telescope(result)
 end
 
 def_or_refs.setup({
+    debug = true,
+    include_implementations = true,
     on_references_result = lsp_refs_in_telescope,
 })
+
+-- Open a new defintion (or reference, no matter if selected by telescope or not) in a new tab if not in the same file
+local original_handler = vim.lsp.handlers["textDocument/definition"]
+vim.lsp.handlers["textDocument/definition"] = function(err, result, ctx, config)
+    my_utils.simple_notify("HERE")
+    if result == nil or vim.tbl_isempty(result) then
+        return original_handler(err, result, ctx, config)
+    end
+
+    local original_buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_command("tabnew")
+    local tab_buf = vim.api.nvim_get_current_buf()
+
+    local original_result = original_handler(err, result, ctx, config)
+
+    if vim.api.nvim_get_current_buf() == original_buf then
+        -- close the new tab buffer if we jumped to the same buffer
+        vim.api.nvim_command(tab_buf .. "bd")
+    end
+
+    return original_result
+end
+
+
 
 my_utils.nkeymap("gd", def_or_refs.definition_or_references)
 
@@ -145,29 +169,6 @@ vim.fn.sign_define("DiagnosticSignWarn", { text = "", linehl = "", texthl = "
 vim.fn.sign_define("DiagnosticSignInfo", { text = "", linehl = "", texthl = "DiagnosticSignInfo", numhl = "" })
 vim.fn.sign_define("DiagnosticSignHint", { text = "", linehl = "", texthl = "DiagnosticSignHint", numhl = "" })
 
--- Open a new defintion in a new tab if not in the same file
-
-local original_handler = vim.lsp.handlers["textDocument/definition"]
-vim.lsp.handlers["textDocument/definition"] = function(err, result, ctx, config)
-    if result == nil or vim.tbl_isempty(result) then
-        return original_handler(err, result, ctx, config)
-    end
-
-    local original_buf = vim.api.nvim_get_current_buf()
-    vim.api.nvim_command("tabnew")
-    local tab_buf = vim.api.nvim_get_current_buf()
-
-    local original_result = original_handler(err, result, ctx, config)
-
-    if vim.api.nvim_get_current_buf() == original_buf then
-        -- close the new tab buffer if we jumped to the same buffer
-        vim.api.nvim_command(tab_buf .. "bd")
-    end
-
-    return original_result
-end
-
-
 local lsp_formatting_enabled = {}
 
 vim.api.nvim_create_user_command("ToggleLSPFormatting", function()
@@ -185,21 +186,6 @@ vim.api.nvim_create_user_command("ToggleLSPFormatting", function()
     my_utils.simple_notify("LSP Formatting " .. enabled_str .. " for buffer " .. bufnr)
 end, {})
 
--- local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
--- function on_attach(client, bufnr)
---         if client.supports_method("textDocument/formatting") then
---             vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
---             vim.api.nvim_create_autocmd("BufWritePre", {
---                 group = augroup,
---                 buffer = bufnr,
---                 callback = function()
---                     vim.lsp.buf.format({ bufnr = bufnr })
---                 end,
---             })
---         end
---     end
---
-
 local lsp_signature_config = {
     max_height = 3,
     max_width = 120,
@@ -214,6 +200,7 @@ local lsp_signature_config = {
 
 local on_attach = function(client, bufnr)
     require("lsp_signature").on_attach(lsp_signature_config, bufnr)
+    require("user.py_venv").on_attach(client, bufnr)
 
     vim.api.nvim_create_autocmd("BufWritePre", {
         group = vim.api.nvim_create_augroup("LspFormatting", { clear = false }),
@@ -230,73 +217,13 @@ local on_attach = function(client, bufnr)
     })
 end
 
--- TODO: Get rid of Mason and just use local tools everywhere
--- local ensure_installed = { "lua_ls", "pyright", "ruff_lsp", "gopls" }
--- require("mason").setup({
---     providers = {
---         -- "mason.providers.registry-api",
---         "mason.providers.client",
---     },
--- })
--- require("mason-null-ls").setup({
---     ensure_installed = ensure_installed,
---     automatic_installation = false,
---     automatic_setup = false,
---     handlers = {},
--- })
--- require("mason-lspconfig").setup({
---     ensure_installed = ensure_installed,
---     automatic_installation = true,
--- })
-
--- require("null-ls").setup({
---     sources = {
---         -- Anything not supported by mason.
---     }
--- })
-
-local null_ls = require("null-ls")
-
-null_ls.setup({
-    sources = {
-        -- diagnostics
-        null_ls.builtins.diagnostics.ruff.with {
-            prefer_local = true,
-        },
-        null_ls.builtins.diagnostics.flake8.with {
-            prefer_local = true,
-        },
-        null_ls.builtins.diagnostics.mypy.with {
-            prefer_local = true,
-        },
-
-        -- formatting
-        null_ls.builtins.formatting.ruff.with {
-            prefer_local = true,
-        },
-        null_ls.builtins.formatting.black.with {
-            prefer_local = true,
-        },
-        null_ls.builtins.formatting.isort.with {
-            prefer_local = true
-        },
-    },
-    on_attach = on_attach,
-})
 
 lspconfig.pyright.setup({
-    on_attach = function(client, buffer)
-        -- Disable all diagnostics from  pyright, use local tools like flake8, ruff etc. for that
-        client.handlers["textDocument/publishDiagnostics"] = function(...) end
-        return on_attach(client, buffer)
-    end,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
-    -- before_init = function(_, config)
-    --     config.settings.python.pythonPath = my_utils.get_python_path(config.root_dir)
-    -- end,
-    on_init = function(client)
-        client.config.settings.python.pythonPath = my_utils.get_python_path(client.config.root_dir)
-    end,
+    handlers = {
+        -- Disable all diagnostics from  pyright, use local tools like flake8, ruff etc. for that
+        ["textDocument/publishDiagnostics"] = function(...) end
+    }
 })
 
 lspconfig.lua_ls.setup({
@@ -331,4 +258,30 @@ lspconfig.gopls.setup({
 lspconfig.terraformls.setup({
     on_attach = on_attach,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
+})
+
+local null_ls = require("null-ls")
+
+local local_source_per_buffer = function(source, executable)
+    return source.with({
+        condition = function(utils)
+            return my_utils.executable_exists(executable)
+        end,
+        prefer_local = true,
+    })
+end
+
+null_ls.setup({
+    sources = {
+        -- diagnostics
+        local_source_per_buffer(null_ls.builtins.diagnostics.ruff, "ruff"),
+        local_source_per_buffer(null_ls.builtins.diagnostics.flake8, "flake8"),
+        local_source_per_buffer(null_ls.builtins.diagnostics.mypy, "mypy"),
+
+        -- formatting
+        local_source_per_buffer(null_ls.builtins.formatting.ruff, "ruff"),
+        local_source_per_buffer(null_ls.builtins.formatting.black, "black"),
+        local_source_per_buffer(null_ls.builtins.formatting.isort, "isort"),
+    },
+    on_attach = on_attach,
 })

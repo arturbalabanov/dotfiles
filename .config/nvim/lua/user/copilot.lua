@@ -7,13 +7,15 @@ if not status_ok then
 end
 
 copilot.setup({
-    suggestion = {
-        auto_trigger = true,
-        keymap = {
-            accept = "<C-j>",
-            next = "<C-l>",
-            prev = "<C-h>",
-            dismiss = "<C-k>",
-        },
-    },
+    suggestion = { enabled = false },
+    panel = { enabled = false },
+    -- suggestion = {
+    --     auto_trigger = true,
+    --     keymap = {
+    --         accept = "<C-j>",
+    --         next = "<C-l>",
+    --         prev = "<C-h>",
+    --         dismiss = "<C-k>",
+    --     },
+    -- },
 })

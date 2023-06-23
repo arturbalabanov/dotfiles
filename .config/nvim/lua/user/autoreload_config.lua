@@ -3,6 +3,15 @@ local my_utils = require("user.utils")
 
 --- Reload the entire configuration
 local reload_config = function()
+    -- stop all non lua lsp clients
+    for _, client in pairs(vim.lsp.get_active_clients()) do
+        local client_fts = my_utils.get(client, "conf", "filetypes") or {}
+
+        if my_utils.tbl_contains(client_fts, "lua") then
+            client.stop()
+        end
+    end
+
     for name, _ in pairs(package.loaded) do
         if name:match('^user') then
             package.loaded[name] = nil

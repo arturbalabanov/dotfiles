@@ -69,6 +69,7 @@ opt.wildignore:append('*.svg')
 opt.wildignore:append('**/__vcr_cassettes__/**')
 opt.wildignore:append('**/.pytest_cache/**')
 opt.wildignore:append('**/.mypy_cache/**')
+opt.wildignore:append('**/.null-ls_*')
 
 -- disable netrw because we use nvim-tree
 vim.g.loaded_netrw = 1

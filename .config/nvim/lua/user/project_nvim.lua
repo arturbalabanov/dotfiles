@@ -16,7 +16,8 @@ require("project_nvim").setup({
 
     -- All the patterns used to detect root dir, when **"pattern"** is in
     -- detection_methods
-    patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "init.lua", "pyproject.toml", "Makefile", "package.json" },
+    -- patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "init.lua", "pyproject.toml", "Makefile", "package.json" },
+    patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "init.lua" },
 
     -- Table of lsp clients to ignore by name
     -- eg: { "efm", ... }

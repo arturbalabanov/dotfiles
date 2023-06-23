@@ -4,8 +4,16 @@ if not status_ok then
 end
 
 local my_utils = require("user.utils")
+local py_venv = require("user.py_venv")
 
 neotest.setup({
+    icons = {
+        failed = "",
+        passed = "",
+        running = "",
+        skipped = "ﰸ",
+        unknown = "",
+    },
     adapters = {
         require("neotest-python")({
             -- Command line arguments for runner
@@ -17,11 +25,13 @@ neotest.setup({
             -- dap = { justMyCode = false },
 
             runner = "pytest",
-            python = my_utils.get_python_path,
+            python = function(project_root)
+                return py_venv.get_project_venv_python_path(project_root, { disable_notifications = true })
+            end,
         })
     },
 })
 
-my_utils.nkeymap("<F3>", function() neotest.summary.toggle() end)
+my_utils.nkeymap("<F4>", function() neotest.summary.toggle() end)
 my_utils.nkeymap("<F5>", function() neotest.run.run() end)
 my_utils.nkeymap("<F29>", function() neotest.output.open { enter = true } end) -- Ctrl + F5

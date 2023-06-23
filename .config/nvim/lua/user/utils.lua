@@ -1,11 +1,15 @@
 local plenary_tbl = require("plenary.tbl")
 local plenary_functional = require("plenary.functional")
-local Path = require("plenary.path")
 
 local M = {}
 
 local unpack = unpack or table.unpack
 
+M.executable_exists = function(executable)
+    local status_ok, _ = pcall(vim.fn.system, "type " .. executable)
+
+    return status_ok and (vim.v.shell_error == 0)
+end
 
 M.run_shell_cmd = function(cmd, opts)
     local opts = plenary_tbl.apply_defaults(opts, { cwd = nil, show_error = true })
@@ -203,53 +207,6 @@ function M.simple_autocmd(event_name, callback, opts)
     })
 end
 
-function M.get_python_path(project_dir)
-    -- Use activated virtualenv.
-    if vim.env.VIRTUAL_ENV then
-        return Path:new(vim.env.VIRTUAL_ENV):joinpath('bin', 'python'):expand()
-    end
-
-    local function file_present_in_workspace(file_name)
-        local match = vim.fn.glob(Path:new(project_dir):joinpath(file_name):expand())
-        return match ~= ''
-    end
-
-    -- Find and use virtualenv via various venv tools
-
-    -- pdm:
-    if file_present_in_workspace('pdm.lock') then
-        local venv_path = M.run_shell_cmd('pdm venv --python in-project', { cwd = project_dir })
-
-        return venv_path
-    end
-
-    -- poetry:
-    if file_present_in_workspace('poetry.lock') then
-        local venv_path = M.run_shell_cmd('poetry env info -p', { cwd = project_dir })
-
-        if venv_path ~= nil then
-            return Path:new(venv_path):joinpath('bin', 'python'):expand()
-        else
-            return nil
-        end
-    end
-
-    -- pipenv:
-    if file_present_in_workspace('Pipfile.lock') then
-        local venv_path = M.run_shell_cmd('pipenv --venv', { cwd = project_dir })
-
-        if venv_path ~= nil then
-            return Path:new(venv_path):joinpath('bin', 'python'):expand()
-        else
-            return nil
-        end
-    end
-
-    M.simple_notify("No virtual environment found in " .. project_dir .. ", falling back to system python", "warn")
-
-    return exepath('python3') or exepath('python') or 'python'
-end
-
 function M.get(tbl, ...)
     local path = { ... }
 
@@ -276,7 +233,21 @@ function M.simple_notify(msg, level)
         level = "info"
     end
 
+    if type(msg) ~= "string" then
+        msg = vim.inspect(msg)
+    end
+
     vim.notify(msg, level, { render = "compact" })
+end
+
+function M.tbl_contains(tbl, value)
+    for _, v in ipairs(tbl) do
+        if v == value then
+            return true
+        end
+    end
+
+    return false
 end
 
 M.partial = plenary_functional.partial

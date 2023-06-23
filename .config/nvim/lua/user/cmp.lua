@@ -4,6 +4,10 @@ if not status_ok then
 end
 
 local has_words_before = function()
+    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+        return false
+    end
+
     unpack = unpack or table.unpack
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 
@@ -32,11 +36,14 @@ cmp.setup({
     },
     formatting = {
         format = require('lspkind').cmp_format({
-            with_text = true,
+            mode = 'symbol',
+            symbol_map = { Copilot = "" },
         }),
     },
     sorting = {
         comparators = {
+            require("copilot_cmp.comparators").prioritize,
+            require("copilot_cmp.comparators").score,
             cmp.config.compare.kind,
             cmp.config.compare.exact,
             cmp.config.compare.sort_text,
@@ -72,6 +79,7 @@ cmp.setup({
         end, { "i", "s" }),
     }),
     sources = cmp.config.sources({
+        { name = 'copilot',  group_index = 1 },
         {
             {
                 name = 'luasnip',
@@ -85,13 +93,15 @@ cmp.setup({
                     )
                 end,
             },
+            group_index = 2
         },
-        { name = 'nvim_lsp' },
+        { name = 'nvim_lsp', group_index = 2 },
         {
             name = 'buffer', -- only enable buffer completion in comments
             entry_filter = function(entry, ctx)
                 return cmp_context.in_treesitter_capture('comment')
             end,
+            group_index = 3,
         },
     })
 })
