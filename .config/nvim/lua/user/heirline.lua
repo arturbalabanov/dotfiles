@@ -449,7 +449,7 @@ local PyVenvInfo = {
     condition = conditions.lsp_attached,
 
     init      = function(self)
-        bufnr = vim.api.nvim_get_current_buf()
+        local bufnr = vim.api.nvim_get_current_buf()
         self.py_venv = py_venv.get_python_venv(bufnr, { disable_notifications = true })
     end,
 
