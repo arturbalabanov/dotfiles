@@ -10,8 +10,15 @@ local my_utils = require("user.utils")
 
 local M = {}
 
+local NO_VALUE = '__NO_VALUE_SENTINEL__'
+
+local function run_shell_cmd(cmd, opts)
+    local opts = plenary_tbl.apply_defaults(opts, { disable_notifications = true })
+    return my_utils.run_shell_cmd(cmd, opts)
+end
+
 local function pipenv_get_python_path(project_root)
-    local output = my_utils.run_shell_cmd('pipenv --venv', { cwd = project_root })
+    local output = run_shell_cmd('pipenv --venv', { cwd = project_root })
 
     if output == nil then
         return nil
@@ -24,11 +31,11 @@ local function pipenv_get_python_path(project_root)
 end
 
 local function pdm_get_python_path(project_root)
-    return my_utils.run_shell_cmd('pdm venv --python in-project', { cwd = project_root })
+    return run_shell_cmd('pdm venv --python in-project', { cwd = project_root })
 end
 
 local function poetry_get_python_path(project_root)
-    local venv_path = my_utils.run_shell_cmd('poetry env info -p', { cwd = project_root })
+    local venv_path = run_shell_cmd('poetry env info -p', { cwd = project_root })
 
     if venv_path == nil then
         return nil
@@ -43,6 +50,7 @@ local function file_present_in_proj_checker(file_name)
         return match ~= ''
     end
 end
+
 
 M.default_venv_managers = {
     {
@@ -118,7 +126,16 @@ function M.get_project_venv_python_path(project_root, opts)
     local opts = plenary_tbl.apply_defaults(opts, { disable_notifications = false, venv_manager = nil })
 
     if project_python_path_cache[project_root] == nil then
-        project_python_path_cache[project_root] = detect_venv_python_path_no_cache(project_root, opts)
+        local python_path = detect_venv_python_path_no_cache(project_root, opts)
+
+        if python_path == nil then
+            project_python_path_cache[project_root] = NO_VALUE
+            return nil
+        end
+
+        project_python_path_cache[project_root] = python_path
+    elseif project_python_path_cache[project_root] == NO_VALUE then
+        return nil
     end
 
     return project_python_path_cache[project_root]
@@ -139,7 +156,7 @@ local function get_python_path_no_cache(bufnr, opts)
         if opts.venv_manager == nil then
             if not opts.fallback_to_system_python then
                 if not opts.disable_notifications then
-                    local msg = "No venv was found for " .. project_root .. "and fallback to system python is disabled"
+                    local msg = "No venv was found for " .. project_root .. " and fallback to system python is disabled"
                     my_utils.simple_notify(msg, "error")
                 end
 
@@ -191,7 +208,8 @@ local function get_python_path_no_cache(bufnr, opts)
 
     local python_version = nil
 
-    local py_version_string = my_utils.run_shell_cmd(python_path .. ' --version')
+    local py_version_string = run_shell_cmd(python_path .. ' --version',
+        { disable_notifications = opts.disable_notifications })
 
     if py_version_string ~= nil then
         _, _, major, minor, patch = string.find(py_version_string, "%s*Python%s*(%d+).(%d+).(%d+)")
@@ -220,7 +238,16 @@ function M.get_python_venv(bufnr, opts)
     end
 
     if venvs_per_buf_cache[bufnr] == nil then
-        venvs_per_buf_cache[bufnr] = get_python_path_no_cache(bufnr, opts)
+        local python_path = get_python_path_no_cache(bufnr, opts)
+
+        if python_path == nil then
+            venvs_per_buf_cache[bufnr] = NO_VALUE
+            return nil
+        end
+
+        venvs_per_buf_cache[bufnr] = python_path
+    elseif venvs_per_buf_cache[bufnr] == NO_VALUE then
+        return nil
     end
 
     return venvs_per_buf_cache[bufnr]

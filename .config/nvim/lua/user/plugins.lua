@@ -115,15 +115,7 @@ return packer.startup(function(use)
 
     use {
         "lukas-reineke/indent-blankline.nvim",
-        after = "nvim-treesitter",
         requires = "nvim-treesitter/nvim-treesitter",
-        config = function()
-            require("indent_blankline").setup {
-                buftype_exclude = { "terminal" },
-                show_current_context = true,
-                -- show_current_context_start = true,
-            }
-        end
     }
 
     use 'onsails/lspkind.nvim'
@@ -217,6 +209,7 @@ return packer.startup(function(use)
     })
     use "declancm/cinnamon.nvim"
     use "sindrets/diffview.nvim"
+    use "nmac427/guess-indent.nvim"
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
