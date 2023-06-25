@@ -68,6 +68,8 @@ opt.wildignore:append('*.pdf')
 opt.wildignore:append('*.svg')
 opt.wildignore:append('**/__vcr_cassettes__/**')
 opt.wildignore:append('**/.pytest_cache/**')
+opt.wildignore:append('.ruff_cache')
+opt.wildignore:append('.pdm-build')
 opt.wildignore:append('**/.mypy_cache/**')
 opt.wildignore:append('**/.null-ls_*')
 
