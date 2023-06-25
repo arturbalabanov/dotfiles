@@ -12,7 +12,7 @@ M.executable_exists = function(executable)
 end
 
 M.run_shell_cmd = function(cmd, opts)
-    local opts = plenary_tbl.apply_defaults(opts, { cwd = nil, show_error = true })
+    local opts = plenary_tbl.apply_defaults(opts, { cwd = nil, show_error = true, disable_notifications = false })
 
     if opts.cwd ~= nil then
         vim.cmd.lcd(opts.cwd)
@@ -38,9 +38,11 @@ M.run_shell_cmd = function(cmd, opts)
                 table.insert(descr_lines, "cwd: " .. opts.cwd)
             end
 
-            vim.notify(table.concat(descr_lines, '\n'), "error", {
-                title = "Command execution failed"
-            })
+            if not opts.disable_notifications then
+                vim.notify(table.concat(descr_lines, '\n'), "error", {
+                    title = "Command execution failed"
+                })
+            end
         end
 
         return nil

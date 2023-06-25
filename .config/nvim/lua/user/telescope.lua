@@ -32,16 +32,13 @@ telescope.setup {
         wrap_results = false,
         file_ignore_patterns = {
             "^.git/",
+            "^plugin/packer_compiled.lua$",
         },
         layout_config = {
-            horizontal = {
-                width = 0.9,
-                prompt_position = "top",
-            },
+            prompt_position = "top",
+            width = 0.9,
             vertical = {
-                prompt_position = "top",
                 mirror = true,
-                width = 0.9,
             },
             scroll_speed = 1,
         },

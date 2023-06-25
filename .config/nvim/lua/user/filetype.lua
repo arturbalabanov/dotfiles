@@ -1,7 +1,9 @@
+-- NOTE: These are the defaults, but guess-indent can overwrite them
+
 local ft_indentation = {
+    lua = 4,
     terraform = 2,
     yaml = 2,
-    lua = 2,
 }
 
 local ft_options = {

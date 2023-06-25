@@ -8,6 +8,11 @@ if not status_ok then
     return
 end
 
+local status_ok, indent_blankline = pcall(require, "indent_blankline")
+if not status_ok then
+    return
+end
+
 configs.setup {
     textobjects = {
         select = {
@@ -80,7 +85,6 @@ configs.setup {
     autopairs = {
         enable = true,
     },
-    indent = { enable = true },
     context_commentstring = {
         enable = true,
         enable_autocmd = false,
@@ -107,3 +111,9 @@ vim.treesitter.set_query("go", "folds", [[
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+
+indent_blankline.setup {
+    buftype_exclude = { "terminal" },
+    show_current_context = true,
+    -- show_current_context_start = true,
+}
