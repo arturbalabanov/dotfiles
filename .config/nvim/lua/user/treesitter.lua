@@ -95,6 +95,7 @@ configs.setup {
 
 vim.treesitter.set_query("lua", "folds", [[
     (function_definition) @fold
+    (function_declaration) @fold
 ]])
 
 -- TODO: Add decorators

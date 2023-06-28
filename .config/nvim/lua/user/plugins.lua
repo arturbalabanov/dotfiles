@@ -50,6 +50,8 @@ return packer.startup(function(use)
         tag = 'nightly'
     }
 
+    use { 'stevearc/dressing.nvim' }
+
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.1',
         requires = {
@@ -136,6 +138,8 @@ return packer.startup(function(use)
     })
     use 'saadparwaiz1/cmp_luasnip'
 
+    use "gbprod/substitute.nvim"
+
     use 'ray-x/lsp_signature.nvim'
     -- use 'KostkaBrukowa/definition-or-references.nvim'
     use "~/dev/definition-or-references.nvim"
@@ -169,6 +173,15 @@ return packer.startup(function(use)
     }
 
     use {
+        "stevearc/overseer.nvim",
+        requires = {
+            "stevearc/dressing.nvim",
+            "nvim-telescope/telescope.nvim",
+            "rcarriga/nvim-notify",
+        }
+    }
+
+    use {
         "nvim-neotest/neotest",
         requires = {
             "nvim-lua/plenary.nvim",
@@ -193,7 +206,11 @@ return packer.startup(function(use)
 
     use {
         "folke/noice.nvim",
-        requires = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify", 'nvim-treesitter/nvim-treesitter', }
+        requires = {
+            "MunifTanjim/nui.nvim",
+            "rcarriga/nvim-notify",
+            'nvim-treesitter/nvim-treesitter',
+        }
     }
 
     use "rebelot/heirline.nvim"

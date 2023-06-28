@@ -53,6 +53,10 @@ fi
 if [[ $OSTYPE == 'linux'* ]]; then
     export BROWSER="google-chrome-stable"
 fi
+
+if type pipenv > /dev/null; then
+    export PIPENV_VENV_IN_PROJECT=1
+fi
 # }}}
 
 # if [[ $has_brew ]]; then

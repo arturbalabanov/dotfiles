@@ -8,6 +8,7 @@ end
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 local null_ls_sources = require('null-ls.sources')
+local Path = require("plenary.path")
 
 local my_utils = require('user.utils')
 local py_venv = require('user.py_venv')
@@ -49,6 +50,22 @@ local WinSeparator = {
     hl = "WinSeparator",
 }
 
+local function lpad(child)
+    return {
+        condition = child.condition,
+        Space,
+        child,
+    }
+end
+
+local function rpad(child)
+    return {
+        condition = child.condition,
+        child,
+        Space,
+    }
+end
+
 local BufferModifiedIndicator = {
     condition = function(self)
         return vim.api.nvim_buf_get_option(self.bufnr, "modified")
@@ -71,6 +88,7 @@ local BufferLockOrTerminalIndicator = {
     end,
     hl = { fg = "orange" },
 }
+
 ------------------------------
 -- Statusline Components
 ------------------------------
@@ -309,20 +327,16 @@ local Project = {
     flexible = true,
 
     {
-        provider = function(self)
-            if self.project_root == nil then
-                return nil
-            end
+        condition = function(self) return self.project_root ~= nil end,
 
+        provider = function(self)
             return vim.fn.fnamemodify(self.project_root, ":~")
         end,
     },
     {
-        provider = function(self)
-            if self.project_root == nil then
-                return nil
-            end
+        condition = function(self) return self.project_root ~= nil end,
 
+        provider = function(self)
             return vim.fn.fnamemodify(self.project_root, ":t")
         end,
     }
@@ -491,11 +505,13 @@ local LSPActive = {
                         end
                     end
 
+                    local extra_info = vim.inspect(null_ls_sources.validate_and_transform(source))
+
                     table.insert(client_info.sources, {
                         name = source.name,
                         methods = source_method_names,
-                        is_active = true,
                         is_registered = null_ls_sources.is_registered(source.name),
+                        extra_info = extra_info,
                     })
                 end
             end
@@ -503,7 +519,7 @@ local LSPActive = {
             table.insert(self.clients, client_info)
         end
     end,
-    provider  = "",
+    provider  = " ",
 
     on_click  = {
         callback = function(self)
@@ -521,8 +537,8 @@ local LSPActive = {
                         source_string = source_string .. " (" .. methods_string .. ")"
                     end
 
-                    if not source.is_registered then
-                        source_string = "~" .. source_string .. "~"
+                    if source.extra_info then
+                        source_string = source_string .. ": " .. source.extra_info
                     end
 
                     info_string = info_string .. "\n    " .. source_string
@@ -554,6 +570,58 @@ local LSPActive = {
         name = 'lsp_active_on_click',
     },
     hl        = { fg = "green", bold = true },
+}
+
+local function OverseerTasksForStatus(status)
+    return {
+        condition = function(self)
+            return self.tasks[status]
+        end,
+        provider = function(self)
+            return string.format("%s %d", self.symbols[status], #self.tasks[status])
+        end,
+        hl = function(self)
+            return {
+                fg = utils.get_highlight(string.format("Overseer%s", status)).fg,
+            }
+        end,
+    }
+end
+
+local Overseer = {
+    static    = {
+        symbols = {
+            ["CANCELED"] = "",
+            ["FAILURE"] = "󰅚",
+            ["SUCCESS"] = "󰄴",
+            ["RUNNING"] = "󰑮",
+        },
+    },
+
+    condition = function()
+        return package.loaded.overseer
+    end,
+
+    init      = function(self)
+        local tasks = require("overseer.task_list").list_tasks({ unique = true })
+        local tasks_by_status = require("overseer.util").tbl_group_by(tasks, "status")
+        self.tasks = tasks_by_status
+    end,
+
+    provider  = " ",
+    hl        = { fg = "aqua" },
+
+    on_click  = {
+        callback = function(_, minwid)
+            vim.schedule(vim.cmd.OverseerToggle)
+        end,
+        name = "heirline_overseer_on_click",
+    },
+
+    rpad(OverseerTasksForStatus("CANCELED")),
+    rpad(OverseerTasksForStatus("RUNNING")),
+    rpad(OverseerTasksForStatus("SUCCESS")),
+    rpad(OverseerTasksForStatus("FAILURE")),
 }
 
 local TabPageName = {
@@ -641,33 +709,21 @@ local StatusLine = {
 
     Align,
     MacroRecording,
-    Space,
-    Project,
-    {
-        FileEncoding,
-        Space,
-        FileFormat,
-        Space,
-        FileType,
-    },
-
-    Space,
-
-    {
-        Ruler,
-        Space,
-        ScrollBar,
-    }
+    rpad(Project),
+    rpad(FileEncoding),
+    rpad(FileFormat),
+    rpad(FileType),
+    rpad(Ruler),
+    rpad(ScrollBar),
 }
 
 local TabLine = {
     TabLineOffset,
     TabPages,
     Align,
+    rpad(Overseer),
     PyVenvInfo,
-    Space,
     LSPActive,
-    Space,
     hl = { bg = "bg" }
 }
 

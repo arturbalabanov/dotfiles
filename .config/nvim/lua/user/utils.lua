@@ -6,9 +6,10 @@ local M = {}
 local unpack = unpack or table.unpack
 
 M.executable_exists = function(executable)
-    local status_ok, _ = pcall(vim.fn.system, "type " .. executable)
-
-    return status_ok and (vim.v.shell_error == 0)
+    return vim.fn.executable(executable) == 1
+    -- local status_ok, _ = pcall(vim.fn.system, "type " .. executable)
+    --
+    -- return status_ok and (vim.v.shell_error == 0)
 end
 
 M.run_shell_cmd = function(cmd, opts)
@@ -144,7 +145,7 @@ local function keymap(mode, input, output, opts)
 
     if type(output) == "table" then
         if #output == 0 then
-            usage_error("output passed as invalid")
+            usage_error("output is an empty table")
         end
 
         local func = table.remove(output, 1)
@@ -191,6 +192,7 @@ end
 M.nkeymap = plenary_functional.partial(keymap, "n")
 M.ikeymap = plenary_functional.partial(keymap, "i")
 M.vkeymap = plenary_functional.partial(keymap, "v")
+M.xkeymap = plenary_functional.partial(keymap, "x")
 M.tkeymap = plenary_functional.partial(keymap, "t")
 
 M.tikeymap = plenary_functional.partial(t_mode_keymap, "insert")
@@ -242,16 +244,72 @@ function M.simple_notify(msg, level)
     vim.notify(msg, level, { render = "compact" })
 end
 
-function M.tbl_contains(tbl, value)
-    for _, v in ipairs(tbl) do
-        if v == value then
-            return true
-        end
+M.partial = plenary_functional.partial
+
+
+local NO_VALUE = '__NO_VALUE_SENTINEL__'
+
+local cache_vault = {}
+
+M.get_or_update_cache = function(namespace, key, get_value_func, opts)
+    opts = plenary_tbl.apply_defaults(opts, { save_nil_values = true })
+
+    local vault = cache_vault[namespace]
+
+    if vault == nil then
+        vault = {}
+        cache_vault[namespace] = vault
     end
 
-    return false
+    local cached_value = vault[key]
+
+    if cached_value == NO_VALUE then
+        -- get_value_func returned nil last time it was called
+        return nil
+    end
+
+    if cached_value ~= nil then
+        return cached_value
+    end
+
+    local new_value = get_value_func(key)
+
+    if new_value == nil and opts.save_nil_values then
+        vault[key] = NO_VALUE
+    else
+        vault[key] = new_value
+    end
+
+    return new_value
 end
 
-M.partial = plenary_functional.partial
+function M.opt_require(module_path)
+    local status_ok, module = pcall(require, module_path)
+    if not status_ok then
+        local caller_stack_level = 2
+
+        -- `n´	selects fields name and namewhat
+        -- `f´	selects field func
+        -- `S´	selects fields source, short_src, what, and linedefined
+        -- `l´	selects field currentline
+        -- `u´	selects field nup
+        --
+        -- ref: https://www.lua.org/pil/23.1.html
+
+        local caller_info = debug.getinfo(caller_stack_level, "Sl")
+
+        local msg = string.format(
+            "Failed loading `%s` from %s:%d, skipping",
+            module_path,
+            caller_info.short_src,
+            caller_info.currentline
+        )
+
+        M.simple_notify(msg, "warn")
+        return nil
+    end
+
+    return module
+end
 
 return M

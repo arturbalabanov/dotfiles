@@ -32,24 +32,28 @@ local lsp_signature_config = {
     -- hint_scheme = "Keyword", -- highlight the virtual text as if it was a Keyword, so that it's more visible
 }
 
+local function setup_auto_format_autocmd(client, bufnr)
+    vim.api.nvim_create_autocmd("BufWritePre", {
+        group = vim.api.nvim_create_augroup("LspFormatting", { clear = true }),
+        buffer = bufnr,
+        callback = function(event)
+            local enabled = lsp_formatting_enabled[event.buf] or true
+
+            if not enabled then
+                my_utils.simple_notify("LSP Formatting is disabled for buf " .. bufnr .. ", skipping", "warn")
+                return
+            end
+
+            vim.lsp.buf.format()
+        end
+    })
+end
 
 M.on_attach = function(client, bufnr)
     require("lsp_signature").on_attach(lsp_signature_config, bufnr)
     require("user.py_venv").on_attach(client, bufnr)
 
-    vim.api.nvim_create_autocmd("BufWritePre", {
-        group = vim.api.nvim_create_augroup("LspFormatting", { clear = false }),
-        buffer = bufnr,
-        callback = function(event)
-            local enabled = lsp_formatting_enabled[event.buf] or true
-
-            if enabled then
-                vim.lsp.buf.format()
-            else
-                my_utils.simple_notify("LSP Formatting is disabled for buf " .. bufnr .. ", skipping", "warn")
-            end
-        end
-    })
+    setup_auto_format_autocmd(client, bufnr)
 end
 
 -- Open a new defintion (or reference, no matter if selected by telescope or not) in a new tab if not in the same file

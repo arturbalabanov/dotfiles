@@ -7,6 +7,7 @@ local lsp_common = require("user.lsp.common")
 
 
 lspconfig.pyright.setup({
+    on_attach = lsp_common.on_attach,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
     handlers = {
         -- Disable all diagnostics from  pyright, use local tools like flake8, ruff etc. for that

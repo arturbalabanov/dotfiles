@@ -5,30 +5,40 @@ end
 
 local my_utils = require("user.utils")
 local lsp_common = require("user.lsp.common")
+local py_venv = require("user.py_venv")
 
 local temp_dir = vim.loop.os_getenv("TEMP") or "/tmp"
 
-
-local local_source_per_buffer = function(source, executable)
+local local_source_per_buffer = function(source)
     return source.with({
-        condition = function(utils)
-            return my_utils.executable_exists(executable)
+        env = function(params)
+            local venv_info = py_venv.get_python_venv(params.bufnr, { disable_notifications = true })
+
+            if venv_info == nil then
+                return nil
+            end
+
+            return {
+                PYTHONPATH = venv_info.python_path,
+                PATH = venv_info.bin_path,
+            }
         end,
-        prefer_local = true,
+        only_local = '.venv/bin',
+        -- condition = function(utils) return false end,
     })
 end
 
 null_ls.setup({
     sources = {
         -- diagnostics
-        local_source_per_buffer(null_ls.builtins.diagnostics.ruff, "ruff"),
-        local_source_per_buffer(null_ls.builtins.diagnostics.flake8, "flake8"),
-        local_source_per_buffer(null_ls.builtins.diagnostics.mypy, "mypy"),
+        local_source_per_buffer(null_ls.builtins.diagnostics.ruff),
+        local_source_per_buffer(null_ls.builtins.diagnostics.flake8),
+        local_source_per_buffer(null_ls.builtins.diagnostics.mypy),
 
         -- formatting
-        local_source_per_buffer(null_ls.builtins.formatting.ruff, "ruff"),
-        local_source_per_buffer(null_ls.builtins.formatting.black, "black"),
-        local_source_per_buffer(null_ls.builtins.formatting.isort, "isort"),
+        local_source_per_buffer(null_ls.builtins.formatting.ruff),
+        local_source_per_buffer(null_ls.builtins.formatting.black),
+        local_source_per_buffer(null_ls.builtins.formatting.isort),
     },
     on_attach = lsp_common.on_attach,
     temp_dir = temp_dir,
