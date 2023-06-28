@@ -6,13 +6,6 @@ require('mini.surround').setup({
         replace = 'sc',
     }
 })
-require('mini.splitjoin').setup({
-    mappings = {
-        toggle = 'sj',
-    }
-})
-
-
 local function get_comment_keymap()
     if vim.g.neovide then
         return "<C-/>"

@@ -105,8 +105,11 @@ return packer.startup(function(use)
         end
     }
 
+    use 'nvim-treesitter/playground'
+
     use {
-        'nvim-treesitter/playground'
+        'Wansmer/treesj',
+        requires = { 'nvim-treesitter' },
     }
 
     use {

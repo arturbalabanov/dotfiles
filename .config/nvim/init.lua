@@ -21,6 +21,7 @@ opt_require "user.substitute"
 
 opt_require "user.autoreload_config"
 opt_require "user.treesitter"
+opt_require "user.treesj"
 opt_require "user.theme"
 opt_require "user.guess_indent"
 
