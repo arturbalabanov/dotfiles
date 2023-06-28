@@ -132,27 +132,8 @@ telescope.setup {
             },
             show_unindexed = true,
             show_scores = true,
-            show_filter_column = false,
+            show_filter_column = true,
         },
-        -- TODO: Remove me once the same is integrated with projects_nvim
-        -- zoxide = {
-        --     mappings = {
-        --         default = {
-        --             action = function(selection)
-        --                 vim.cmd.lchdir(selection.path)
-        --                 telescope.extensions.frecency.frecency({ workspace = 'CWD' })
-        --             end,
-        --         },
-        --         ["<C-f>"] = {
-        --             action = function(selection)
-        --                 telescope.extensions.live_grep_args.live_grep_args({
-        --                     search_dirs = { selection.path },
-        --                     cwd = selection.path,
-        --                 })
-        --             end,
-        --         },
-        --     },
-        -- }
     }
 }
 

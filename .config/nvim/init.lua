@@ -1,40 +1,48 @@
+local my_utils = require("user.utils")
+
+opt_require = my_utils.opt_require
+
 if vim.g.vscode then
-    require "user.vscode"
+    opt_require "user.vscode"
     return
 end
 
 if vim.g.neovide then
-    require "user.neovide"
+    opt_require "user.neovide"
 end
 
-require "user.impatient"
+opt_require "user.impatient"
 
-require "user.options"
-require "user.keymaps"
-require "user.plugins"
+opt_require "user.options"
+opt_require "user.keymaps"
+opt_require "user.plugins"
 
-require "user.autoreload_config"
-require "user.treesitter"
-require "user.theme"
-require "user.guess_indent"
+opt_require "user.substitute"
 
-require "user.neodev"
-require "user.mini"
-require "user.nvim-tree"
-require "user.telescope"
-require "user.trouble"
-require "user.project_nvim"
+opt_require "user.autoreload_config"
+opt_require "user.treesitter"
+opt_require "user.theme"
+opt_require "user.guess_indent"
 
-require "user.gitsigns"
-require "user.cmp"
-require "user.lsp"
-require "user.neotest"
-require "user.toggleterm"
-require "user.luasnip"
-require "user.marks"
-require "user.heirline"
-require "user.chat_gpt"
-require "user.diffview"
--- require "user.noice"
+opt_require "user.neodev"
+opt_require "user.mini"
+opt_require "user.nvim-tree"
+opt_require "user.dressing"
+opt_require "user.telescope"
+opt_require "user.trouble"
+opt_require "user.project_nvim"
+opt_require "user.overseer"
 
-require "user.filetype"
+opt_require "user.gitsigns"
+opt_require "user.cmp"
+opt_require "user.lsp"
+opt_require "user.neotest"
+opt_require "user.toggleterm"
+opt_require "user.luasnip"
+opt_require "user.marks"
+opt_require "user.heirline"
+opt_require "user.chat_gpt"
+opt_require "user.diffview"
+-- opt_require "user.noice"
+
+opt_require "user.filetype"

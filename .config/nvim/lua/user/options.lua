@@ -71,7 +71,6 @@ opt.wildignore:append('**/.pytest_cache/**')
 opt.wildignore:append('.ruff_cache')
 opt.wildignore:append('.pdm-build')
 opt.wildignore:append('**/.mypy_cache/**')
-opt.wildignore:append('**/.null-ls_*')
 
 -- disable netrw because we use nvim-tree
 vim.g.loaded_netrw = 1

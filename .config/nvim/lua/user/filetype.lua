@@ -1,23 +1,22 @@
--- NOTE: These are the defaults, but guess-indent can overwrite them
-
-local ft_indentation = {
-    lua = 4,
-    terraform = 2,
-    yaml = 2,
-}
-
 local ft_options = {
     zsh = {
         foldmethod = 'marker',
     }
 }
 
-for filetype, indent_size in pairs(ft_indentation) do
-    ft_options[filetype] = ft_options[filetype] or {}
-    ft_options[filetype].tabstop = indent_size
-    ft_options[filetype].shiftwidth = indent_size
-    ft_options[filetype].softtabstop = indent_size
-end
+-- NOTE: Replaced by guess_indent
+-- local ft_indentation = {
+--     lua = 4,
+--     terraform = 2,
+--     yaml = 2,
+-- }
+--
+-- for filetype, indent_size in pairs(ft_indentation) do
+--     ft_options[filetype] = ft_options[filetype] or {}
+--     ft_options[filetype].tabstop = indent_size
+--     ft_options[filetype].shiftwidth = indent_size
+--     ft_options[filetype].softtabstop = indent_size
+-- end
 
 for filetype, options in pairs(ft_options) do
     vim.api.nvim_create_autocmd("FileType", {

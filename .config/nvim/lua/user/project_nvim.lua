@@ -3,7 +3,7 @@ if not status_ok then
     return
 end
 
-require("project_nvim").setup({
+project_nvim.setup({
     -- Manual mode doesn't automatically change your root directory, so you have
     -- the option to manually do so using `:ProjectRoot` command.
     manual_mode = false,
@@ -17,7 +17,7 @@ require("project_nvim").setup({
     -- All the patterns used to detect root dir, when **"pattern"** is in
     -- detection_methods
     -- patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "init.lua", "pyproject.toml", "Makefile", "package.json" },
-    patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "init.lua" },
+    patterns = { ".project_root", ".git", "_darcs", ".hg", ".bzr", ".svn" },
 
     -- Table of lsp clients to ignore by name
     -- eg: { "efm", ... }
@@ -32,7 +32,7 @@ require("project_nvim").setup({
 
     -- When set to false, you will get a message when project.nvim changes your
     -- directory.
-    silent_chdir = false,
+    silent_chdir = true,
 
     -- What scope to change the directory, valid options are
     -- * global (default)
