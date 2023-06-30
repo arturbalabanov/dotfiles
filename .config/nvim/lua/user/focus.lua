@@ -17,8 +17,8 @@ local config = {
     -- Query filetypes using :lua print(vim.bo.ft) or buftypes using :lua print(vim.bo.buftype)
     -- Default[filetypes]: none
     -- Default[buftypes]: 'nofile', 'prompt', 'popup'
-    excluded_filetypes = { "toggleterm" },
-    excluded_buftypes = { 'nofile', 'prompt', 'popup', "help" },
+    excluded_filetypes = { "toggleterm", "neotest-output" },
+    excluded_buftypes = { 'nofile', 'prompt', 'popup', "help", "terminal" },
 
     -- Force width for the focused window
     -- Default: Calculated based on golden ratio
