@@ -29,6 +29,7 @@ opt_require "user.nvim-tree"
 opt_require "user.dressing"
 opt_require "user.telescope"
 opt_require "user.trouble"
+opt_require "user.todo_comments"
 opt_require "user.project_nvim"
 opt_require "user.overseer"
 
