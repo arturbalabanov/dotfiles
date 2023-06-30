@@ -13,6 +13,7 @@ nvim_tree.setup({
         update_root = true,
     },
     view = {
+        signcolumn = "auto",
         mappings = {
             list = {
                 { key = "t",     action = "tabnew" },

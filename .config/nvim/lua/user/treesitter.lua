@@ -70,9 +70,17 @@ configs.setup {
                 ["]f"] = "@function.outer",
                 ["]c"] = "@class.outer",
             },
+            goto_next_end = {
+                ["]F"] = "@function.outer",
+                ["]C"] = "@class.outer",
+            },
             goto_previous_start = {
                 ["[f"] = "@function.outer",
                 ["[c"] = "@class.outer",
+            },
+            goto_previous_end = {
+                ["[F"] = "@function.outer",
+                ["[C"] = "@class.outer",
             },
         },
     },
@@ -114,7 +122,8 @@ vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
 indent_blankline.setup {
-    buftype_exclude = { "terminal" },
+    buftype_exclude = { "terminal", "nofile" },
+    filetype_exclude = { "packer" },
     show_current_context = true,
     -- show_current_context_start = true,
 }

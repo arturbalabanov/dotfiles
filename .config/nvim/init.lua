@@ -1,6 +1,4 @@
-local my_utils = require("user.utils")
-
-opt_require = my_utils.opt_require
+local opt_require = require("user.utils").opt_require
 
 if vim.g.vscode then
     opt_require "user.vscode"
@@ -44,6 +42,8 @@ opt_require "user.marks"
 opt_require "user.heirline"
 opt_require "user.chat_gpt"
 opt_require "user.diffview"
+opt_require "user.focus"
+opt_require "user.tint"
 -- opt_require "user.noice"
 
 opt_require "user.filetype"
