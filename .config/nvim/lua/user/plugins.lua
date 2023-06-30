@@ -152,6 +152,10 @@ return packer.startup(function(use)
         "folke/trouble.nvim",
         requires = "nvim-tree/nvim-web-devicons",
     }
+    use {
+        "folke/todo-comments.nvim",
+        requires = { "nvim-lua/plenary.nvim" },
+    }
 
     use "darfink/vim-plist"
     use 'glepnir/lspsaga.nvim'
