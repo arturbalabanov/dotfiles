@@ -11,7 +11,8 @@
     # use n and N to move between diff sections
     navigate = true
     light = false
-	syntax-theme = gruvbox-dark
+	# syntax-theme = gruvbox-dark
+	syntax-theme = tokyonight_moon
 
 [diff]
     colorMoved = default

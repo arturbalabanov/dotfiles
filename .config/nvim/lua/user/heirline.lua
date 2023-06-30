@@ -7,36 +7,63 @@ end
 
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
+local null_ls = require('null-ls')
 local null_ls_sources = require('null-ls.sources')
 local Path = require("plenary.path")
 
 local my_utils = require('user.utils')
 local py_venv = require('user.py_venv')
 
+local SELECTED_THEME = 'tokyonight_moon'
 
-local colors = {
-    bg = utils.get_highlight("GruvboxBg0").bg,
+local themes = {
+    common = {
+        diag_warn = utils.get_highlight("DiagnosticSignWarn").fg,
+        diag_error = utils.get_highlight("DiagnosticSignError").fg,
+        diag_hint = utils.get_highlight("DiagnosticSignHint").fg,
+        diag_info = utils.get_highlight("DiagnosticSignInfo").fg,
+        git_del = utils.get_highlight("diffRemoved").fg,
+        git_add = utils.get_highlight("diffAdded").fg,
+        git_change = utils.get_highlight("diffChanged").fg,
+        buffer_tabpage_fill_fg = utils.get_highlight("BufferTabpageFill").fg
+    },
+    gruvbox = function()
+        return {
+            bg = utils.get_highlight("GruvboxBg0").bg,
 
-    darker_gray = utils.get_highlight("GruvboxBg1").fg,
-    dark_gray = utils.get_highlight("GruvboxBg2").fg,
-    light_gray = utils.get_highlight("GruvboxBg3").fg,
+            red = utils.get_highlight("GruvboxRed").fg,
+            green = utils.get_highlight("GruvboxGreen").fg,
+            blue = utils.get_highlight("GruvboxBlue").fg,
+            orange = utils.get_highlight("GruvboxOrange").fg,
+            purple = utils.get_highlight("GruvboxPurple").fg,
+            aqua = utils.get_highlight("GruvboxAqua").fg,
 
-    gray = utils.get_highlight("GruvboxGray").fg,
-    red = utils.get_highlight("GruvboxRed").fg,
-    green = utils.get_highlight("GruvboxGreen").fg,
-    blue = utils.get_highlight("GruvboxBlue").fg,
-    orange = utils.get_highlight("GruvboxOrange").fg,
-    purple = utils.get_highlight("GruvboxPurple").fg,
-    aqua = utils.get_highlight("GruvboxAqua").fg,
+            git_info_bg = utils.get_highlight("GruvboxBg1").fg,
+            scrollbar_fg = utils.get_highlight("GruvboxAqua").fg,
+            scrollbar_bg = utils.get_highlight("GruvboxBg2").fg,
+            buffer_tabpage_fill_fg = utils.get_highlight("GruvboxGray").fg
+        }
+    end,
+    tokyonight_moon = function()
+        local colors = require("tokyonight.colors").setup()
 
-    diag_warn = utils.get_highlight("DiagnosticSignWarn").fg,
-    diag_error = utils.get_highlight("DiagnosticSignError").fg,
-    diag_hint = utils.get_highlight("DiagnosticSignHint").fg,
-    diag_info = utils.get_highlight("DiagnosticSignInfo").fg,
-    git_del = utils.get_highlight("diffRemoved").fg,
-    git_add = utils.get_highlight("diffAdded").fg,
-    git_change = utils.get_highlight("diffChanged").fg,
+        return {
+            bg = colors.bg,
+
+            red = colors.red,
+            green = colors.green,
+            blue = colors.blue,
+            orange = colors.orange,
+            purple = colors.purple,
+            aqua = colors.teal,
+
+            git_info_bg = colors.black,
+            scrollbar_fg = colors.blue5,
+            scrollbar_bg = colors.bg,
+        }
+    end,
 }
+
 
 ------------------------------
 -- Common and Utils
@@ -291,7 +318,7 @@ local ScrollBar = {
         local i = math.floor((curr_line - 1) / lines * #self.sbar) + 1
         return string.rep(self.sbar[i], 2)
     end,
-    hl = { fg = "aqua", bg = "dark_gray" },
+    hl = { fg = "scrollbar_fg", bg = "scrollbar_bg" },
 }
 
 local FileType = {
@@ -392,7 +419,7 @@ local GitInfo = {
         provider = "",
     },
     Space,
-    hl = { bg = "darker_gray" },
+    hl = { bg = "git_info_bg" },
 }
 
 
@@ -410,8 +437,6 @@ local MacroRecording = {
     }
 }
 
-
-
 ------------------------------
 -- Tabline Compontents
 ------------------------------
@@ -420,14 +445,18 @@ local TabLineOffset = {
     condition = function(self)
         local win = vim.api.nvim_tabpage_list_wins(0)[1]
         local bufnr = vim.api.nvim_win_get_buf(win)
+        local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
         self.winid = win
 
-        if vim.bo[bufnr].filetype == "NvimTree" then
+        if filetype == "NvimTree" then
             self.title = "NvimTree"
-            return true
-            -- elseif vim.bo[bufnr].filetype == "TagBar" then
-            --     ...
+        elseif filetype == "OverseerList" then
+            self.title = "Overseer"
+        else
+            return false
         end
+
+        return true
     end,
 
     {
@@ -446,7 +475,7 @@ local TabLineOffset = {
                 }
             else
                 return {
-                    fg = "gray",
+                    fg = "buffer_tabpage_fill_fg",
                 }
             end
         end,
@@ -493,7 +522,7 @@ local LSPActive = {
             }
 
             if client.name == 'null-ls' or client.name == 'null_ls' then
-                local ft_available_sources = null_ls_sources.get_available(self.filetype)
+                local ft_available_sources = null_ls.get_source({ filetype = self.filetype })
 
                 for _, source in pairs(ft_available_sources) do
                     local source_method_names = {}
@@ -505,12 +534,13 @@ local LSPActive = {
                         end
                     end
 
-                    local extra_info = vim.inspect(null_ls_sources.validate_and_transform(source))
+                    local extra_info = nil
+                    -- local extra_info = vim.inspect(null_ls_sources.is_available(source))
 
                     table.insert(client_info.sources, {
                         name = source.name,
                         methods = source_method_names,
-                        is_registered = null_ls_sources.is_registered(source.name),
+                        is_available = null_ls_sources.is_available(source),
                         extra_info = extra_info,
                     })
                 end
@@ -535,6 +565,10 @@ local LSPActive = {
                         local methods_string = table.concat(source.methods, ', ')
 
                         source_string = source_string .. " (" .. methods_string .. ")"
+                    end
+
+                    if not source.is_available then
+                        source_string = source_string .. " **DISABLED**"
                     end
 
                     if source.extra_info then
@@ -634,7 +668,7 @@ local TabPageName = {
             if self.is_active then
                 return { fg = "green", bold = true }
             else
-                return { fg = "gray" }
+                return { fg = "buffer_tabpage_fill_fg" }
             end
         end,
     },
@@ -732,7 +766,7 @@ heirline.setup({
     statusline = StatusLine,
     tabline = TabLine,
     opts = {
-        colors = colors,
+        colors = vim.tbl_deep_extend("keep", themes[SELECTED_THEME](), themes['common']),
     }
 })
 

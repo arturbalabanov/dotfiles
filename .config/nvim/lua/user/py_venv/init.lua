@@ -159,24 +159,15 @@ end
 local function null_ls_set_venv(client, venv)
     local null_ls = require('null-ls')
 
-    local null_ls_sources = {
-        -- diagnostics
-        null_ls.builtins.diagnostics.ruff,
-        null_ls.builtins.diagnostics.flake8,
-        null_ls.builtins.diagnostics.mypy,
+    -- disable all null-ls sources
+    null_ls.disable({ filetype = 'python' })
 
-        -- formatting
-        null_ls.builtins.formatting.ruff,
-        null_ls.builtins.formatting.black,
-        null_ls.builtins.formatting.isort,
-    }
-
-    -- unregister all null-ls sources
-    for _, source in ipairs(null_ls.get_sources()) do
-        null_ls.deregister(source.name)
-        print("derigering " .. source.name .. '  ' .. tostring(null_ls.is_registered(source.name)))
+    -- enabled only relevant sources
+    for _, source in ipairs(null_ls.get_source({ filetype = 'python' })) do
+        if my_utils.executable_exists(venv.bin_path .. '/' .. source.generator.opts.command) then
+            null_ls.enable(source.name)
+        end
     end
-
 
     -- local local_source_per_buffer = function(source)
     --     return source.with({
@@ -202,7 +193,7 @@ end
 
 local set_venv_per_client = {
     pyright = pyright_set_venv,
-    -- null_ls = null_ls_set_venv,
+    null_ls = null_ls_set_venv,
 }
 
 function M.on_attach(client, bufnr)

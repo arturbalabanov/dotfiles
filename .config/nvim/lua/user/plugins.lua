@@ -40,6 +40,7 @@ return packer.startup(function(use)
 
     use { 'echasnovski/mini.nvim' }
     use { "ellisonleao/gruvbox.nvim" }
+    use { "folke/tokyonight.nvim" }
 
     use "tpope/vim-fugitive"
     use {
@@ -230,6 +231,17 @@ return packer.startup(function(use)
     use "declancm/cinnamon.nvim"
     use "sindrets/diffview.nvim"
     use "nmac427/guess-indent.nvim"
+    use "beauwilliams/focus.nvim"
+    use "levouh/tint.nvim"
+    use {
+        'saifulapm/chartoggle.nvim',
+        config = function()
+            require('chartoggle').setup({
+                leader = ',',
+                keys = { ',', ';' },
+            })
+        end
+    }
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins

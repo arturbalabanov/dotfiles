@@ -23,6 +23,14 @@ local local_source_per_buffer = function(source)
                 PATH = venv_info.bin_path,
             }
         end,
+        cwd = function(params)
+            local found, project_root = pcall(vim.api.nvim_buf_get_var, params.bufnr, "project_root")
+            if not found then
+                return nil
+            end
+
+            return project_root
+        end,
         only_local = '.venv/bin',
         -- condition = function(utils) return false end,
     })

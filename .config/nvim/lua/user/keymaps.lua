@@ -23,7 +23,22 @@ my_utils.vkeymap("L", "g_")
 my_utils.nkeymap("<Tab>", "za")
 
 -- Toggle the line numbers with <F1>
-my_utils.nkeymap("<F1>", ":set invnumber<CR>")
+my_utils.nkeymap("<F1>", function()
+    local ignore_fts = {"NvimTree", "OverseerList", "neotest-summary", "toggleterm"}
+
+    local win = vim.api.nvim_get_current_win()
+    local bufnr = vim.api.nvim_win_get_buf(win)
+    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+
+    if vim.tbl_contains(ignore_fts, filetype) then
+        return
+    end
+
+    for _, opt in pairs({"number", "relativenumber"}) do
+        local curr_val = vim.api.nvim_win_get_option(win, opt)
+        vim.api.nvim_win_set_option(win, opt, not curr_val)
+    end
+end)
 
 -- Clear highlight search with ,/
 my_utils.nkeymap(",/", vim.cmd.nohlsearch)

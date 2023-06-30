@@ -286,6 +286,7 @@ end
 function M.opt_require(module_path)
     local status_ok, module = pcall(require, module_path)
     if not status_ok then
+        local error_msg = module
         local caller_stack_level = 2
 
         -- `n´	selects fields name and namewhat
@@ -296,20 +297,72 @@ function M.opt_require(module_path)
         --
         -- ref: https://www.lua.org/pil/23.1.html
 
-        local caller_info = debug.getinfo(caller_stack_level, "Sl")
+        local caller_info = debug.getinfo(caller_stack_level, "Slf")
 
-        local msg = string.format(
-            "Failed loading `%s` from %s:%d, skipping",
-            module_path,
-            caller_info.short_src,
-            caller_info.currentline
+        local title = string.format(
+            "opt_require: Failed loading `%s`, skipping",
+            module_path
         )
 
-        M.simple_notify(msg, "warn")
+        local details = string.format(
+            table.concat(
+                {
+                    "# Caller Info",
+                    "",
+                    "File: `%s`",
+                    "Line: %d",
+                    "Function: %s",
+                    "",
+                    "# Error",
+                    "",
+                    "%s",
+                },
+                "\n"
+            ),
+            caller_info.short_src,
+            caller_info.currentline,
+            vim.inspect(caller_info.func),
+            error_msg
+        )
+
+        local detail_lines = {
+            "# Caller Info",
+            "",
+            string.format("File: `%s`", caller_info.source),
+            string.format("Line: %d", caller_info.currentline),
+            string.format("Function: %s", caller_info.func),
+            "",
+            "# Error",
+            "",
+            error_msg,
+        }
+
+        M.markdown_notify(title, detail_lines, "warn")
         return nil
     end
 
     return module
+end
+
+function M.markdown_notify(title, msg_lines, level)
+    level = level or "info"
+    local message
+
+    if type(msg_lines) == "string" then
+        message = msg_lines
+    elseif type(msg_lines) == "table" then
+        message = table.concat(msg_lines, "\n")
+    else
+        message = vim.inspect(message)
+    end
+
+    vim.notify(message, level, {
+        title = title,
+        on_open = function(win)
+            local buf = vim.api.nvim_win_get_buf(win)
+            vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+        end,
+    })
 end
 
 return M
