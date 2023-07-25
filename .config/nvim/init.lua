@@ -16,6 +16,7 @@ opt_require "user.keymaps"
 opt_require "user.plugins"
 
 opt_require "user.substitute"
+opt_require "user.scroll_eof"
 
 opt_require "user.autoreload_config"
 opt_require "user.treesitter"
@@ -41,10 +42,12 @@ opt_require "user.toggleterm"
 opt_require "user.luasnip"
 opt_require "user.marks"
 opt_require "user.heirline"
-opt_require "user.chat_gpt"
+-- TODO: Re-enable ChatGPT
+-- opt_require "user.chat_gpt"
 opt_require "user.diffview"
 opt_require "user.focus"
 opt_require "user.tint"
 opt_require "user.noice"
+opt_require("user.glow")
 
 opt_require "user.filetype"

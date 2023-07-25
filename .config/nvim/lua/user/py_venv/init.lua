@@ -5,6 +5,7 @@ end
 
 local Path = require("plenary.path")
 local plenary_tbl = require("plenary.tbl")
+local null_ls = require('null-ls')
 
 local my_utils = require("user.utils")
 
@@ -157,17 +158,19 @@ end
 
 
 local function null_ls_set_venv(client, venv)
-    local null_ls = require('null-ls')
-
     -- disable all null-ls sources
     null_ls.disable({ filetype = 'python' })
+
+    local enable_sources = {}
 
     -- enabled only relevant sources
     for _, source in ipairs(null_ls.get_source({ filetype = 'python' })) do
         if my_utils.executable_exists(venv.bin_path .. '/' .. source.generator.opts.command) then
-            null_ls.enable(source.name)
+            table.insert(enable_sources, source.name)
         end
     end
+
+    null_ls.enable(enable_sources)
 
     -- local local_source_per_buffer = function(source)
     --     return source.with({
@@ -204,15 +207,27 @@ function M.on_attach(client, bufnr)
         return
     end
 
+    local var_name = "py_venv_info"
+
+    local found, saved_venv = pcall(vim.api.nvim_buf_get_var, bufnr, var_name)
     local venv = M.get_python_venv(bufnr, { disable_notifications = false, fallback_to_system_python = true })
-    set_venv(client, venv)
+
+    if not found or saved_venv ~= venv then
+        vim.api.nvim_buf_set_var(bufnr, var_name, venv)
+        set_venv(client, venv)
+    end
 
     vim.api.nvim_create_autocmd("BufEnter", {
         group = vim.api.nvim_create_augroup("AutoSetPythonVenv__" .. norm_client_name, { clear = false }),
         buffer = bufnr,
         callback = function(event)
+            found, saved_venv = pcall(vim.api.nvim_buf_get_var, bufnr, var_name)
             venv = M.get_python_venv(bufnr, { disable_notifications = false, fallback_to_system_python = true })
-            set_venv(client, venv)
+
+            if not found or saved_venv ~= venv then
+                vim.api.nvim_buf_set_var(bufnr, var_name, venv)
+                set_venv(client, venv)
+            end
         end
     })
 end

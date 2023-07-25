@@ -326,6 +326,18 @@ local FileType = {
     provider = function()
         return vim.bo.filetype
     end,
+    hl = {
+        fg = 'green',
+    }
+}
+local BufferType = {
+    -- TODO: Add the icon with a seperate compoennt for it (using the one in the filename)
+    provider = function()
+        return vim.bo.buftype
+    end,
+    hl = {
+        fg = 'blue',
+    }
 }
 local FileEncoding = {
     provider = function()
@@ -592,13 +604,7 @@ local LSPActive = {
                 table.insert(info_strings, info_string)
             end
 
-            vim.notify(table.concat(info_strings, '\n'), "info", {
-                title = 'Running LSP Clients for buffer ' .. self.bufnr,
-                on_open = function(win)
-                    local buf = vim.api.nvim_win_get_buf(win)
-                    vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
-                end,
-            })
+            my_utils.markdown_notify('Running LSP Clients for buffer ' .. self.bufnr, info_strings)
         end,
         update = true,
         name = 'lsp_active_on_click',
@@ -747,6 +753,7 @@ local StatusLine = {
     rpad(FileEncoding),
     rpad(FileFormat),
     rpad(FileType),
+    rpad(BufferType),
     rpad(Ruler),
     rpad(ScrollBar),
 }

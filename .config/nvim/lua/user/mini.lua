@@ -11,8 +11,8 @@ local function get_comment_keymap()
         return "<C-/>"
     end
 
-    if vim.env.ZELLIJ ~= nil then
-        -- NOTE: In some terminals (or in zellij) C-/ is triggered by C-_
+    if vim.env.ZELLIJ ~= nil or vim.env.TMUX ~= nil then
+        -- NOTE: In some terminals (or in tmux & zellij) C-/ is triggered by C-_
         return "<C-_>"
     end
 

@@ -40,6 +40,12 @@ tokyonight.setup({
     --- You can override specific highlights to use other groups or a hex color
     --- function will be called with a Highlights and ColorScheme table
     on_highlights = function(hl, c)
+        -- Don't highlight these groups as we rely on todo_comments for them
+        hl["@text.note"] = {}
+        hl["@text.todo"] = {}
+        hl["@text.warning"] = {}
+        hl["@text.danger"] = {}
+
         hl.MiniCursorword = { underline = true, sp = c.orange }
         hl.MiniCursorwordCurrent = { bg = c.fg_gutter }
 

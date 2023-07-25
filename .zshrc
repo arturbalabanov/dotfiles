@@ -207,6 +207,7 @@ alias cdtmp='cd $(mktemp -d)'
 alias rm='rm -rf'
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
 alias cb-copy="xclip -selection clipboard"
+alias gst="git status"
 
 if type thefuck > /dev/null; then
     eval $(thefuck --alias)

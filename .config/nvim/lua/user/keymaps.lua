@@ -24,7 +24,7 @@ my_utils.nkeymap("<Tab>", "za")
 
 -- Toggle the line numbers with <F1>
 my_utils.nkeymap("<F1>", function()
-    local ignore_fts = {"NvimTree", "OverseerList", "neotest-summary", "toggleterm"}
+    local ignore_fts = { "NvimTree", "OverseerList", "neotest-summary", "toggleterm" }
 
     local win = vim.api.nvim_get_current_win()
     local bufnr = vim.api.nvim_win_get_buf(win)
@@ -34,10 +34,25 @@ my_utils.nkeymap("<F1>", function()
         return
     end
 
-    for _, opt in pairs({"number", "relativenumber"}) do
+    for _, opt in pairs({ "number", "relativenumber" }) do
         local curr_val = vim.api.nvim_win_get_option(win, opt)
         vim.api.nvim_win_set_option(win, opt, not curr_val)
     end
+end)
+
+my_utils.nkeymap("<F2>", function()
+    local diff_mode = vim.opt_local.diff:get()
+
+    local win = vim.api.nvim_get_current_win()
+    local bufnr = vim.api.nvim_win_get_buf(win)
+    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+
+    if diff_mode or filetype == "DiffviewFiles" then
+        vim.cmd.DiffviewToggleFiles()
+        return
+    end
+
+    vim.cmd.NvimTreeToggle()
 end)
 
 -- Clear highlight search with ,/
@@ -53,3 +68,21 @@ my_utils.nkeymap("J", vim.cmd.tabp)
 
 my_utils.nkeymap("<C-u>", "gUiw")
 my_utils.ikeymap("<C-u>", "<C-o>gUiw")
+
+-- TODO: Replace with vim.cmd.Inspect when updating to neovim 0.9
+my_utils.nkeymap("<C-e>",
+    function()
+        local win = vim.api.nvim_get_current_win()
+        local row, col = vim.api.nvim_win_get_cursor(win)
+
+        local ts_captures = vim.treesitter.get_captures_at_cursor(win)
+
+        local detail_lines = {
+            "# Treesitter",
+            "",
+            my_utils.markdown.to_list(ts_captures, { value_format = "`%s`" })
+        }
+
+        my_utils.markdown_notify("Highlights under cursor", detail_lines)
+    end
+)

@@ -123,7 +123,7 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
 indent_blankline.setup {
     buftype_exclude = { "terminal", "nofile" },
-    filetype_exclude = { "packer" },
+    filetype_exclude = { "packer", "glowpreview", "markdown" },
     show_current_context = true,
     -- show_current_context_start = true,
 }

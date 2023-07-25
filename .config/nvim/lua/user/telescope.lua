@@ -8,6 +8,7 @@ local actions_layout = require("telescope.actions.layout")
 local telescope_builtin = require('telescope.builtin')
 local lga_actions = require("telescope-live-grep-args.actions")
 local lga_shortcuts = require("telescope-live-grep-args.shortcuts")
+local trouble = require("trouble.providers.telescope")
 
 local my_utils = require("user.utils")
 
@@ -56,6 +57,9 @@ telescope.setup {
                 ["p"] = actions_layout.toggle_preview,
                 ["<C-f>"] = actions.preview_scrolling_down,
                 ["<C-p>"] = actions.preview_scrolling_up,
+                ["s"] = actions.file_split,
+                ["v"] = actions.file_vsplit,
+                ["<C-t>"] = trouble.open_with_trouble,
             },
         }
     },
@@ -145,21 +149,21 @@ my_utils.nkeymap("<leader>t", telescope_builtin.builtin)
 my_utils.nkeymap("<leader>h", telescope_builtin.help_tags)
 my_utils.nkeymap('<leader>q', telescope_builtin.quickfix)
 
--- utils.nkeymap("<leader>p", telescope_builtin.find_files)
--- utils.nkeymap("<leader>f", telescope_builtin.live_grep)
--- utils.nkeymap("<leader>*", telescope_builtin.grep_string)
+my_utils.nkeymap("<leader>p", telescope_builtin.find_files)
+-- my_utils.nkeymap("<leader>f", telescope_builtin.live_grep)
+-- my_utils.nkeymap("<leader>*", telescope_builtin.grep_string)
 
-my_utils.nkeymap("<leader>p", function()
-    local tabpage = vim.api.nvim_get_current_tabpage()
-    local tabnr = vim.api.nvim_tabpage_get_number(tabpage)
-    local winnr = vim.api.nvim_tabpage_get_win(tabpage)
-
-    if vim.fn.getcwd(winnr, tabnr) == vim.fn.expand("$HOME") then
-        telescope.extensions.frecency.frecency({ workspace = "conf" })
-    else
-        telescope.extensions.frecency.frecency()
-    end
-end)
+-- my_utils.nkeymap("<leader>p", function()
+--     local tabpage = vim.api.nvim_get_current_tabpage()
+--     local tabnr = vim.api.nvim_tabpage_get_number(tabpage)
+--     local winnr = vim.api.nvim_tabpage_get_win(tabpage)
+--
+--     if vim.fn.getcwd(winnr, tabnr) == vim.fn.expand("$HOME") then
+--         telescope.extensions.frecency.frecency({ workspace = "conf" })
+--     else
+--         telescope.extensions.frecency.frecency()
+--     end
+-- end)
 
 my_utils.nkeymap("<leader><leader>", telescope.extensions.projects.projects)
 my_utils.nkeymap("<leader>f", telescope.extensions.live_grep_args.live_grep_args)

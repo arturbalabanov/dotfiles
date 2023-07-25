@@ -4,7 +4,7 @@ if not status_ok then
 end
 
 chat_gpt.setup({
-    api_key_cmd = 'echo -n $(security find-generic-password -w -a "artur@automata.tech" -s "ChatGPT")',
+    api_key_cmd = "security find-generic-password -w -a 'artur@automata.tech' -s 'ChatGPT'",
     yank_register = "+",
     edit_with_instructions = {
         diff = false,

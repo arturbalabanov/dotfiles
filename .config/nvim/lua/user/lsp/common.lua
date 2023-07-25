@@ -50,10 +50,17 @@ local function setup_auto_format_autocmd(client, bufnr)
 end
 
 M.on_attach = function(client, bufnr)
-    require("lsp_signature").on_attach(lsp_signature_config, bufnr)
-    require("user.py_venv").on_attach(client, bufnr)
+    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
 
-    setup_auto_format_autocmd(client, bufnr)
+    -- require("lsp_signature").on_attach(lsp_signature_config, bufnr)
+
+    if filetype == "python" then
+        require("user.py_venv").on_attach(client, bufnr)
+    end
+
+    if client.supports_method("textDocument/formatting") then
+        setup_auto_format_autocmd(client, bufnr)
+    end
 end
 
 -- Open a new defintion (or reference, no matter if selected by telescope or not) in a new tab if not in the same file
