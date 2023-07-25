@@ -304,37 +304,18 @@ function M.opt_require(module_path)
             module_path
         )
 
-        local details = string.format(
-            table.concat(
-                {
-                    "# Caller Info",
-                    "",
-                    "File: `%s`",
-                    "Line: %d",
-                    "Function: %s",
-                    "",
-                    "# Error",
-                    "",
-                    "%s",
-                },
-                "\n"
-            ),
-            caller_info.short_src,
-            caller_info.currentline,
-            vim.inspect(caller_info.func),
-            error_msg
-        )
-
         local detail_lines = {
-            "# Caller Info",
-            "",
-            string.format("File: `%s`", caller_info.source),
-            string.format("Line: %d", caller_info.currentline),
-            string.format("Function: %s", caller_info.func),
-            "",
             "# Error",
             "",
             error_msg,
+            "",
+            "# Extra Info",
+            "",
+            string.format("Module Path: `%s`", module_path),
+            string.format("Caller File: `%s`", caller_info.source),
+            string.format("Caller Line: %d", caller_info.currentline),
+            string.format("Caller Function: %s", vim.inspect(caller_info.func)),
+            "",
         }
 
         M.markdown_notify(title, detail_lines, "warn")
@@ -344,8 +325,28 @@ function M.opt_require(module_path)
     return module
 end
 
-function M.markdown_notify(title, msg_lines, level)
+function M.set_filetype(filetype, ft_pattern)
+    local augroup_name = "user_set_filetype_" .. filetype:gsub('[.-]', '_')
+    local augroup = vim.api.nvim_create_augroup(augroup_name, { clear = true })
+
+    vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+        group = augroup,
+        pattern = ft_pattern,
+        callback = function()
+            vim.opt_local.filetype = filetype
+        end,
+    })
+end
+
+function M.markdown_notify(title, msg_lines, level, opts)
     level = level or "info"
+    opts = opts or {}
+
+    local on_open = function(win)
+        local buf = vim.api.nvim_win_get_buf(win)
+        vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+    end
+
     local message
 
     if type(msg_lines) == "string" then
@@ -356,13 +357,34 @@ function M.markdown_notify(title, msg_lines, level)
         message = vim.inspect(message)
     end
 
-    vim.notify(message, level, {
-        title = title,
-        on_open = function(win)
-            local buf = vim.api.nvim_win_get_buf(win)
-            vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
-        end,
-    })
+    opts.title = title
+    opts.on_open = on_open
+
+    vim.notify(message, level, opts)
+end
+
+M.md = {}
+M.markdown = M.md
+
+M.md.to_list = function(tbl, opts)
+    if not vim.tbl_islist(tbl) then
+        error("argument tbl is not a list table")
+    end
+
+    local default_opts = {
+        value_format = "%s",
+    }
+    opts = plenary_tbl.apply_defaults(opts, default_opts)
+
+    local lines = {}
+
+    for _, value in pairs(tbl) do
+        local formatted_value = string.format(opts.value_format, value)
+        local list_item = string.format("* %s", formatted_value)
+        table.insert(lines, list_item)
+    end
+
+    return table.concat(lines, "\n")
 end
 
 return M

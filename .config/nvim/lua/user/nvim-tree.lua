@@ -75,5 +75,7 @@ nvim_tree.setup({
 })
 
 
--- Plugin keymaps
-my_utils.nkeymap("<F2>", vim.cmd.NvimTreeToggle)
+-- NOTE: Set in keymaps.lua as it's conditional (toggle nvim-tree or diff view file history
+-- depending on whether in diff mode or not)
+--
+-- my_utils.nkeymap("<F2>", vim.cmd.NvimTreeToggle)

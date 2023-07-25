@@ -53,9 +53,25 @@ cmp.setup({
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<Esc>'] = cmp.mapping.abort(),
-        -- Accept currently selected item. Set `select` to `false`
-        -- to only confirm explicitly selected items.
-        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        -- If nothing is selected (including preselections) add a newline as usual.
+        -- If something has explicitly been selected by the user, select it.
+        ["<CR>"] = cmp.mapping({
+            i = function(fallback)
+                if cmp.visible() and cmp.get_active_entry() then
+                    cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+                else
+                    fallback()
+                end
+            end,
+            c = function(fallback)
+                if cmp.visible() and cmp.get_active_entry() then
+                    cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+                else
+                    fallback()
+                end
+            end,
+            s = cmp.mapping.confirm({ select = true }),
+        }),
         ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_next_item()
@@ -77,6 +93,8 @@ cmp.setup({
                 fallback()
             end
         end, { "i", "s" }),
+
+        ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
     }),
     sources = cmp.config.sources({
         { name = 'copilot',  group_index = 1 },

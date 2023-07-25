@@ -6,7 +6,7 @@ if tint == nil then
 end
 
 tint.setup({
-    tint = -40,                                                 -- Darken colors, use a positive value to brighten
+    tint = -60,                                                 -- Darken colors, use a positive value to brighten
     saturation = 0.3,                                           -- Saturation to preserve
     transforms = require("tint").transforms.SATURATE_TINT,      -- Showing default behavior, but value here can be predefined set of transforms
     tint_background_colors = false,                             -- Tint background portions of highlight groups

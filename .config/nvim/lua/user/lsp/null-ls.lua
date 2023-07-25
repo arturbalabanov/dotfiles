@@ -7,6 +7,9 @@ local my_utils = require("user.utils")
 local lsp_common = require("user.lsp.common")
 local py_venv = require("user.py_venv")
 
+
+-- ref: https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
+
 local temp_dir = vim.loop.os_getenv("TEMP") or "/tmp"
 
 local local_source_per_buffer = function(source)

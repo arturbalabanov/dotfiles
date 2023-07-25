@@ -3,8 +3,9 @@ if not status_ok then
     return
 end
 
-local lsp_common = require("user.lsp.common")
+-- ref: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 
+local lsp_common = require("user.lsp.common")
 
 lspconfig.pyright.setup({
     on_attach = lsp_common.on_attach,
@@ -45,6 +46,11 @@ lspconfig.gopls.setup({
 })
 
 lspconfig.terraformls.setup({
+    on_attach = lsp_common.on_attach,
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+})
+
+lspconfig.ansiblels.setup({
     on_attach = lsp_common.on_attach,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })

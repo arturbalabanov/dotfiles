@@ -5,6 +5,7 @@ local ft_options = {
 }
 
 -- NOTE: Replaced by guess_indent
+--
 -- local ft_indentation = {
 --     lua = 4,
 --     terraform = 2,

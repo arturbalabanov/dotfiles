@@ -247,6 +247,11 @@ return packer.startup(function(use)
         end
     }
 
+    use "ellisonleao/glow.nvim"
+    use "Aasim-A/scrollEOF.nvim"
+
+    use "pearofducks/ansible-vim"
+
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
     if PACKER_BOOTSTRAP then
