@@ -17,12 +17,15 @@ opt.cursorline = true
 opt.colorcolumn = "130"
 opt.signcolumn = "yes"
 opt.scrolloff = 15
-opt.mouse = "a"
 opt.splitbelow = true
 opt.splitright = true
 opt.completeopt = { 'menu', 'menuone', 'preview' }
 opt.updatetime = 300 -- faster completion (4000ms default)
 opt.laststatus = 3   -- Make the statusline global
+
+-- Mouse mode
+opt.mouse = "a"
+opt.mousescroll = "ver:3,hor:0"
 
 opt.number = true
 opt.relativenumber = true

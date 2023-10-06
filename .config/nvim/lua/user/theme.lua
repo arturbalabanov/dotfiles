@@ -47,7 +47,7 @@ tokyonight.setup({
         hl["@text.danger"] = {}
 
         hl.MiniCursorword = { underline = true, sp = c.orange }
-        hl.MiniCursorwordCurrent = { bg = c.fg_gutter }
+        hl.MiniCursorwordCurrent = { underline = true, sp = c.orange }
 
         hl.DiagnosticVirtualTextError = { fg = c.error }
         hl.DiagnosticVirtualTextWarn = { fg = c.warning }

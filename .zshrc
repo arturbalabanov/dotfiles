@@ -11,17 +11,33 @@ export DISABLE_AUTO_UPDATE="true"
 export DISABLE_AUTO_TITLE="true"
 export HIST_STAMPS="dd.mm.yyyy"
 
+has_brew=$(
+    [[ \
+        $OSTYPE == 'darwin'* \
+        && $(uname -m) == "arm64" \
+        && -d "/opt/homebrew" \
+    ]] && echo "1" || echo ""
+)
+
+if [[ $has_brew ]]; then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
 plugins=(zsh-syntax-highlighting vi-mode zle-vi-visual pdm)
 source $ZSH/oh-my-zsh.sh
 # }}}
-# Terminal wizardry {{{
-if type dircolors > /dev/null; then
-    eval $(dircolors ~/.dircolors)
+# Colors and Text Formatting {{{
+if type vivid > /dev/null; then
+    export LS_COLORS="$(vivid --color-mode 8-bit generate tokyonight_night)"
+elif test -r ~/.dircolors; then
+    if type gdircolors > /dev/null; then
+        alias dircolors=gdircolors
+    fi
+
+    if type dircolors > /dev/null; then
+        eval $(dircolors ~/.dircolors)
+    fi
 fi
-
-# Stupid Ctrl-S!
-stty -ixon
-
 # man page colors
 export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking 
 export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold 
@@ -32,6 +48,12 @@ export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 export LESS="$LESS -x4"  # less uses 4 space tab witdh
+
+tabs -4  # tab width 4 spaces
+# }}}
+# Terminal wizardry {{{
+# Stupid Ctrl-S!
+stty -ixon
 # }}}
 # VIM Mode {{{
 function _get_zsh_vim_mode {
@@ -223,6 +245,8 @@ alias -g T='| tail'
 function mkcd() { mkdir -p "$@" && cd "$_"; }
 function yadm_update() {
     local commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
+
+    yadm add ~/.config/nvim/lua/user/*
     yadm commit -am "$commit_msg" && yadm push;
 }
 
@@ -240,10 +264,78 @@ function venv {
 
     source $venv_path/bin/activate
 }
+
+function ssh {
+    if [[ $TERM == "xterm-kitty" ]]; then
+        TERM="xterm-256color"
+        command ssh $@
+        TERM="xterm-kitty"
+    else
+        command ssh $@
+    fi
+}
 # }}}
 # Autocomlete setup {{{
-autoload -U +X compinit && compinit
-autoload -U +X bashcompinit && bashcompinit
+
+# Load ZSH modules for completions {{{
+# refs:
+#
+# * https://thevaluable.dev/zsh-completion-guide-examples/
+# * https://www.bash2zsh.com/zsh_refcard/refcard.pdf
+# * https://stackoverflow.com/a/23568183 
+# * http://www.bigsoft.co.uk/blog/2008/04/11/configuring-ls_colors
+
+# ===== CHEATSHEET =======
+#
+# :completion:<function>:<completer>:<command>:<argument>:<tag>
+#
+# format explanation:
+#    %B ... %b  -> bold
+#    %d -- description string
+#
+# list-colors is using the LS_COLORS syntax
+#
+# 00	Default colour
+# 01	Bold
+# 04	Underlined
+# 05	Flashing text
+# 07	Reversetd
+# 08	Concealed
+#
+# 30	Black
+# 31	Red
+# 32	Green
+# 33	Orange
+# 34	Blue
+# 35	Purple
+# 36	Cyan
+# 37	Grey
+#
+# 40	Black background
+# 41	Red background
+# 42	Green background
+# 43	Orange background
+# 44	Blue background
+# 45	Purple background
+# 46	Cyan background
+# 47	Grey background
+
+# Group the completions by type of matches
+zstyle ':completion:*' group-name ''  
+
+# Style the group names
+zstyle ':completion:*:descriptions' format "$fg[yellow]%B%d%b"
+
+# Detailed List of Files and Folders
+# zstyle ':completion:*' file-list all
+# Colorize completions using default `ls` colors.
+zstyle ':completion:*:*:*:default' list-colors "${(s.:.)LS_COLORS}"
+
+# zstyle ':completion:*:options' list-colors "=(#b)(-[^ ]#|--[^ ]#)*(--*)=$color[white]=$color[blue]=$color[white]"
+# zstyle ':completion:*:commands' list-colors '=*=1;31'
+
+
+# }}}
 
 if type fzf > /dev/null && [[ $has_brew ]]; then
     if [[ $- == *i* ]]; then
@@ -263,6 +355,37 @@ fi
 
 if type terraform > /dev/null; then
     complete -o nospace -C $(where terraform) terraform
+fi
+
+# make & remake {{{
+
+# Enable autocomplete for dynamic make targes
+#
+# ref: https://github.com/zsh-users/zsh-completions/issues/813#issuecomment-902592371
+
+zstyle ':completion:*:make:*:targets' call-command true
+zstyle ':completion:*:make:*:variables' call-command true
+zstyle ':completion:*:*:make:*' tag-order 'targets'
+
+zstyle ':completion:*:remake:*:targets' call-command true
+zstyle ':completion:*:remake:*:variables' call-command true
+zstyle ':completion:*:*:remake:*' tag-order 'targets'
+# }}}
+
+# }}}
+# External Tools {{{
+# asdf
+if type asdf > /dev/null; then
+    if [[ $has_brew ]]; then
+        source $(brew --prefix asdf)/libexec/asdf.sh
+    fi
+fi
+
+# 1Password CLI (op)
+if type op > /dev/null; then
+    if [[ -f "~/.config/op/plugins.sh" ]]; then
+        source "~/.config/op/plugins.sh"
+    fi
 fi
 # }}}
 # Source other configs {{{

@@ -54,3 +54,8 @@ lspconfig.ansiblels.setup({
     on_attach = lsp_common.on_attach,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
+
+lspconfig.ruby_ls.setup({
+    on_attach = lsp_common.on_attach,
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+})

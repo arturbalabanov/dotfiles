@@ -100,11 +100,22 @@ return packer.startup(function(use)
     use {
         'nvim-treesitter/nvim-treesitter',
         run = function()
-            -- local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
-            local ts_update = require('nvim-treesitter.install').update({ with_sync = false })
+            local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
             ts_update()
-        end
+        end,
     }
+    -- use {
+    --     'nvim-treesitter/nvim-treesitter',
+    --     run = function()
+    --         -- local ts_install = require('nvim-treesitter.install')
+    --         -- ts_install.compilers = { "gcc-11" }
+    --         -- local ts_update = ts_install.update({ with_sync = false })
+    --
+    --         local ts_update = require('nvim-treesitter.install').update({ with_sync = false })
+    --
+    --         ts_update()
+    --     end
+    -- }
 
     use 'nvim-treesitter/playground'
 
@@ -122,6 +133,14 @@ return packer.startup(function(use)
     use {
         "lukas-reineke/indent-blankline.nvim",
         requires = "nvim-treesitter/nvim-treesitter",
+    }
+
+    use { "NoahTheDuke/vim-just", ft = "just" }
+    use {
+        "IndianBoy42/tree-sitter-just",
+        config = function()
+            require("tree-sitter-just").setup { ["local"] = true }
+        end,
     }
 
     use 'onsails/lspkind.nvim'
@@ -251,6 +270,8 @@ return packer.startup(function(use)
     use "Aasim-A/scrollEOF.nvim"
 
     use "pearofducks/ansible-vim"
+
+    use "aserowy/tmux.nvim"
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
