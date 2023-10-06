@@ -48,6 +48,8 @@ opt_require "user.diffview"
 opt_require "user.focus"
 opt_require "user.tint"
 opt_require "user.noice"
-opt_require("user.glow")
+opt_require "user.glow"
+
+opt_require "user.tmux"
 
 opt_require "user.filetype"

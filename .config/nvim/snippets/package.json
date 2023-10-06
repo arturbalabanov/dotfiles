@@ -16,6 +16,14 @@
             {
                 "language": ["go"],
                 "path": "./go.json"
+            },
+            {
+                "language": ["ansible"],
+                "path": "./ansible.json"
+            },
+            {
+                "language": ["yaml"],
+                "path": "./yaml.json"
             }
         ]
     }

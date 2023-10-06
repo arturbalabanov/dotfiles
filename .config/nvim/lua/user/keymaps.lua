@@ -58,13 +58,9 @@ end)
 -- Clear highlight search with ,/
 my_utils.nkeymap(",/", vim.cmd.nohlsearch)
 
--- Move between windows and tabs
-my_utils.nkeymap("gh", { vim.cmd.wincmd, "h" })
-my_utils.nkeymap("gj", { vim.cmd.wincmd, "j" })
-my_utils.nkeymap("gk", { vim.cmd.wincmd, "k" })
-my_utils.nkeymap("gl", { vim.cmd.wincmd, "l" })
-my_utils.nkeymap("K", vim.cmd.tabn)
-my_utils.nkeymap("J", vim.cmd.tabp)
+-- Move between tabs (for windows -- see tmux.lua)
+my_utils.nkeymap("<C-l>", vim.cmd.tabn)
+my_utils.nkeymap("<C-h>", vim.cmd.tabp)
 
 my_utils.nkeymap("<C-u>", "gUiw")
 my_utils.ikeymap("<C-u>", "<C-o>gUiw")

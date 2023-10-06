@@ -133,7 +133,7 @@ M.usage_error = function(func_name)
     end
 end
 
-local function keymap(mode, input, output, opts)
+M.keymap = function(mode, input, output, opts)
     local usage_error = M.usage_error("keymap")
 
     local default_keymap_opts = { silent = true, remap = false }
@@ -180,7 +180,7 @@ local function t_mode_keymap(zsh_vim_mode, input, output, opts)
         error(tkmeymap_func_name .. ' only supports functions as arguments for now')
     end
 
-    return keymap("t", input, function()
+    return M.keymap("t", input, function()
         if M.get_zsh_vim_mode() ~= zsh_vim_mode then
             return input
         end
@@ -189,11 +189,11 @@ local function t_mode_keymap(zsh_vim_mode, input, output, opts)
     end, opts)
 end
 
-M.nkeymap = plenary_functional.partial(keymap, "n")
-M.ikeymap = plenary_functional.partial(keymap, "i")
-M.vkeymap = plenary_functional.partial(keymap, "v")
-M.xkeymap = plenary_functional.partial(keymap, "x")
-M.tkeymap = plenary_functional.partial(keymap, "t")
+M.nkeymap = plenary_functional.partial(M.keymap, "n")
+M.ikeymap = plenary_functional.partial(M.keymap, "i")
+M.vkeymap = plenary_functional.partial(M.keymap, "v")
+M.xkeymap = plenary_functional.partial(M.keymap, "x")
+M.tkeymap = plenary_functional.partial(M.keymap, "t")
 
 M.tikeymap = plenary_functional.partial(t_mode_keymap, "insert")
 M.tnkeymap = plenary_functional.partial(t_mode_keymap, "normal")

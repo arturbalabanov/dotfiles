@@ -99,18 +99,19 @@ cmp.setup({
     sources = cmp.config.sources({
         { name = 'copilot',  group_index = 1 },
         {
-            {
-                name = 'luasnip',
-                -- TODO: Prioritise user snippets over third party ones
-
-                -- Disable snippet completion in comments and strings
-                entry_filter = function(entry, ctx)
-                    return not (
-                        cmp_context.in_treesitter_capture('string')
-                        or cmp_context.in_treesitter_capture('comment')
-                    )
-                end,
-            },
+            -- {
+            --     name = 'luasnip',
+            --     -- TODO: Prioritise user snippets over third party ones
+            --
+            --     -- Disable snippet completion in comments and strings
+            --     entry_filter = function(entry, ctx)
+            --         return not (
+            --             cmp_context.in_treesitter_capture('string')
+            --             or cmp_context.in_treesitter_capture('comment')
+            --         )
+            --     end,
+            -- },
+            name = 'luasnip',
             group_index = 2
         },
         { name = 'nvim_lsp', group_index = 2 },
