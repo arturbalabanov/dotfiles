@@ -5,7 +5,7 @@ end
 
 local my_utils = require("user.utils")
 
-lspsaga.setup({
+lspsaga.setup {
     lightbulb = {
         enable = true,
         sign = false,
@@ -13,9 +13,15 @@ lspsaga.setup({
     },
     symbol_in_winbar = {
         enable = false,
-    }
-})
+    },
+    rename = {
+        keys = {
+            quit = { "<Esc>", "<C-c>" },
+            exec = "<CR>",
+        },
+    },
+}
 
-my_utils.nkeymap("<leader>r", function() vim.cmd.Lspsaga("rename") end)
-my_utils.nkeymap("<leader>a", function() vim.cmd.Lspsaga("code_action") end)
-my_utils.nkeymap("gD", function() vim.cmd.Lspsaga("hover_doc") end)
+my_utils.nkeymap("<leader>r", { vim.cmd.Lspsaga, "rename" })
+my_utils.nkeymap("<leader>a", { vim.cmd.Lspsaga, "code_action" })
+my_utils.nkeymap("gD", { vim.cmd.Lspsaga, "hover_doc" })

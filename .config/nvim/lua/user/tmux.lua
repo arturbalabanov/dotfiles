@@ -18,7 +18,7 @@ tmux.setup({
 
         -- TMUX >= 3.2: all yanks (and deletes) will get redirected to system
         -- clipboard by tmux
-        redirect_to_clipboard = false,
+        redirect_to_clipboard = true,
 
         -- offset controls where register sync starts
         -- e.g. offset 2 lets registers 0 and 1 untouched
@@ -27,7 +27,7 @@ tmux.setup({
         -- overwrites vim.g.clipboard to redirect * and + to the system
         -- clipboard using tmux. If you sync your system clipboard without tmux,
         -- disable this option!
-        sync_clipboard = true,
+        sync_clipboard = false,
 
         -- synchronizes registers *, +, unnamed, and 0 till 9 with tmux buffers.
         sync_registers = true,

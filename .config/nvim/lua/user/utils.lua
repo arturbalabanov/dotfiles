@@ -246,6 +246,18 @@ end
 
 M.partial = plenary_functional.partial
 
+function M.show_in_split(str, opts)
+    local opts_with_defaults = plenary_tbl.apply_defaults(opts, { filetype = "text", split_cmd = "split" })
+
+    local buf = vim.api.nvim_create_buf(false, true) -- args: listed, scratch
+
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(str, '\n', { plain = true }))
+    vim.api.nvim_buf_set_option(buf, "filetype", opts_with_defaults.filetype)
+    vim.api.nvim_buf_set_option(buf, "modified", false)
+
+    vim.cmd(opts_with_defaults.split_cmd)
+    vim.api.nvim_win_set_buf(0, buf)
+end
 
 local NO_VALUE = '__NO_VALUE_SENTINEL__'
 
@@ -336,6 +348,18 @@ function M.set_filetype(filetype, ft_pattern)
             vim.opt_local.filetype = filetype
         end,
     })
+end
+
+function M.timeout(ms, fn)
+    local timer = vim.loop.new_timer()
+
+    return function(...)
+        local argv = { ... }
+        timer:start(ms, 0, function()
+            timer:stop()
+            vim.schedule_wrap(fn)(unpack(argv))
+        end)
+    end
 end
 
 function M.markdown_notify(title, msg_lines, level, opts)

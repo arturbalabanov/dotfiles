@@ -1,0 +1,12 @@
+{
+	"Debug a variable": {
+		"prefix": "debug_var",
+		"body": [
+            "# TODO: Remove this debug task",
+			"- name: \"Debug: print the contents of the '$1' vaibalbe\"",
+            "  ansible.builtin.debug:",
+            "    var: $1"
+		],
+        "description": "Add a task to debug a variable's contents"
+	}
+}

@@ -8,8 +8,6 @@ local my_utils = require("user.utils")
 
 --- Reload the entire configuration
 local function reload_nvim_config()
-    require("null-ls.config").reset()
-
     -- stop all lsp clients
     for _, client in pairs(vim.lsp.get_active_clients()) do
         client.stop(true) -- force: true
@@ -21,9 +19,15 @@ local function reload_nvim_config()
         -- end
     end
 
+    local luacache = (_G.__luacache or {}).cache
+
     for name, _ in pairs(package.loaded) do
-        if name:match('^user') then
+        if name:match('^user') or name == "treesitter" then
             package.loaded[name] = nil
+
+            if luacache then
+                luacache[name] = nil
+            end
         end
     end
 
@@ -31,6 +35,7 @@ local function reload_nvim_config()
     -- so we want them to update on config reload too
     vim.cmd([[autocmd!]])
 
+    -- vim.treesitter.start()
     dofile(vim.env.MYVIMRC)
 
     -- Reload after/ directory
