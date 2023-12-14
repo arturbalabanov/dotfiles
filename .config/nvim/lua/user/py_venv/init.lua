@@ -5,7 +5,6 @@ end
 
 local Path = require("plenary.path")
 local plenary_tbl = require("plenary.tbl")
-local null_ls = require('null-ls')
 
 local my_utils = require("user.utils")
 
@@ -62,16 +61,22 @@ local function get_venv_name(python_path, project_root)
 end
 
 local function get_python_version(python_path, opts)
-    opts = plenary_tbl.apply_defaults(opts, { disable_notifications = false })
+    opts = plenary_tbl.apply_defaults(opts, { disable_notifications = false, full_version = false })
 
-    local py_version_string = my_utils.run_shell_cmd(python_path .. ' --version',
+    local py_version_output = my_utils.run_shell_cmd(python_path .. ' --version',
         { disable_notifications = opts.disable_notifications })
 
-    if py_version_string == nil then
+    if py_version_output == nil then
         return nil
     end
 
-    local _, _, major, minor = string.find(py_version_string, "%s*Python%s*(%d+).(%d+)")
+    local _, _, py_version_string = string.find(py_version_output, "%s*Python%s*(.+)%s*$")
+
+    if opts.full_version then
+        return py_version_string
+    end
+
+    local _, _, major, minor = string.find(py_version_string, "(%d+).(%d+)")
 
     if minor == nil then
         return major
@@ -82,7 +87,7 @@ end
 
 local function get_python_venv_no_cache(opts)
     opts = plenary_tbl.apply_defaults(opts,
-        { disable_notifications = false, fallback_to_system_python = false, venv_manager = nil })
+        { disable_notifications = false, fallback_to_system_python = false, venv_manager = nil, full_version = false })
 
     local project_root = project_nvim.find_pattern_root()
 
@@ -130,19 +135,21 @@ local function get_python_venv_no_cache(opts)
         venv_bin_path = vim.fn.fnamemodify(venv_python_path, ':h')
     end
 
+    local python_version = get_python_version(python_path,
+        { disable_notifications = opts.disable_notifications, full_version = opts.full_version })
 
     return {
         name = get_venv_name(venv_python_path, project_root),
         bin_path = venv_bin_path,
         python_path = python_path,
-        python_version = get_python_version(python_path, { disable_notifications = opts.disable_notifications }),
+        python_version = python_version,
         venv_manager_name = my_utils.get(venv_manager, "name"),
     }
 end
 
 function M.get_python_venv(bufnr, opts)
     opts = plenary_tbl.apply_defaults(opts,
-        { disable_notifications = false, fallback_to_system_python = false, venv_manager = nil })
+        { disable_notifications = false, fallback_to_system_python = false, venv_manager = nil, full_version = false })
 
     if bufnr == nil then
         bufnr = vim.api.nvim_get_current_buf()
@@ -151,52 +158,23 @@ function M.get_python_venv(bufnr, opts)
     return my_utils.get_or_update_cache('get_python_venv', bufnr, function() return get_python_venv_no_cache(opts) end)
 end
 
+function M.buf_local_command_path(command, bufnr)
+    local venv = M.get_python_venv(bufnr, { disable_notifications = true })
+
+    if venv == nil then
+        return command
+    end
+
+    return Path:new(venv.bin_path):joinpath(command):expand()
+end
+
 local function pyright_set_venv(client, venv)
     client.config.settings.python.pythonPath = venv.python_path
     client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
 end
 
-
-local function null_ls_set_venv(client, venv)
-    -- disable all null-ls sources
-    null_ls.disable({ filetype = 'python' })
-
-    local enable_sources = {}
-
-    -- enabled only relevant sources
-    for _, source in ipairs(null_ls.get_source({ filetype = 'python' })) do
-        if my_utils.executable_exists(venv.bin_path .. '/' .. source.generator.opts.command) then
-            table.insert(enable_sources, source.name)
-        end
-    end
-
-    null_ls.enable(enable_sources)
-
-    -- local local_source_per_buffer = function(source)
-    --     return source.with({
-    --         env = function(params)
-    --             local venv_info = py_venv.get_python_venv(params.bufnr, { disable_notifications = true })
-    --
-    --             if venv_info == nil then
-    --                 return nil
-    --             end
-    --
-    --             return {
-    --                 PYTHONPATH = venv_info.python_path,
-    --                 PATH = venv_info.bin_path,
-    --             }
-    --         end,
-    --         condition = function (utils)
-    --             my_utils.simple_notify("Checking the condition for " .. source.name)
-    --             return true
-    --         end,
-    --     })
-    -- end
-end
-
 local set_venv_per_client = {
     pyright = pyright_set_venv,
-    null_ls = null_ls_set_venv,
 }
 
 function M.on_attach(client, bufnr)

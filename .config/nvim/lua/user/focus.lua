@@ -5,8 +5,6 @@ if focus == nil then
     return
 end
 
-local utils = require('focus.modules.utils')
-
 local config = {
     enable = true,            -- Enable module
     commands = true,          -- Create Focus commands

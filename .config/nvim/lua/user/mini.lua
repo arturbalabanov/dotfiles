@@ -21,7 +21,7 @@ end
 
 require('mini.comment').setup({
     mappings = {
-        comment = get_comment_keymap(),
         comment_line = get_comment_keymap(),
+        comment_visual = get_comment_keymap(),
     }
 })

@@ -34,16 +34,8 @@ cmp.setup({
     window = {
         documentation = cmp.config.window.bordered(),
     },
-    formatting = {
-        format = require('lspkind').cmp_format({
-            mode = 'symbol',
-            symbol_map = { Copilot = "" },
-        }),
-    },
     sorting = {
         comparators = {
-            require("copilot_cmp.comparators").prioritize,
-            require("copilot_cmp.comparators").score,
             cmp.config.compare.kind,
             cmp.config.compare.exact,
             cmp.config.compare.sort_text,
@@ -97,7 +89,6 @@ cmp.setup({
         ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
     }),
     sources = cmp.config.sources({
-        { name = 'copilot',  group_index = 1 },
         {
             -- {
             --     name = 'luasnip',

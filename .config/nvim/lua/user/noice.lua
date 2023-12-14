@@ -5,6 +5,8 @@ if noice == nil then
     return
 end
 
+local noice_docs = require("noice.lsp.docs")
+
 noice.setup({
     cmdline = {
         enabled = true,         -- enables the Noice cmdline UI
@@ -144,7 +146,7 @@ noice.setup({
         },
         message = {
             -- Messages shown by lsp servers
-            enabled = true,
+            enabled = false,
             view = "notify",
             opts = {},
         },
@@ -214,4 +216,15 @@ noice.setup({
     status = {}, --- @see section on statusline components
     ---@type NoiceFormatOptions
     format = {}, --- @see section on formatting
+})
+
+
+vim.api.nvim_create_autocmd("InsertLeave", {
+    group = vim.api.nvim_create_augroup('UserNoiceSignatureAutoClose', { clear = true }),
+    callback = function()
+        local signature = noice_docs.get("signature")
+        if signature ~= nil then
+            noice_docs.hide(signature)
+        end
+    end
 })

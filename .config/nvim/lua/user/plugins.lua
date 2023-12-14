@@ -36,7 +36,8 @@ return packer.startup(function(use)
     use 'nvim-lua/plenary.nvim'
 
     use "neovim/nvim-lspconfig"
-    use "jose-elias-alvarez/null-ls.nvim"
+    use "mfussenegger/nvim-lint"
+    use "stevearc/conform.nvim"
 
     use { 'echasnovski/mini.nvim' }
     use { "ellisonleao/gruvbox.nvim" }
@@ -54,7 +55,7 @@ return packer.startup(function(use)
     use { 'stevearc/dressing.nvim' }
 
     use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.1',
+        'nvim-telescope/telescope.nvim', tag = '0.1.4',
         requires = {
             'nvim-lua/plenary.nvim',
             'nvim-tree/nvim-web-devicons'
@@ -63,11 +64,6 @@ return packer.startup(function(use)
 
     use {
         "pschmitt/telescope-yadm.nvim",
-        requires = "nvim-telescope/telescope.nvim",
-    }
-
-    use {
-        "nvim-telescope/telescope-live-grep-args.nvim",
         requires = "nvim-telescope/telescope.nvim",
     }
 
@@ -83,18 +79,19 @@ return packer.startup(function(use)
         },
     })
     use {
-        "nvim-telescope/telescope-frecency.nvim",
-        requires = {
-            "kkharji/sqlite.lua",
-            "nvim-telescope/telescope.nvim",
-        }
-    }
-    use {
         "ghassan0/telescope-glyph.nvim",
         requires = {
             'nvim-tree/nvim-web-devicons',
             "nvim-telescope/telescope.nvim",
         }
+    }
+
+    use {
+        "kevinhwang91/nvim-bqf",
+        requires = {
+            "nvim-treesitter/nvim-treesitter",
+        },
+        ft = 'qf',
     }
 
     use {
@@ -104,18 +101,6 @@ return packer.startup(function(use)
             ts_update()
         end,
     }
-    -- use {
-    --     'nvim-treesitter/nvim-treesitter',
-    --     run = function()
-    --         -- local ts_install = require('nvim-treesitter.install')
-    --         -- ts_install.compilers = { "gcc-11" }
-    --         -- local ts_update = ts_install.update({ with_sync = false })
-    --
-    --         local ts_update = require('nvim-treesitter.install').update({ with_sync = false })
-    --
-    --         ts_update()
-    --     end
-    -- }
 
     use 'nvim-treesitter/playground'
 
@@ -132,15 +117,9 @@ return packer.startup(function(use)
 
     use {
         "lukas-reineke/indent-blankline.nvim",
+        after = "nvim-treesitter",
         requires = "nvim-treesitter/nvim-treesitter",
-    }
-
-    use { "NoahTheDuke/vim-just", ft = "just" }
-    use {
-        "IndianBoy42/tree-sitter-just",
-        config = function()
-            require("tree-sitter-just").setup { ["local"] = true }
-        end,
+        tag = "v2.20.8",
     }
 
     use 'onsails/lspkind.nvim'
@@ -177,7 +156,14 @@ return packer.startup(function(use)
     }
 
     use "darfink/vim-plist"
-    use 'glepnir/lspsaga.nvim'
+    use {
+        'nvimdev/lspsaga.nvim',
+        after = 'nvim-lspconfig',
+        requires = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-tree/nvim-web-devicons',
+        },
+    }
     use "rmagatti/goto-preview"
 
     use {
@@ -185,18 +171,6 @@ return packer.startup(function(use)
         cmd = "Copilot",
         event = "InsertEnter",
         config = function() require("user.copilot") end
-    }
-
-    use {
-        "zbirenbaum/copilot-cmp",
-        requires = {
-            "zbirenbaum/copilot.lua",
-            "hrsh7th/nvim-cmp",
-        },
-        after = { "copilot.lua" },
-        config = function()
-            require("copilot_cmp").setup()
-        end
     }
 
     use {
@@ -222,6 +196,12 @@ return packer.startup(function(use)
             "nvim-neotest/neotest",
             "nvim-treesitter/nvim-treesitter",
         },
+    }
+    use {
+        "andythigpen/nvim-coverage",
+        requires = {
+            "nvim-lua/plenary.nvim",
+        }
     }
     use { "akinsho/toggleterm.nvim", tag = '*' }
     use "chentoast/marks.nvim"

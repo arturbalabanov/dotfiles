@@ -6,8 +6,6 @@ end
 local actions = require("telescope.actions")
 local actions_layout = require("telescope.actions.layout")
 local telescope_builtin = require('telescope.builtin')
-local lga_actions = require("telescope-live-grep-args.actions")
-local lga_shortcuts = require("telescope-live-grep-args.shortcuts")
 local trouble = require("trouble.providers.telescope")
 
 local my_utils = require("user.utils")
@@ -15,9 +13,7 @@ local my_utils = require("user.utils")
 local telescope_extensions_to_load = {
     "yadm_files",
     "git_or_yadm_files",
-    "live_grep_args",
     "advanced_git_search",
-    -- "frecency",
     "projects",
     "glyph",
 }
@@ -47,13 +43,13 @@ telescope.setup {
             i = {
                 ["<esc>"] = actions.close,
                 ["<C-t>"] = actions.select_tab,
-                ["<C-q>"] = actions.send_to_qflist,
+                ["<C-q>"] = actions.smart_send_to_qflist,
                 ["<C-f>"] = actions.preview_scrolling_down,
                 ["<C-p>"] = actions.preview_scrolling_up,
             },
             n = {
                 ["t"] = actions.select_tab,
-                ["q"] = actions.send_to_qflist,
+                ["q"] = actions.smart_send_to_qflist,
                 ["p"] = actions_layout.toggle_preview,
                 ["<C-f>"] = actions.preview_scrolling_down,
                 ["<C-p>"] = actions.preview_scrolling_up,
@@ -102,18 +98,6 @@ telescope.setup {
         }
     },
     extensions = {
-        live_grep_args = {
-            layout_strategy = 'vertical',
-            auto_quoting = true,
-            mappings = {
-                -- extend mappings
-                n = {
-                    ["f"] = lga_actions.quote_prompt({ postfix = " -t" }),
-                },
-            },
-            disable_coordinates = true,
-            additional_args = { '--trim' },
-        },
         advanced_git_search = {
             -- Fugitive or diffview
             diff_plugin = "diffview",
@@ -126,18 +110,6 @@ telescope.setup {
             -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
             show_builtin_git_pickers = false,
         },
-        -- ref: https://github.com/nvim-telescope/telescope-frecency.nvim
-        frecency = {
-            ignore_patterns = { "*/node_modules/*", '*/.git/*' },
-            default_workspace = 'CWD',
-            workspaces = {
-                ["conf"] = vim.fn.expand("$HOME/.config"),
-                ["dev"]  = vim.fn.expand("$HOME/dev"),
-            },
-            show_unindexed = true,
-            show_scores = true,
-            show_filter_column = true,
-        },
     }
 }
 
@@ -148,7 +120,6 @@ end
 my_utils.nkeymap("<leader>t", telescope_builtin.builtin)
 my_utils.nkeymap("<leader>h", telescope_builtin.help_tags)
 
--- my_utils.nkeymap("<leader>p", telescope_builtin.find_files)
 my_utils.nkeymap("<leader>f", telescope_builtin.live_grep)
 my_utils.nkeymap("<leader>*", telescope_builtin.grep_string)
 
@@ -157,16 +128,14 @@ my_utils.nkeymap("<leader>p", function()
     local tabnr = vim.api.nvim_tabpage_get_number(tabpage)
     local winnr = vim.api.nvim_tabpage_get_win(tabpage)
 
+    local args = {}
     if vim.fn.getcwd(winnr, tabnr) == vim.fn.expand("$HOME") then
-        telescope.extensions.frecency.frecency({ workspace = "conf" })
-    else
-        telescope.extensions.frecency.frecency()
+        args.cwd = '~/.config/nvim'
     end
+
+    telescope_builtin.find_files(args)
 end)
 
 my_utils.nkeymap("<leader><leader>", telescope.extensions.projects.projects)
--- my_utils.nkeymap("<leader>f", telescope.extensions.live_grep_args.live_grep_args)
--- my_utils.nkeymap("<leader>*", lga_shortcuts.grep_word_under_cursor)
--- my_utils.vkeymap("<leader>*", lga_shortcuts.grep_visual_selection)
-
+my_utils.nkeymap("<leader>g", telescope.extensions.glyph.glyph)
 my_utils.nkeymap("<leader>c", telescope.extensions.yadm_files.yadm_files)

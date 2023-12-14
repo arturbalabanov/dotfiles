@@ -2,15 +2,3 @@
 export DEFAULT_USER="artur"
 
 # export PIPX_DEFAULT_PYTHON="$PYENV_ROOT/versions/3.10.6/bin/python"
-
-function gg {
-    (cd ~/dev/greengrass-hub && pipenv run cli $@)
-}
-
-function hub {
-    (cd ~/dev/hub && pipenv run cli hub $@)
-}
-
-function tron {
-    (cd ~/dev/tron && pdm run tron $@)
-}

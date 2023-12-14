@@ -13,6 +13,8 @@ opt_require "user.impatient"
 
 opt_require "user.options"
 opt_require "user.keymaps"
+opt_require "user.commands"
+
 opt_require "user.plugins"
 
 opt_require "user.substitute"
@@ -34,10 +36,12 @@ opt_require "user.todo_comments"
 opt_require "user.project_nvim"
 opt_require "user.overseer"
 
+opt_require "user.indent_blankline"
 opt_require "user.gitsigns"
 opt_require "user.cmp"
 opt_require "user.lsp"
 opt_require "user.neotest"
+opt_require "user.coverage"
 opt_require "user.toggleterm"
 opt_require "user.luasnip"
 opt_require "user.marks"
@@ -49,7 +53,6 @@ opt_require "user.focus"
 opt_require "user.tint"
 opt_require "user.noice"
 opt_require "user.glow"
-
 opt_require "user.tmux"
 
 opt_require "user.filetype"
