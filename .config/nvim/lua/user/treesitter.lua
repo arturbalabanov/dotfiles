@@ -235,7 +235,13 @@ vim.treesitter.query.set("go", "folds", [[
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter' }, {
     group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
     callback = function()
-        vim.opt.foldmethod = 'expr'
-        vim.opt.foldexpr   = 'nvim_treesitter#foldexpr()'
+        -- If we've explicitly set the folding method to marker, don't change it
+        -- e.g. we do that in filetype.lua for some filetypes in a FileType augroup
+        if vim.wo.foldmethod == 'marker' then
+            return
+        end
+
+        vim.wo.foldmethod = 'expr'
+        vim.wo.foldexpr   = 'nvim_treesitter#foldexpr()'
     end
 })

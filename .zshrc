@@ -1,7 +1,37 @@
+# Utilities {{{
+function _has_brew {
+    [[ \
+        $OSTYPE == 'darwin'* \
+        && $(uname -m) == "arm64" \
+        && -d "/opt/homebrew" \
+    ]]
+}
+
+function _exists {
+    type $1 2>&1 > /dev/null
+}
+
+function _error {
+    if [[ $# -eq 0 ]]; then
+        echo "error: no arguments given" >&2
+        return 1
+    fi
+
+    msg="$1"
+    exit_code="${2:-1}"
+
+    echo "error: $msg" >&2
+    return $exit_code
+}
+
+function _in_git_repo {
+    git rev-parse --is-inside-work-tree 2>&1 > /dev/null
+}
+# }}}
 # Oh my ZSH {{{
 export ZSH=$HOME/.oh-my-zsh
 
-if type starship > /dev/null; then
+if _exists starship; then
     eval "$(starship init zsh)"
 else
     ZSH_THEME="artur" 
@@ -11,30 +41,22 @@ export DISABLE_AUTO_UPDATE="true"
 export DISABLE_AUTO_TITLE="true"
 export HIST_STAMPS="dd.mm.yyyy"
 
-has_brew=$(
-    [[ \
-        $OSTYPE == 'darwin'* \
-        && $(uname -m) == "arm64" \
-        && -d "/opt/homebrew" \
-    ]] && echo "1" || echo ""
-)
-
-if [[ $has_brew ]]; then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+if _has_brew; then
+    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
 
 plugins=(zsh-syntax-highlighting vi-mode zle-vi-visual pdm)
 source $ZSH/oh-my-zsh.sh
 # }}}
 # Colors and Text Formatting {{{
-if type vivid > /dev/null; then
+if _exists vivid; then
     export LS_COLORS="$(vivid --color-mode 8-bit generate tokyonight_night)"
 elif test -r ~/.dircolors; then
-    if type gdircolors > /dev/null; then
+    if _exists gdircolors; then
         alias dircolors=gdircolors
     fi
 
-    if type dircolors > /dev/null; then
+    if _exists dircolors; then
         eval $(dircolors ~/.dircolors)
     fi
 fi
@@ -197,83 +219,31 @@ function prepend-sudo {
 zle -N prepend-sudo
 bindkey "^s" prepend-sudo
 # }}}
-# Aliases {{{
-if type lsd > /dev/null; then
-    alias ls='lsd'
-else
-    alias ls='ls --color=auto'
-fi
-alias ll='ls -lh'
-alias la='ll -a'
-alias grep='grep --color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
-if type lsd > /dev/null; then
-    alias tree='lsd -l --tree'
-else
-    alias tree='tree -C'
-fi
-alias vi='nvim'
-alias vim='nvim'
-alias s='sudo'
-alias se='sudoedit'
-alias pac='pikaur'
-alias wget='wget -c'
-alias lynx='lynx -lss=~/.lynx.lss'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
-alias ......='cd ../../../../..'
-alias info='info --vi-keys'      # GNU info act like man command
-alias emacs='emacs -nw'          # cli mode
-alias cdtmp='cd $(mktemp -d)'
-alias rm='rm -rf'
-alias dad="curl -k https://icanhazdadjoke.com/ && echo"
-alias cb-copy="xclip -selection clipboard"
-alias gst="git status"
-
-if type thefuck > /dev/null; then
-    eval $(thefuck --alias)
-else
-    alias fuck='eval "sudo $(fc -ln -1)"'
+# External Tools {{{
+# asdf
+if _exists asdf && _has_brew; then
+    source $(brew --prefix asdf)/libexec/asdf.sh
 fi
 
-alias -g G='| grep -i'
-alias -g L='| less'
-alias -g H='| head'
-alias -g T='| tail'
-
-function mkcd() { mkdir -p "$@" && cd "$_"; }
-function yadm_update() {
-    local commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
-
-    yadm add ~/.config/nvim/lua/user/*
-    yadm commit -am "$commit_msg" && yadm push;
-}
-
-function venv {
-    if [[ -f "pdm.lock" ]]; then
-        venv_path=$(pdm venv --path in-project)
-    elif [[ -f "poetry.lock" ]]; then
-        venv_path=$(poetry env info -p)
-    elif [[ -f "Pipfile.lock" ]]; then
-        venv_path=$(pipenv --venv)
-    else
-        echo "No pdm.lock, poetry.lock or Pipfile.lock found :("
-        return 1
+# 1Password CLI (op)
+if _exists op; then
+    if [[ -f "~/.config/op/plugins.sh" ]]; then
+        source "~/.config/op/plugins.sh"
     fi
+fi
 
-    source $venv_path/bin/activate
-}
-
-function ssh {
-    if [[ $TERM == "xterm-kitty" ]]; then
-        TERM="xterm-256color"
-        command ssh $@
-        TERM="xterm-kitty"
-    else
-        command ssh $@
+# pdflatex
+# The brew package is called 'basictex' but it's installed in a weird location
+# which is why wee need to do th this.
+#
+# ref: https://superuser.com/q/1038612
+if _has_brew; then
+    if [[ -d "/Library/TeX/texbin" ]]; then
+        export PATH="$PATH:/Library/TeX/texbin"
     fi
-}
+fi
+
+
 # }}}
 # Autocomlete setup {{{
 
@@ -337,23 +307,20 @@ zstyle ':completion:*:*:*:default' list-colors "${(s.:.)LS_COLORS}"
 
 # }}}
 
-if type fzf > /dev/null && [[ $has_brew ]]; then
-    if [[ $- == *i* ]]; then
-        source "$(brew --prefix)/opt/fzf/shell/completion.zsh" 2> /dev/null
-    fi
-
+if _exists fzf && _has_brew; then
+    source "$(brew --prefix)/opt/fzf/shell/completion.zsh" 2> /dev/null
     source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
 fi
 
-if type zoxide > /dev/null; then
+if _exists zoxide; then
     eval "$(zoxide init zsh)"
 fi
 
-if type pipx > /dev/null; then
+if _exists pipx; then
     eval "$(register-python-argcomplete pipx)"
 fi
 
-if type terraform > /dev/null; then
+if _exists terraform; then
     complete -o nospace -C $(where terraform) terraform
 fi
 
@@ -373,20 +340,144 @@ zstyle ':completion:*:*:remake:*' tag-order 'targets'
 # }}}
 
 # }}}
-# External Tools {{{
-# asdf
-if type asdf > /dev/null; then
-    if [[ $has_brew ]]; then
-        source $(brew --prefix asdf)/libexec/asdf.sh
-    fi
+# Aliases {{{
+if _exists lsd; then
+    alias ls='lsd'
+    alias tree='lsd -l --tree'
+else
+    alias ls='ls --color=auto'
+    alias tree='tree -C'
+fi
+alias ll='ls -lh'
+alias la='ll -a'
+alias grep='grep --color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
+alias vi='nvim'
+alias vim='nvim'
+alias s='sudo'
+alias se='sudoedit'
+alias pac='pikaur'
+alias wget='wget -c'
+alias lynx='lynx -lss=~/.lynx.lss'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias info='info --vi-keys'      # GNU info act like man command
+alias emacs='emacs -nw'          # cli mode
+alias cdtmp='cd $(mktemp -d)'
+alias rm='rm -rf'
+alias dad="curl -k https://icanhazdadjoke.com/ && echo"
+alias cb-copy="xclip -selection clipboard"
+alias gst="git status"
+
+if _exists thefuck; then
+    eval $(thefuck --alias)
+else
+    alias fuck='eval "sudo $(fc -ln -1)"'
 fi
 
-# 1Password CLI (op)
-if type op > /dev/null; then
-    if [[ -f "~/.config/op/plugins.sh" ]]; then
-        source "~/.config/op/plugins.sh"
+alias -g G='| grep -i'
+alias -g L='| less'
+alias -g H='| head'
+alias -g T='| tail'
+
+if _exists fzf; then
+    alias -g F='| fzf'
+
+    if _exists fd; then
+        function ivim {
+            fzf_args=""
+
+            if [[ "$#" -eq 1 ]]; then
+                fzf_args="--query=$1"
+            elif [[ "$#" -gt 1 ]]; then
+                fzf_args="$@"
+            fi
+
+            preview_cmd='bat {}'
+
+            vim $(fd --type=file | fzf $fzf_args)
+        }
+
+        function icd {
+            fzf_args=""
+
+            if [[ "$#" -eq 1 ]]; then
+                fzf_args="--query=$1"
+            elif [[ "$#" -gt 1 ]]; then
+                fzf_args="$@"
+            fi
+
+            preview_cmd='lsd -l --depth 2 --tree --color=always {} | head -100'
+
+            cd $(fd --type=directory | fzf $fzf_args --preview ${preview_cmd})
+        }
     fi
+
+    function gco {
+        if ! _in_git_repo; then
+            _error "not in a git repo"
+            return 1
+        fi
+
+        fzf_args=""
+
+        if [[ "$#" -eq 1 ]]; then
+            git checkout $1 2> /dev/null
+
+            if [[ "$?" -eq 0 ]]; then
+                # successfully checked out to that branch
+                return 0
+            fi
+
+            # set the argument to the initial query
+            fzf_args="--query=$1"
+        fi
+
+        preview_cmd="git log {} --color=always --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset) %C(dim white)- %an%C(reset)%n''          %s'"
+
+        git branch --sort=-committerdate \
+            | grep -v '^\*' \
+            | sed -E 's/^[[:space:]]*//' \
+            | fzf $fzf_args --preview $preview_cmd \
+            | xargs git checkout
+    }
+
 fi
+
+function mkcd() { mkdir -p "$@" && cd "$_"; }
+function yadm_update() {
+    local commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
+
+    yadm add ~/.config/nvim/lua/user/*
+    yadm commit -am "$commit_msg" && yadm push;
+}
+
+function venv {
+    if [[ -f "pdm.lock" ]]; then
+        venv_path=$(pdm venv --path in-project)
+    elif [[ -f "poetry.lock" ]]; then
+        venv_path=$(poetry env info -p)
+    elif [[ -f "Pipfile.lock" ]]; then
+        venv_path=$(pipenv --venv)
+    else
+        echo "No pdm.lock, poetry.lock or Pipfile.lock found :("
+        return 1
+    fi
+
+    source $venv_path/bin/activate
+}
+
+function ssh {
+    if [[ $TERM == "xterm-kitty" ]]; then
+        TERM="xterm-256color"
+        command ssh $@
+        TERM="xterm-kitty"
+    else
+        command ssh $@
+    fi
+}
 # }}}
 # Source other configs {{{
 if [[ -f "$HOME/.zshrc_local" ]]; then

@@ -18,8 +18,7 @@ vim.api.nvim_create_user_command('LuaSnipEdit', function()
             return filetype == "python"
         end,
         format = function(filepath, source_name)
-            return CUSTOM_SNIPPETS_PATH .. filepath
-            -- return string.format("%s: %s", source_name, filepath)
+            return string.format("%s: %s", source_name, filepath)
         end,
         edit = function(filepath)
             vim.cmd.split(filepath)

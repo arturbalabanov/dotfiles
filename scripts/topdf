@@ -1,0 +1,124 @@
+#!/bin/bash
+
+SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
+source "$SCRIPTS_DIR/common.sh"
+
+function fountain_to_pdf() {
+    dependancy "afterwriting"
+
+    file=$1
+    afterwriting \
+        --source "$file" \
+        --pdf \
+        --overwrite \
+        --setting print_title_page=false \
+        --setting print_profile=a4
+}
+
+function tex_to_pdf() {
+    dependancy "pdflatex"
+
+    file=$1
+    pdflatex "$file"
+}
+
+function mermaid_to_pdf() {
+    dependancy "mmdc"
+
+    file=$1
+    black_and_white=$2
+    file_no_extension="${file%.*}"
+
+    args=""
+
+    if [[ "$black_and_white" == true ]]; then
+        args="$args --theme neutral"
+    fi
+
+    # shellcheck disable=SC2086
+    mmdc -i "$file" -o "$file_no_extension.pdf" --pdfFit $args
+}
+
+function markdown_to_pdf() {
+    dependancy "pandoc"
+    dependancy "mermaid-filter"
+
+    file=$1
+    black_and_white=$2
+    page_orientation=$3
+
+    file_no_extension="${file%.*}"
+    args=""
+    env_vars="MERMAID_FILTER_FORMAT=pdf"
+
+    if [[ "$black_and_white" == true ]]; then
+        args="$args --highlight-style monochrome"
+    fi
+
+    if [[ "$black_and_white" == true ]]; then
+        env_vars="$env_vars MERMAID_FILTER_THEME=neutral"
+    fi
+
+    if [[ "$page_orientation" == "landscape" ]]; then
+        args="$args --variable geometry:landscape"
+    fi
+
+    # If you want to add captions to the diagrams (e.g. Figure 1: some diagram),
+    # use pandoc-crossref
+    # ref (after the table): https://github.com/raghur/mermaid-filter?tab=readme-ov-file#attributes
+
+    # shellcheck disable=SC2086,SC2046,SC2116
+    env $(echo "$env_vars") \
+        pandoc "$file" -o "${file_no_extension}.pdf" \
+        --variable geometry:a4paper \
+        --variable geometry:margin=2cm \
+        --variable fontsize=12pt       \
+        --variable pagestyle=empty \
+        $args \
+        --filter mermaid-filter
+}
+
+if [[ "$#" -eq 0 ]]; then
+    error "missing 'file' argument" \
+        "" \
+        "Usage: $(cmd_name) <file>" \
+        "Example: $(cmd_name) screenplay.fountain"
+fi
+
+# TODO: Add page orientation (--landscape and --portrait, default to portrait)
+
+file=$1
+extension=$(get_extension "$file")
+
+black_and_white=true
+page_orientation="portrait"
+
+if [[ $* == *--color* ]]; then
+    black_and_white=false
+fi
+
+if [[ $* == *--landscape* ]]; then
+    page_orientation="landscape"
+fi
+
+if [[ $* == *--portrait* ]]; then
+    page_orientation="portrait"
+fi
+
+case "$extension" in
+    fountain)
+        fountain_to_pdf "$file"
+        ;;
+    tex)
+        tex_to_pdf "$file"
+        ;;
+    mmd)
+        mermaid_to_pdf "$file" "$black_and_white" "$page_orientation"
+        ;;
+    md)
+        markdown_to_pdf "$file" "$black_and_white" "$page_orientation"
+        ;;
+    *)
+        error "file extension not supported: $extension"
+        ;;
+esac

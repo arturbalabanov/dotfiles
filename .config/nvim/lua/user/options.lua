@@ -35,7 +35,7 @@ opt.numberwidth = 4
 -- text
 opt.wrap = false
 opt.spell = false
-opt.textwidth = 100
+opt.textwidth = 130
 opt.whichwrap:append("<,>,[,],h,l")         -- keys allowed to move to the previous/next line when the beginning/end of line is reached
 opt.iskeyword:append("-")                   -- treats words with `-` as single words
 opt.iskeyword:remove(":")                   -- make sure words seperated by `:` are treated as different words

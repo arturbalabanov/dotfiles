@@ -5,6 +5,18 @@ local M = {}
 
 local unpack = unpack or table.unpack
 
+M.error_fmt = function(msg_fmt, ...)
+    return error(string.format(msg_fmt, ...))
+end
+
+-- TODO: Maybe autodetect the caller function name, see the implementation of opt_require
+M.usage_error = function(func_name)
+    return function(msg_fmt, ...)
+        local msg = string.format(msg_fmt, ...)
+        return M.error_fmt("%s usage error: %s", func_name, msg)
+    end
+end
+
 M.executable_exists = function(executable)
     return vim.fn.executable(executable) == 1
     -- local status_ok, _ = pcall(vim.fn.system, "type " .. executable)
@@ -125,12 +137,6 @@ M.get_zsh_vim_mode = function(buffer)
     end
 
     return M.run_shell_cmd("cat /tmp/zsh_vim_mode_" .. terminal_pid)
-end
-
-M.usage_error = function(func_name)
-    return function(msg)
-        return error(func_name .. " usage error: " .. msg)
-    end
 end
 
 M.keymap = function(mode, input, output, opts)
