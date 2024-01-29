@@ -124,10 +124,10 @@ local BufferNumber = {
     end,
 }
 
-FileNameBlock = utils.insert(common.CurrentTabFileBlock,
+RelativeFilePathBlock = utils.insert(common.CurrentTabFileBlock,
     common.Space,
     utils.insert(common.FileIcon, BufferNumber),
-    common.FileName,
+    common.RelativeFilePath,
     common.FileFlags,
     { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
 )
@@ -292,7 +292,7 @@ return {
     GitInfo,
     Diagnostics,
     common.Lpad(MacroRecording),
-    FileNameBlock,
+    RelativeFilePathBlock,
 
     common.Align,
 

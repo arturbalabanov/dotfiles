@@ -8,5 +8,52 @@
             "${0}"
         ],
         "description": "Comment to seperate different sections of code"
+    },
+    "Code Section": {
+        "prefix": "decorator",
+        "body": [
+            "from functools import wraps",
+            "from typing import Callable, TypeVar, ParamSpec",
+            "",
+            "",
+            "_RT = TypeVar(\"_RT\")",
+            "_PS = ParamSpec(\"_PS\")",
+            "",
+            "",
+            "def ${1}(func: Callable[_PS, _RT]) -> Callable[_PS, _RT]:",
+            "    @wraps(func)",
+            "    def wrapper(*args: _PS.args, **kwargs: _PS.kwargs) -> _RT:",
+            "        ${2}",
+            "        return func(*args, **kwargs)",
+            "",
+            "    return wrapper",
+            "${0}"
+        ],
+        "description": "Typed decorator defintion"
+    },
+    "Code Section": {
+        "prefix": "decorator_with_args",
+        "body": [
+            "from functools import wraps",
+            "from typing import Callable, TypeVar, ParamSpec",
+            "",
+            "",
+            "_RT = TypeVar(\"_RT\")",
+            "_PS = ParamSpec(\"_PS\")",
+            "",
+            "",
+            "def ${1}(${2}) -> Callable[[Callable[_PS, _RT]], Callable[_PS, _RT]]:",
+            "    def decorator(func: Callable[_PS, _RT]) -> Callable[_PS, _RT]:",
+            "        @wraps(func)",
+            "        def wrapper(*args: _PS.args, **kwargs: _PS.kwargs) -> _RT:",
+            "            ${3}",
+            "            return func(*args, **kwargs)",
+            "",
+            "        return wrapper",
+            "",
+            "    return decorator",
+            "${0}"
+        ],
+        "description": "Typed decorator with arguments defintion"
     }
 }

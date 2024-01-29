@@ -35,9 +35,15 @@ cmp.setup({
         documentation = cmp.config.window.bordered(),
     },
     sorting = {
+        priority_weight = 1.0,
         comparators = {
-            cmp.config.compare.kind,
+            cmp.config.compare.locality,
+            cmp.config.compare.recently_used,
+            cmp.config.compare.score, -- score = score + ((#sources - (source_index - 1)) * sorting.priority_weight)
+            cmp.config.compare.offset,
+            cmp.config.compare.order,
             cmp.config.compare.exact,
+            cmp.config.compare.kind,
             cmp.config.compare.sort_text,
         },
     },

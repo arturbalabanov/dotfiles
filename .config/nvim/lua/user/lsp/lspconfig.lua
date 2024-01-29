@@ -59,3 +59,13 @@ lspconfig.ruby_ls.setup({
     on_attach = lsp_common.on_attach,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
+
+-- TODO: Add JSON and YAML LSPs supporting schemas from:
+-- * JSON (and hopefully YAML): https://www.schemastore.org/json/
+-- Maybe use this LSP: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#yamlls
+
+-- TODO: Add a TOML LSP supporting schemas from different sources (if schemas are a thing for TOML files)
+-- e.g. https://taplo.tamasfe.dev/cli/usage/language-server.html
+
+-- TODO: Add an LSP for Dockerfiles
+-- e.g. https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#dockerls

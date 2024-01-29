@@ -1,0 +1,27 @@
+#!/bin/bash
+
+TIMEOUT=3
+
+SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
+source "$SCRIPTS_DIR/common.sh"
+
+if [[ "$#" -eq 0 ]]; then
+    error \
+        "Usage: $(cmd_name) <lua-code> [file] [nvim-args...]" \
+        "Example: $(cmd_name) \"vim.api.nvim_get_current_buf()\""
+fi
+
+lua_code=$1
+filepath=$2
+shift
+shift
+nvim_args=$*
+
+lua_cmd=$(printf ':lua print(vim.inspect(%s))' "$lua_code")
+
+nvim_cmd=$(printf 'nvim --headless -c "%s" -c "q" "%s" %s 2>&1' "$lua_cmd" "$filepath" "$nvim_args")
+
+output=$(eval timeout "$TIMEOUT" "$nvim_cmd")
+
+# remove surrounding single or double quotes if they are present
+echo "$output" | sed -e "s/^\([\'\"]\)\(.*\)\1$/\2/"

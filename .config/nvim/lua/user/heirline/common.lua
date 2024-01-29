@@ -55,26 +55,33 @@ M.FileIcon = {
 
 M.FileName = {
     provider = function(self)
-        -- ~: uses ~ instead of the user's full home dir path
-        -- :. makes the path relative to the CWD
+        -- escape `%` characters in filenames (e.g. caused by jinja templates in the filename)
+        return self.filename:gsub("%%", "%%%%")
+    end,
+}
 
-        local filename = vim.fn.fnamemodify(self.filename, ":~:.")
-
-        if filename == "" then
+M.RelativeFilePath = {
+    provider = function(self)
+        if self.filepath == "" then
             return "[No Name]"
         end
 
-        -- escape `%` characters in filenames (e.g. caused by jinja templates in the filename)
-        filename = filename:gsub("%%", "%%%%")
+        -- ~: uses ~ instead of the user's full home dir path
+        -- :. makes the path relative to the CWD
 
-        -- now, if the filename would occupy more than 1/4th of the available
+        local relative_filepath = vim.fn.fnamemodify(self.filepath, ":~:.")
+
+        -- escape `%` characters in filenames (e.g. caused by jinja templates in the filename)
+        relative_filepath = relative_filepath:gsub("%%", "%%%%")
+
+        -- now, if the filepath would occupy more than 1/4th of the available
         -- space, we trim the file path to its initials
         -- See Flexible Components section below for dynamic truncation
-        if not conditions.width_percent_below(#filename, 0.25) then
-            filename = vim.fn.pathshorten(filename)
+        if not conditions.width_percent_below(#relative_filepath, 0.25) then
+            relative_filepath = vim.fn.pathshorten(relative_filepath)
         end
 
-        return filename
+        return relative_filepath
     end,
 }
 

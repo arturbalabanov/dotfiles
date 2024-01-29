@@ -1,0 +1,11 @@
+#!/bin/bash
+
+query="$*"
+zsh_cmd="source ~/.zprofile && source ~/.zshrc && eval $query"
+
+/Applications/kitty.app/Contents/MacOS/kitty \
+    -o "macos_quit_when_last_window_closed=yes" \
+    --start-as "normal" \
+    --title "$query" \
+    --hold \
+    /bin/zsh -c "$zsh_cmd"

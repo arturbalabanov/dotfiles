@@ -1,32 +1,40 @@
-local ft_options = {
+local ft_settings = require('user.my_plugins.ft_settings')
+
+-- Note on foldmethod: there is an autocmd in treesitter.lua that sets foldmethod to 'expr' for
+-- on BufEnter, BufAdd, BufNew, BufNewFile, BufWinEnter, so I special cased 'marker' there to ignore
+-- it as a quick workarround, if setting other foldmethods in filetype.lua, this needs to be updated
+-- Also see https://vi.stackexchange.com/a/36593 for the autocmd order, seems the treesitter augroup
+-- needs to be updated anyway due to the autocmd order
+
+ft_settings.setup({
     zsh = {
-        foldmethod = 'marker',
-    }
-}
-
--- NOTE: Replaced by guess_indent
---
--- local ft_indentation = {
---     lua = 4,
---     terraform = 2,
---     yaml = 2,
--- }
---
--- for filetype, indent_size in pairs(ft_indentation) do
---     ft_options[filetype] = ft_options[filetype] or {}
---     ft_options[filetype].tabstop = indent_size
---     ft_options[filetype].shiftwidth = indent_size
---     ft_options[filetype].softtabstop = indent_size
--- end
-
-for filetype, options in pairs(ft_options) do
-    vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup('UserFileTypeSpecificOptions', { clear = false }),
-        pattern = filetype,
-        callback = function()
-            for option, value in pairs(options) do
-                vim.opt_local[option] = value
-            end
-        end
-    })
-end
+        win_opts = {
+            foldmethod = 'marker',
+        },
+    },
+    jinja2 = {
+        buf_opts = {
+            commentstring = '{# %s #}',
+        },
+        buf_vars = {
+            minisurround_config = {
+                custom_surroundings = {
+                    v = {
+                        output = { left = '{{ ', right = ' }}' },
+                    },
+                    e = {
+                        output = { left = '{% ', right = ' %}' },
+                    },
+                },
+            },
+        }
+    },
+    fountain = {
+        win_opts = {
+            colorcolumn = "36"
+        },
+        buf_opts = {
+            textwidth = 36
+        },
+    },
+})
