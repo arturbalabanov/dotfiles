@@ -48,6 +48,10 @@ local function reload_nvim_config()
 end
 
 local function reload_tmux_config()
+    if vim.env.TMUX == nil then
+        return
+    end
+
     my_utils.run_shell_cmd("tmux source-file ~/.tmux.conf")
 end
 

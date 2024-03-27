@@ -77,5 +77,8 @@ my_utils.ikeymap("<C-u>", "<C-o>gUiw")
 
 my_utils.nkeymap("<C-e>", vim.cmd.Inspect)
 
+-- Move a window to a new tab
+my_utils.nkeymap("<C-t>", "<C-w>T")
+
 -- Select last pasted text with gV
 my_utils.nkeymap("gV", "`[V`]")

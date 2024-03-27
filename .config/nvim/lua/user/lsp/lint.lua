@@ -37,6 +37,9 @@ make_py_venv_linter("yamllint", { fallback_to_global = true })
 --       * inject
 --       * vale
 
+-- ref:
+-- https://github.com/mfussenegger/nvim-lint/tree/master/lua/lint/linters
+
 lint.linters_by_ft = {
     python = { "ruff", "flake8", "mypy" },
     yaml = { "yamllint" },
@@ -44,6 +47,7 @@ lint.linters_by_ft = {
     sh = { "shellcheck" },
     bash = { "shellcheck" },
     zsh = { "shellcheck" },
+    proto = { "buf_lint" },
 }
 
 vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" }, {

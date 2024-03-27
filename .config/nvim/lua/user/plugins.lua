@@ -236,6 +236,8 @@ return packer.startup(function(use)
     use "nmac427/guess-indent.nvim"
     use "beauwilliams/focus.nvim"
     use "levouh/tint.nvim"
+    use "Pocco81/true-zen.nvim"
+
     use {
         'saifulapm/chartoggle.nvim',
         config = function()

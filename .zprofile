@@ -1,3 +1,11 @@
+# Don't load if it's been already loaded (e.g. tmuxp loads this for every tmux pane it seems)
+
+if [[ $ZPROFILE_LOADED ]]; then
+    return
+fi
+
+export ZPROFILE_LOADED=1
+
 # Setup PATH and OS-specific setup {{{
 # NOTE: THE ORDER IN THIS SECTION MATTERS!!!
 
@@ -75,4 +83,4 @@ fi
 #     fi
 # fi
 
-export PATH="/Users/artur/.asdf/shims:/opt/homebrew/opt/asdf/libexec/bin:/Users/artur/.pyenv/shims:/Users/artur/.pyenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/Applications/Wireshark.app/Contents/MacOS:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/artur/.pyenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Applications/kitty.app/Contents/MacOS:/Users/artur/.local/bin:/Users/artur/node_modules/.bin:/Users/artur/go/bin:/Users/artur/.local/bin:/Users/artur/node_modules/.bin:/Users/artur/go/bin:/Users/artur/.vector/bin"
+# export PATH="/Users/artur/.asdf/shims:/opt/homebrew/opt/asdf/libexec/bin:/Users/artur/.pyenv/shims:/Users/artur/.pyenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/Applications/Wireshark.app/Contents/MacOS:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/artur/.pyenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Applications/kitty.app/Contents/MacOS:/Users/artur/.local/bin:/Users/artur/node_modules/.bin:/Users/artur/go/bin:/Users/artur/.local/bin:/Users/artur/node_modules/.bin:/Users/artur/go/bin:/Users/artur/.vector/bin"
