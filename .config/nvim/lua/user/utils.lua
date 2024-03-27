@@ -393,6 +393,16 @@ function M.markdown_notify(title, msg_lines, level, opts)
     vim.notify(message, level, opts)
 end
 
+-- TODO: Extract into submodule
+M.kitty = {}
+M.kitty.send_cmd = function(cmd, ...)
+    local args = { ... }
+    local kitty_listen_socket = vim.fn.expand("$KITTY_LISTEN_ON")
+    local kitty_cmd = string.format("kitty @ --to %s %s -- %s", kitty_listen_socket, cmd, table.concat(args, " "))
+
+    M.run_shell_cmd(kitty_cmd)
+end
+
 M.md = {}
 M.markdown = M.md
 

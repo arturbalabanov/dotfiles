@@ -60,6 +60,11 @@ lspconfig.ruby_ls.setup({
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
 
+lspconfig.bufls.setup({
+    on_attach = lsp_common.on_attach,
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+})
+
 -- TODO: Add JSON and YAML LSPs supporting schemas from:
 -- * JSON (and hopefully YAML): https://www.schemastore.org/json/
 -- Maybe use this LSP: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#yamlls

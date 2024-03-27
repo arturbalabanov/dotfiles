@@ -14,7 +14,7 @@ noice.setup({
         opts = {},              -- global options for the cmdline. See section on views
         ---@type table<string, CmdlineFormat>
         format = {
-            -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
+            -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.search
             -- view: (default is cmdline view)
             -- opts: any options passed to the view
             -- icon_hl_group: optional hl_group for the icon

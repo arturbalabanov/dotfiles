@@ -1,0 +1,27 @@
+#!/bin/bash
+
+SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
+source "$SCRIPTS_DIR/common.sh"
+
+dependancy "gh"
+dependancy "jq"
+
+if [[ $# -gt 1 ]]; then
+	error "Invalid number of arguments: expected 0 (HEAD) or 1 (commit hash), got $#"
+fi
+
+commit_hash=$(git log -1 "$@" --pretty=format:%H 2>/dev/null)
+
+if [[ -z "$commit_hash" ]]; then
+	error "git reference not found: '$1'"
+fi
+
+pr_urls=$(gh pr list --search "$commit_hash" --state all --json url --jq '.[].url')
+
+if [[ -z "$pr_urls" ]]; then
+	error "No PR found for commit '$commit_hash'"
+fi
+
+for url in $pr_urls; do
+    echo "$url"
+done
