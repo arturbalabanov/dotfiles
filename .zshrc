@@ -45,7 +45,12 @@ if _has_brew; then
     FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
 
-plugins=(zsh-syntax-highlighting vi-mode zle-vi-visual pdm)
+plugins=(zsh-syntax-highlighting vi-mode zle-vi-visual)
+
+if _exists pdm; then
+    plugins+=(pdm)
+fi
+
 source $ZSH/oh-my-zsh.sh
 # }}}
 # Colors and Text Formatting {{{
