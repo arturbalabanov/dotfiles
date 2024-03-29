@@ -49,7 +49,7 @@ return packer.startup(function(use)
         requires = {
             'nvim-tree/nvim-web-devicons',
         },
-        tag = 'nightly'
+        tag = 'nvim-tree-v1.2.0'
     }
 
     use { 'stevearc/dressing.nvim' }
