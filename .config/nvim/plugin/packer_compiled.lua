@@ -49,8 +49,8 @@ local function save_profiles(threshold)
 end
 
 time([[Luarocks path setup]], true)
-local package_path_str = "/Users/artur/.cache/nvim/packer_hererocks/2.1.1696795921/share/lua/5.1/?.lua;/Users/artur/.cache/nvim/packer_hererocks/2.1.1696795921/share/lua/5.1/?/init.lua;/Users/artur/.cache/nvim/packer_hererocks/2.1.1696795921/lib/luarocks/rocks-5.1/?.lua;/Users/artur/.cache/nvim/packer_hererocks/2.1.1696795921/lib/luarocks/rocks-5.1/?/init.lua"
-local install_cpath_pattern = "/Users/artur/.cache/nvim/packer_hererocks/2.1.1696795921/lib/lua/5.1/?.so"
+local package_path_str = "/Users/artur/.cache/nvim/packer_hererocks/2.1.1710088188/share/lua/5.1/?.lua;/Users/artur/.cache/nvim/packer_hererocks/2.1.1710088188/share/lua/5.1/?/init.lua;/Users/artur/.cache/nvim/packer_hererocks/2.1.1710088188/lib/luarocks/rocks-5.1/?.lua;/Users/artur/.cache/nvim/packer_hererocks/2.1.1710088188/lib/luarocks/rocks-5.1/?/init.lua"
+local install_cpath_pattern = "/Users/artur/.cache/nvim/packer_hererocks/2.1.1710088188/lib/lua/5.1/?.so"
 if not string.find(package.path, package_path_str, 1, true) then
   package.path = package.path .. ';' .. package_path_str
 end
@@ -100,7 +100,7 @@ _G.packer_plugins = {
     url = "https://github.com/pearofducks/ansible-vim"
   },
   ["chartoggle.nvim"] = {
-    config = { "\27LJ\2\n]\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\2B\0\2\1K\0\1\0\tkeys\1\3\0\0\6,\6;\1\0\1\vleader\6,\nsetup\15chartoggle\frequire\0" },
+    config = { "\27LJ\2\nc\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\2B\0\2\1K\0\1\0\tkeys\1\3\0\0\6,\6;\1\0\2\vleader\6,\tkeys\0\nsetup\15chartoggle\frequire\0" },
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/chartoggle.nvim",
     url = "https://github.com/saifulapm/chartoggle.nvim"
@@ -152,7 +152,7 @@ _G.packer_plugins = {
   ["definition-or-references.nvim"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/definition-or-references.nvim",
-    url = "/Users/artur/dev/definition-or-references.nvim"
+    url = "https://github.com//Users/artur/dev/definition-or-references.nvim"
   },
   ["diffview.nvim"] = {
     loaded = true,
@@ -403,6 +403,11 @@ _G.packer_plugins = {
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/trouble.nvim",
     url = "https://github.com/folke/trouble.nvim"
   },
+  ["true-zen.nvim"] = {
+    loaded = true,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/true-zen.nvim",
+    url = "https://github.com/Pocco81/true-zen.nvim"
+  },
   ["vim-fugitive"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/vim-fugitive",
@@ -421,21 +426,21 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
--- Config for: chartoggle.nvim
-time([[Config for chartoggle.nvim]], true)
-try_loadstring("\27LJ\2\n]\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\2B\0\2\1K\0\1\0\tkeys\1\3\0\0\6,\6;\1\0\1\vleader\6,\nsetup\15chartoggle\frequire\0", "config", "chartoggle.nvim")
-time([[Config for chartoggle.nvim]], false)
 -- Config for: nvim-notify
 time([[Config for nvim-notify]], true)
 try_loadstring("\27LJ\2\n2\0\0\4\0\3\0\0066\0\0\0006\1\2\0'\3\1\0B\1\2\2=\1\1\0K\0\1\0\frequire\vnotify\bvim\0", "config", "nvim-notify")
 time([[Config for nvim-notify]], false)
+-- Config for: chartoggle.nvim
+time([[Config for chartoggle.nvim]], true)
+try_loadstring("\27LJ\2\nc\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\2B\0\2\1K\0\1\0\tkeys\1\3\0\0\6,\6;\1\0\2\vleader\6,\tkeys\0\nsetup\15chartoggle\frequire\0", "config", "chartoggle.nvim")
+time([[Config for chartoggle.nvim]], false)
 -- Load plugins in order defined by `after`
 time([[Sequenced loading]], true)
-vim.cmd [[ packadd nvim-treesitter ]]
-vim.cmd [[ packadd indent-blankline.nvim ]]
-vim.cmd [[ packadd nvim-treesitter-textobjects ]]
 vim.cmd [[ packadd nvim-lspconfig ]]
 vim.cmd [[ packadd lspsaga.nvim ]]
+vim.cmd [[ packadd nvim-treesitter ]]
+vim.cmd [[ packadd nvim-treesitter-textobjects ]]
+vim.cmd [[ packadd indent-blankline.nvim ]]
 time([[Sequenced loading]], false)
 
 -- Command lazy-loads
