@@ -1,4 +1,10 @@
-local opt_require = require("user.utils").opt_require
+local status_ok, my_utils = pcall(require, "user.utils")
+
+if status_ok then
+    opt_require = my_utils.opt_require
+else
+    opt_require = require
+end
 
 if vim.g.vscode then
     opt_require "user.vscode"
