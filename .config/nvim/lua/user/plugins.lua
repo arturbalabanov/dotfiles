@@ -45,29 +45,23 @@ return packer.startup(function(use)
 
     use "tpope/vim-fugitive"
     use {
+        'nvim-tree/nvim-web-devicons',
+        tag = 'nerd-v2-compat',
+    }
+    use {
         'nvim-tree/nvim-tree.lua',
-        requires = {
-            'nvim-tree/nvim-web-devicons',
-        },
         tag = 'nvim-tree-v1.2.0'
     }
 
-    use { 'stevearc/dressing.nvim' }
+    use 'stevearc/dressing.nvim'
 
     use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.4',
-        requires = {
-            'nvim-lua/plenary.nvim',
-            'nvim-tree/nvim-web-devicons'
-        }
+        'nvim-telescope/telescope.nvim', tag = '0.1.8',
     }
+
+    use "pschmitt/telescope-yadm.nvim"
 
     use {
-        "pschmitt/telescope-yadm.nvim",
-        requires = "nvim-telescope/telescope.nvim",
-    }
-
-    use({
         "aaronhallaert/advanced-git-search.nvim",
         requires = {
             "nvim-telescope/telescope.nvim",
@@ -77,21 +71,9 @@ return packer.startup(function(use)
             -- (fugitive is still needed to open in browser)
             -- "sindrets/diffview.nvim",
         },
-    })
+    }
     use {
         "ghassan0/telescope-glyph.nvim",
-        requires = {
-            'nvim-tree/nvim-web-devicons',
-            "nvim-telescope/telescope.nvim",
-        }
-    }
-
-    use {
-        "kevinhwang91/nvim-bqf",
-        requires = {
-            "nvim-treesitter/nvim-treesitter",
-        },
-        ft = 'qf',
     }
 
     use {
@@ -102,23 +84,23 @@ return packer.startup(function(use)
         end,
     }
 
+    use {
+        "kevinhwang91/nvim-bqf",
+        ft = 'qf',
+    }
+
     use 'nvim-treesitter/playground'
 
-    use {
-        'Wansmer/treesj',
-        requires = { 'nvim-treesitter' },
-    }
+    use 'Wansmer/treesj'
 
     use {
         "nvim-treesitter/nvim-treesitter-textobjects",
         after = "nvim-treesitter",
-        requires = "nvim-treesitter/nvim-treesitter",
     }
 
     use {
         "lukas-reineke/indent-blankline.nvim",
         after = "nvim-treesitter",
-        requires = "nvim-treesitter/nvim-treesitter",
         tag = "v2.20.8",
     }
 
@@ -131,56 +113,37 @@ return packer.startup(function(use)
     use 'hrsh7th/cmp-path'
     use 'hrsh7th/cmp-cmdline'
 
-    use({
+    use {
         "L3MON4D3/LuaSnip",
         -- follow latest release.
         tag = "v1.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
         -- install jsregexp (optional!:).
         run = "make install_jsregexp",
-    })
+    }
     use 'saadparwaiz1/cmp_luasnip'
 
     use "gbprod/substitute.nvim"
 
     use 'ray-x/lsp_signature.nvim'
-    -- use 'KostkaBrukowa/definition-or-references.nvim'
-    use "~/dev/definition-or-references.nvim"
+    -- use "~/dev/definition-or-references.nvim"
+    use 'KostkaBrukowa/definition-or-references.nvim'
 
-    use {
-        "folke/trouble.nvim",
-        requires = "nvim-tree/nvim-web-devicons",
-    }
-    use {
-        "folke/todo-comments.nvim",
-        requires = { "nvim-lua/plenary.nvim" },
-    }
+    use "folke/trouble.nvim"
+    use "folke/todo-comments.nvim"
 
     use "darfink/vim-plist"
     use {
         'nvimdev/lspsaga.nvim',
         after = 'nvim-lspconfig',
-        requires = {
-            'nvim-treesitter/nvim-treesitter',
-            'nvim-tree/nvim-web-devicons',
-        },
     }
     use "rmagatti/goto-preview"
 
-    use {
-        "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
-        event = "InsertEnter",
-        config = function() require("user.copilot") end
-    }
-
-    use {
-        "stevearc/overseer.nvim",
-        requires = {
-            "stevearc/dressing.nvim",
-            "nvim-telescope/telescope.nvim",
-            "rcarriga/nvim-notify",
-        }
-    }
+    -- use {
+    --     "zbirenbaum/copilot.lua",
+    --     cmd = "Copilot",
+    --     event = "InsertEnter",
+    --     config = function() require("user.copilot") end
+    -- }
 
     use {
         "nvim-neotest/neotest",
@@ -211,6 +174,8 @@ return packer.startup(function(use)
         config = function() vim.notify = require("notify") end,
     }
 
+    use "stevearc/overseer.nvim"
+
     use {
         "folke/noice.nvim",
         requires = {
@@ -222,15 +187,21 @@ return packer.startup(function(use)
 
     use "rebelot/heirline.nvim"
     use "lewis6991/gitsigns.nvim"
+    use {
+        "seanbreckenridge/gitsigns-yadm.nvim",
+        requires = {
+            "lewis6991/gitsigns.nvim",
+        },
+    }
     use "ahmedkhalf/project.nvim"
-    use({
+    use {
         "jackMort/ChatGPT.nvim",
         requires = {
             "MunifTanjim/nui.nvim",
             "nvim-lua/plenary.nvim",
             "nvim-telescope/telescope.nvim"
         }
-    })
+    }
     use "declancm/cinnamon.nvim"
     use "sindrets/diffview.nvim"
     use "nmac427/guess-indent.nvim"

@@ -6,4 +6,7 @@ export GOPATH=$HOME/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
 
-alias pac="pikaur"
+function arti {
+    cd ~/dev/arti
+    pdm run python -m arti $@
+}

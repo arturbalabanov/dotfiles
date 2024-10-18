@@ -44,7 +44,7 @@ gitsigns.setup {
         row = 0,
         col = 1
     },
-    yadm                            = {
-        enable = true
-    },
+    _on_attach_pre                  = function(_, callback)
+        require("gitsigns-yadm").yadm_signs(callback)
+    end,
 }
