@@ -4,6 +4,8 @@ if not status_ok then
 end
 
 local my_utils = require("user.utils")
+local api = require "nvim-tree.api"
+
 
 nvim_tree.setup({
     sync_root_with_cwd = true,
@@ -12,65 +14,82 @@ nvim_tree.setup({
         enable = true,
         update_root = true,
     },
+    on_attach = function(bufnr)
+        local function nkeymap(input, action, desc)
+            my_utils.nkeymap(input, action, {
+                desc = "nvim-tree: " .. desc,
+                buffer = bufnr,
+                noremap = true,
+                silent = true,
+                nowait = true,
+            }
+            )
+        end
+
+        -- addapted from: https://github.com/nvim-tree/nvim-tree.lua/blob/master/lua/nvim-tree/keymap.lua
+        nkeymap("<C-]>", api.tree.change_root_to_node, "CD")
+        nkeymap("<C-e>", api.node.open.replace_tree_buffer, "Open: In Place")
+        nkeymap("<C-k>", api.node.show_info_popup, "Info")
+        nkeymap("<C-r>", api.fs.rename_sub, "Rename: Omit Filename")
+        nkeymap("<C-t>", api.node.open.tab, "Open: New Tab")
+        nkeymap("t", api.node.open.tab, "Open: New Tab")
+        nkeymap("<C-v>", api.node.open.vertical, "Open: Vertical Split")
+        nkeymap("<C-x>", api.node.open.horizontal, "Open: Horizontal Split")
+        nkeymap("<BS>", api.node.navigate.parent_close, "Close Directory")
+        nkeymap("<CR>", api.node.open.edit, "Open")
+        nkeymap("<Tab>", api.node.open.preview, "Open Preview")
+        nkeymap(">", api.node.navigate.sibling.next, "Next Sibling")
+        nkeymap("<", api.node.navigate.sibling.prev, "Previous Sibling")
+        nkeymap(".", api.node.run.cmd, "Run Command")
+        nkeymap("-", api.tree.change_root_to_parent, "Up")
+        nkeymap("a", api.fs.create, "Create File Or Directory")
+        nkeymap("bd", api.marks.bulk.delete, "Delete Bookmarked")
+        nkeymap("bt", api.marks.bulk.trash, "Trash Bookmarked")
+        nkeymap("bmv", api.marks.bulk.move, "Move Bookmarked")
+        nkeymap("B", api.tree.toggle_no_buffer_filter, "Toggle Filter: No Buffer")
+        nkeymap("c", api.fs.copy.node, "Copy")
+        nkeymap("C", api.tree.toggle_git_clean_filter, "Toggle Filter: Git Clean")
+        nkeymap("[c", api.node.navigate.git.prev, "Prev Git")
+        nkeymap("]c", api.node.navigate.git.next, "Next Git")
+        nkeymap("d", api.fs.remove, "Delete")
+        nkeymap("D", api.fs.trash, "Trash")
+        nkeymap("E", api.tree.expand_all, "Expand All")
+        nkeymap("e", api.fs.rename_basename, "Rename: Basename")
+        nkeymap("]e", api.node.navigate.diagnostics.next, "Next Diagnostic")
+        nkeymap("[e", api.node.navigate.diagnostics.prev, "Prev Diagnostic")
+        nkeymap("F", api.live_filter.clear, "Live Filter: Clear")
+        nkeymap("f", api.live_filter.start, "Live Filter: Start")
+        nkeymap("g?", api.tree.toggle_help, "Help")
+        nkeymap("gy", api.fs.copy.absolute_path, "Copy Absolute Path")
+        nkeymap("ge", api.fs.copy.basename, "Copy Basename")
+        nkeymap("H", api.tree.toggle_hidden_filter, "Toggle Filter: Dotfiles")
+        nkeymap("I", api.tree.toggle_gitignore_filter, "Toggle Filter: Git Ignore")
+        -- nkeymap("J",              api.node.navigate.sibling.last,     "Last Sibling")
+        -- nkeymap("K",              api.node.navigate.sibling.first,    "First Sibling")
+        nkeymap("L", api.node.open.toggle_group_empty, "Toggle Group Empty")
+        nkeymap("M", api.tree.toggle_no_bookmark_filter, "Toggle Filter: No Bookmark")
+        nkeymap("m", api.marks.toggle, "Toggle Bookmark")
+        nkeymap("o", api.node.open.edit, "Open")
+        nkeymap("O", api.node.open.no_window_picker, "Open: No Window Picker")
+        nkeymap("p", api.fs.paste, "Paste")
+        nkeymap("P", api.node.navigate.parent, "Parent Directory")
+        -- nkeymap("q",              api.tree.close,                     "Close")
+        nkeymap("r", api.fs.rename, "Rename")
+        nkeymap("R", api.tree.reload, "Refresh")
+        nkeymap("s", api.node.run.system, "Run System")
+        nkeymap("S", api.tree.search_node, "Search")
+        nkeymap("u", api.fs.rename_full, "Rename: Full Path")
+        nkeymap("m", api.fs.rename_full, "Rename: Full Path")
+        nkeymap("U", api.tree.toggle_custom_filter, "Toggle Filter: Hidden")
+        nkeymap("W", api.tree.collapse_all, "Collapse")
+        nkeymap("x", api.fs.cut, "Cut")
+        nkeymap("y", api.fs.copy.filename, "Copy Name")
+        nkeymap("Y", api.fs.copy.relative_path, "Copy Relative Path")
+        nkeymap("<2-LeftMouse>", api.node.open.edit, "Open")
+        nkeymap("<2-RightMouse>", api.tree.change_root_to_node, "CD")
+    end,
     view = {
         signcolumn = "auto",
-        mappings = {
-            list = {
-                { key = "t",     action = "tabnew" },
-                { key = "J",     action = "" },
-                { key = "K",     action = "" },
-                { key = "m",     action = "full_rename" },
-                { key = "q",     action = "" },
-                { key = "<S-R>", action = "refresh" },
-                -- { key = { "<CR>", "o", "<2-LeftMouse>" }, action = "edit" },
-                -- { key = "<C-e>",                          action = "edit_in_place" },
-                -- { key = "O",                              action = "edit_no_picker" },
-                -- { key = { "<C-]>", "<2-RightMouse>" },    action = "cd" },
-                -- { key = "<C-v>",                          action = "vsplit" },
-                -- { key = "<C-x>",                          action = "split" },
-                -- { key = "<C-t>",                          action = "tabnew" },
-                -- { key = "<",                              action = "prev_sibling" },
-                -- { key = ">",                              action = "next_sibling" },
-                -- { key = "P",                              action = "parent_node" },
-                -- { key = "<BS>",                           action = "close_node" },
-                -- { key = "<Tab>",                          action = "preview" },
-                -- { key = "K",                              action = "first_sibling" },
-                -- { key = "J",                              action = "last_sibling" },
-                -- { key = "C",                              action = "toggle_git_clean" },
-                -- { key = "I",                              action = "toggle_git_ignored" },
-                -- { key = "H",                              action = "toggle_dotfiles" },
-                -- { key = "B",                              action = "toggle_no_buffer" },
-                -- { key = "U",                              action = "toggle_custom" },
-                -- { key = "a",                              action = "create" },
-                -- { key = "d",                              action = "remove" },
-                -- { key = "D",                              action = "trash" },
-                -- { key = "r",                              action = "rename" },
-                -- { key = "<C-r>",                          action = "full_rename" },
-                -- { key = "e",                              action = "rename_basename" },
-                -- { key = "x",                              action = "cut" },
-                -- { key = "c",                              action = "copy" },
-                -- { key = "p",                              action = "paste" },
-                -- { key = "y",                              action = "copy_name" },
-                -- { key = "Y",                              action = "copy_path" },
-                -- { key = "gy",                             action = "copy_absolute_path" },
-                -- { key = "[e",                             action = "prev_diag_item" },
-                -- { key = "[c",                             action = "prev_git_item" },
-                -- { key = "]e",                             action = "next_diag_item" },
-                -- { key = "]c",                             action = "next_git_item" },
-                -- { key = "-",                              action = "dir_up" },
-                -- { key = "s",                              action = "system_open" },
-                -- { key = "f",                              action = "live_filter" },
-                -- { key = "F",                              action = "clear_live_filter" },
-                -- { key = "W",                              action = "collapse_all" },
-                -- { key = "E",                              action = "expand_all" },
-                -- { key = "S",                              action = "search_node" },
-                -- { key = ".",                              action = "run_file_command" },
-                -- { key = "<C-k>",                          action = "toggle_file_info" },
-                -- { key = "g?",                             action = "toggle_help" },
-                -- { key = "m",                              action = "toggle_mark" },
-                -- { key = "bmv",                            action = "bulk_move" },
-            },
-        },
     }
 })
 

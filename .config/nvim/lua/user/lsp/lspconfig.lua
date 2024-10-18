@@ -55,7 +55,7 @@ lspconfig.ansiblels.setup({
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
 
-lspconfig.ruby_ls.setup({
+lspconfig.ruby_lsp.setup({
     on_attach = lsp_common.on_attach,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
@@ -64,6 +64,22 @@ lspconfig.bufls.setup({
     on_attach = lsp_common.on_attach,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
+
+lspconfig.rust_analyzer.setup({
+    on_attach = lsp_common.on_attach,
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+    settings = {
+        ['rust-analyzer'] = {
+            check = {
+                command = "clippy",
+            },
+            diagnostics = {
+                enable = true,
+            }
+        }
+    }
+})
+
 
 -- TODO: Add JSON and YAML LSPs supporting schemas from:
 -- * JSON (and hopefully YAML): https://www.schemastore.org/json/

@@ -6,7 +6,7 @@ end
 local actions = require("telescope.actions")
 local actions_layout = require("telescope.actions.layout")
 local telescope_builtin = require('telescope.builtin')
-local trouble = require("trouble.providers.telescope")
+local trouble = require("trouble.sources.telescope")
 
 local my_utils = require("user.utils")
 
@@ -55,7 +55,7 @@ telescope.setup {
                 ["<C-p>"] = actions.preview_scrolling_up,
                 ["s"] = actions.file_split,
                 ["v"] = actions.file_vsplit,
-                ["<C-t>"] = trouble.open_with_trouble,
+                ["<C-t>"] = trouble.open,
             },
         }
     },

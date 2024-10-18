@@ -27,6 +27,20 @@ function _error {
 function _in_git_repo {
     git rev-parse --is-inside-work-tree 2>&1 > /dev/null
 }
+
+function _register_python_argcomplete {
+    if [[ $# -ne 1 ]]; then
+        _error "_register_python_argcomplete: exactly one argument is required"
+    fi
+
+    binary="$1"
+
+    if _exists "$binary"; then
+        if _exists register-python-argcomplete; then
+            eval "$(register-python-argcomplete $binary)"
+        fi
+    fi
+}
 # }}}
 # Oh my ZSH {{{
 export ZSH=$HOME/.oh-my-zsh
@@ -46,10 +60,6 @@ if _has_brew; then
 fi
 
 plugins=(zsh-syntax-highlighting vi-mode zle-vi-visual)
-
-if _exists pdm; then
-    plugins+=(pdm)
-fi
 
 source $ZSH/oh-my-zsh.sh
 # }}}
@@ -322,12 +332,28 @@ if _exists zoxide; then
 fi
 
 if _exists pipx; then
-    eval "$(register-python-argcomplete pipx)"
+    if _exists pyenv; then
+        # Use the global pyenv python version for all pipx packages,
+        # so that when the system python updates, the installed packages
+        # are not affected
+        export PIPX_DEFAULT_PYTHON="$(pyenv root)/versions/$(pyenv global)/bin/python"
+    fi
+
+    _register_python_argcomplete pipx
 fi
 
 if _exists terraform; then
     complete -o nospace -C $(where terraform) terraform
 fi
+
+if _exists uv; then
+    eval "$(uv generate-shell-completion zsh)"
+
+    if _exists uvx; then
+        eval "$(uvx --generate-shell-completion zsh)"
+    fi
+fi
+
 
 # make & remake {{{
 

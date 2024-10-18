@@ -44,13 +44,18 @@ local function poetry_get_python_path(project_root)
     return Path:new(venv_path):joinpath('bin', 'python'):expand()
 end
 
+local function uv_get_python_path(project_root)
+    return run_shell_cmd('uv python find', { cwd = project_root })
+end
+
+
 
 M.default_venv_managers = {
     {
-        name = "Pipenv",
-        executable_name = 'pipenv',
-        is_managing_proj_func = file_present_in_proj_checker('Pipfile.lock'),
-        get_python_path_func = pipenv_get_python_path,
+        name = 'uv',
+        executable_name = 'uv',
+        is_managing_proj_func = file_present_in_proj_checker('uv.lock'),
+        get_python_path_func = uv_get_python_path,
     },
     {
         name = "PDM",
@@ -63,6 +68,12 @@ M.default_venv_managers = {
         executable_name = 'poetry',
         is_managing_proj_func = file_present_in_proj_checker('poetry.lock'),
         get_python_path_func = poetry_get_python_path,
+    },
+    {
+        name = "Pipenv",
+        executable_name = 'pipenv',
+        is_managing_proj_func = file_present_in_proj_checker('Pipfile.lock'),
+        get_python_path_func = pipenv_get_python_path,
     },
     -- TODO: Add support for hatch
     -- TODO: Add support for the buit in python venv manager (python -m venv)

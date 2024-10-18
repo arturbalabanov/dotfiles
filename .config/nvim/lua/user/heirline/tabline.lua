@@ -8,6 +8,8 @@ local utils = require("heirline.utils")
 local my_utils = require('user.utils')
 local py_venv = require('user.py_venv')
 
+local treesitter_hl = require("vim.treesitter.highlighter")
+
 local WinSeparator = {
     provider = "│",
     hl = "WinSeparator",
@@ -307,6 +309,22 @@ local TabPages = {
     utils.make_tablist(utils.surround({ " ", " " }, "bg", { TabPageBlock })),
 }
 
+
+local TreeSitterBlock = {
+    init      = function(self)
+        local win = vim.api.nvim_tabpage_list_wins(0)[1]
+        local bufnr = vim.api.nvim_win_get_buf(win)
+        self.is_active = treesitter_hl.active[bufnr] ~= nil
+    end,
+    condition = function(self)
+        return not self.is_active
+    end,
+    provider  = " ",
+    hl        = {
+        fg = "red",
+    }
+}
+
 return {
     TabLineOffset,
     common.Lpad(Overseer),
@@ -314,5 +332,6 @@ return {
     common.Align,
     common.Rpad(utils.insert(common.CurrentTabFileBlock, PyVenvInfo)),
     utils.insert(common.CurrentTabFileBlock, LSPActive),
+    TreeSitterBlock,
     hl = { bg = "bg" }
 }
