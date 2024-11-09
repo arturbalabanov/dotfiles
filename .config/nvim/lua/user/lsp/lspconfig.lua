@@ -60,7 +60,7 @@ lspconfig.ruby_lsp.setup({
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
 
-lspconfig.bufls.setup({
+lspconfig.buf_ls.setup({
     on_attach = lsp_common.on_attach,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })

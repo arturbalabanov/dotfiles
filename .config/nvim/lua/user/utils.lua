@@ -369,6 +369,8 @@ function M.timeout(ms, fn)
 end
 
 function M.markdown_notify(title, msg_lines, level, opts)
+    -- TODO: Utilise render-markdown.nvim
+
     level = level or "info"
     opts = opts or {}
 

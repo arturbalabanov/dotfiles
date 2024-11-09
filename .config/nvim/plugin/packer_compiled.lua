@@ -99,6 +99,12 @@ _G.packer_plugins = {
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/ansible-vim",
     url = "https://github.com/pearofducks/ansible-vim"
   },
+  ["avante.nvim"] = {
+    config = { "\27LJ\2\n7\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\tload\15avante_lib\frequire\0" },
+    loaded = true,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/avante.nvim",
+    url = "https://github.com/yetone/avante.nvim"
+  },
   ["chartoggle.nvim"] = {
     config = { "\27LJ\2\nc\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\2B\0\2\1K\0\1\0\tkeys\1\3\0\0\6,\6;\1\0\2\vleader\6,\tkeys\0\nsetup\15chartoggle\frequire\0" },
     loaded = true,
@@ -163,17 +169,12 @@ _G.packer_plugins = {
   ["gitsigns-yadm.nvim"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/gitsigns-yadm.nvim",
-    url = "https://github.com/seanbreckenridge/gitsigns-yadm.nvim"
+    url = "https://github.com/purarue/gitsigns-yadm.nvim"
   },
   ["gitsigns.nvim"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/gitsigns.nvim",
     url = "https://github.com/lewis6991/gitsigns.nvim"
-  },
-  ["glow.nvim"] = {
-    loaded = true,
-    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/glow.nvim",
-    url = "https://github.com/ellisonleao/glow.nvim"
   },
   ["goto-preview"] = {
     loaded = true,
@@ -339,6 +340,15 @@ _G.packer_plugins = {
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/project.nvim",
     url = "https://github.com/ahmedkhalf/project.nvim"
   },
+  ["render-markdown.nvim"] = {
+    config = { "\27LJ\2\ne\0\0\4\1\5\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0-\3\0\0=\3\4\2B\0\2\1K\0\1\0\1À\15file_types\1\0\1\15file_types\0\nsetup\20render-markdown\frequire\0" },
+    load_after = {},
+    loaded = false,
+    needs_bufread = false,
+    only_cond = false,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/opt/render-markdown.nvim",
+    url = "https://github.com/MeanderingProgrammer/render-markdown.nvim"
+  },
   ["scrollEOF.nvim"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/scrollEOF.nvim",
@@ -430,6 +440,10 @@ time([[Config for nvim-notify]], false)
 time([[Config for chartoggle.nvim]], true)
 try_loadstring("\27LJ\2\nc\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\2B\0\2\1K\0\1\0\tkeys\1\3\0\0\6,\6;\1\0\2\vleader\6,\tkeys\0\nsetup\15chartoggle\frequire\0", "config", "chartoggle.nvim")
 time([[Config for chartoggle.nvim]], false)
+-- Config for: avante.nvim
+time([[Config for avante.nvim]], true)
+try_loadstring("\27LJ\2\n7\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\tload\15avante_lib\frequire\0", "config", "avante.nvim")
+time([[Config for avante.nvim]], false)
 -- Load plugins in order defined by `after`
 time([[Sequenced loading]], true)
 vim.cmd [[ packadd nvim-lspconfig ]]
@@ -442,6 +456,10 @@ vim.cmd [[augroup packer_load_aucmds]]
 vim.cmd [[au!]]
   -- Filetype lazy-loads
 time([[Defining lazy-load filetype autocommands]], true)
+vim.cmd [[au FileType Avante ++once lua require("packer.load")({'render-markdown.nvim'}, { ft = "Avante" }, _G.packer_plugins)]]
+vim.cmd [[au FileType markdown ++once lua require("packer.load")({'render-markdown.nvim'}, { ft = "markdown" }, _G.packer_plugins)]]
+vim.cmd [[au FileType quarto ++once lua require("packer.load")({'render-markdown.nvim'}, { ft = "quarto" }, _G.packer_plugins)]]
+vim.cmd [[au FileType md ++once lua require("packer.load")({'render-markdown.nvim'}, { ft = "md" }, _G.packer_plugins)]]
 vim.cmd [[au FileType qf ++once lua require("packer.load")({'nvim-bqf'}, { ft = "qf" }, _G.packer_plugins)]]
 time([[Defining lazy-load filetype autocommands]], false)
 vim.cmd("augroup END")
