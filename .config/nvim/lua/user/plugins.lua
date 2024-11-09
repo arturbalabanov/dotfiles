@@ -1,4 +1,6 @@
--- Automatically install packer
+-- vim: set foldmethod=marker:
+
+-- Automatically install packer {{{
 local install_path = vim.fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
     PACKER_BOOTSTRAP = vim.fn.system {
@@ -12,12 +14,14 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
     print "Installing packer close and reopen Neovim..."
     vim.cmd [[packadd packer.nvim]]
 end
+-- }}}
 
 local status_ok, packer = pcall(require, "packer")
 if not status_ok then
     return
 end
 
+-- Packer config {{{
 packer.init {
     display = {
         open_fn = function()
@@ -29,7 +33,9 @@ packer.init {
     },
     autoremove = true,       -- Automatically remove unused dependencies
 }
+-- }}}
 
+-- Plugins {{{
 return packer.startup(function(use)
     use "wbthomason/packer.nvim"
     use 'lewis6991/impatient.nvim'
@@ -138,13 +144,6 @@ return packer.startup(function(use)
     }
     use "rmagatti/goto-preview"
 
-    -- use {
-    --     "zbirenbaum/copilot.lua",
-    --     cmd = "Copilot",
-    --     event = "InsertEnter",
-    --     config = function() require("user.copilot") end
-    -- }
-
     use {
         "nvim-neotest/neotest",
         requires = {
@@ -188,12 +187,14 @@ return packer.startup(function(use)
     use "rebelot/heirline.nvim"
     use "lewis6991/gitsigns.nvim"
     use {
-        "seanbreckenridge/gitsigns-yadm.nvim",
+        "purarue/gitsigns-yadm.nvim",
         requires = {
             "lewis6991/gitsigns.nvim",
         },
     }
     use "ahmedkhalf/project.nvim"
+
+    -- AI {{
     use {
         "jackMort/ChatGPT.nvim",
         requires = {
@@ -202,6 +203,35 @@ return packer.startup(function(use)
             "nvim-telescope/telescope.nvim"
         }
     }
+
+    -- TODO: re-enable (and make sure to address the avante.nvim's TODO too)
+    -- use {
+    --     "zbirenbaum/copilot.lua",
+    --     cmd = "Copilot",
+    --     event = "InsertEnter",
+    --     config = function() require("user.copilot") end
+    -- }
+
+    use {
+        "yetone/avante.nvim",
+        requires = {
+            "nvim-treesitter/nvim-treesitter",
+            "stevearc/dressing.nvim",
+            "nvim-lua/plenary.nvim",
+            "MunifTanjim/nui.nvim",
+            "nvim-tree/nvim-web-devicons",
+            -- "zbirenbaum/copilot.lua", -- for providers='copilot'  -- TODO: re-enable
+            -- "HakonHarnes/img-clip.nvim", -- support for image pasting  -- TODO: enable and check the avante.nvim's READNE for setup
+            "MeanderingProgrammer/render-markdown.nvim",
+        },
+        run = "make",
+        config = function()
+            require('avante_lib').load()
+        end,
+    }
+
+    -- }}}
+
     use "declancm/cinnamon.nvim"
     use "sindrets/diffview.nvim"
     use "nmac427/guess-indent.nvim"
@@ -219,7 +249,21 @@ return packer.startup(function(use)
         end
     }
 
-    use "ellisonleao/glow.nvim"
+    -- Markdown {{{
+    local md_file_types = { 'markdown', 'md', 'Avante', 'quarto' }
+    use {
+        'MeanderingProgrammer/render-markdown.nvim',
+        after = { 'nvim-treesitter' },
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true },
+        ft = md_file_types,
+        config = function()
+            require('render-markdown').setup {
+                file_types = md_file_types,
+            }
+        end
+    }
+    -- }}}
+
     use "Aasim-A/scrollEOF.nvim"
 
     use "pearofducks/ansible-vim"
@@ -232,3 +276,4 @@ return packer.startup(function(use)
         require("packer").sync()
     end
 end)
+-- }}}

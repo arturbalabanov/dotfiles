@@ -66,7 +66,6 @@ end
 -- Open a new defintion (or reference, no matter if selected by telescope or not) in a new tab if not in the same file
 local original_handler = vim.lsp.handlers["textDocument/definition"]
 vim.lsp.handlers["textDocument/definition"] = function(err, result, ctx, config)
-    my_utils.simple_notify("HERE")
     if result == nil or vim.tbl_isempty(result) then
         return original_handler(err, result, ctx, config)
     end

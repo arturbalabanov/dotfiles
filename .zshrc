@@ -492,6 +492,8 @@ function venv {
         venv_path=$(poetry env info -p)
     elif [[ -f "Pipfile.lock" ]]; then
         venv_path=$(pipenv --venv)
+    elif [[ -f ".venv/bin/activate" ]]; then
+        venv_path=".venv"
     else
         echo "No pdm.lock, poetry.lock or Pipfile.lock found :("
         return 1

@@ -1,5 +1,6 @@
 local status_ok, my_utils = pcall(require, "user.utils")
 
+local opt_require
 if status_ok then
     opt_require = my_utils.opt_require
 else
@@ -54,12 +55,14 @@ opt_require "user.marks"
 opt_require "user.heirline"
 -- TODO: Re-enable ChatGPT
 -- opt_require "user.chat_gpt"
+-- TODO: Re-enable avante
+-- opt_require "user.avante"
 opt_require "user.diffview"
 opt_require "user.focus"
 opt_require "user.tint"
 opt_require "user.true_zen"
 opt_require "user.noice"
-opt_require "user.glow"
+
 opt_require "user.tmux"
 
 opt_require "user.filetype"
