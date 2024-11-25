@@ -75,7 +75,7 @@ return packer.startup(function(use)
             "tpope/vim-rhubarb",  -- to open commits in browser with fugitive
             -- optional: to replace the diff from fugitive with diffview.nvim
             -- (fugitive is still needed to open in browser)
-            -- "sindrets/diffview.nvim",
+            "sindrets/diffview.nvim",
         },
     }
     use {

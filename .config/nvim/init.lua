@@ -55,8 +55,7 @@ opt_require "user.marks"
 opt_require "user.heirline"
 -- TODO: Re-enable ChatGPT
 -- opt_require "user.chat_gpt"
--- TODO: Re-enable avante
--- opt_require "user.avante"
+opt_require "user.avante"
 opt_require "user.diffview"
 opt_require "user.focus"
 opt_require "user.tint"
