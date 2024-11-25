@@ -33,13 +33,17 @@ function _register_python_argcomplete {
         _error "_register_python_argcomplete: exactly one argument is required"
     fi
 
+    if ! _exists register-python-argcomplete; then
+        _error "_register_python_argcomplete: register-python-argcomplete not found (install 'argcomplete' via pip / uvx / pipx)"
+    fi
+
     binary="$1"
 
-    if _exists "$binary"; then
-        if _exists register-python-argcomplete; then
-            eval "$(register-python-argcomplete $binary)"
-        fi
+    if ! _exists "$binary"; then
+        _error "_register_python_argcomplete: '$binary' not found"
     fi
+
+    eval "$(register-python-argcomplete $binary)"
 }
 # }}}
 # Oh my ZSH {{{

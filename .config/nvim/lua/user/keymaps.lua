@@ -22,14 +22,18 @@ my_utils.vkeymap("L", "g_")
 -- Toggle folds with <Tab>
 my_utils.nkeymap("<Tab>", "za")
 
--- Toggle quickfix window with <F1>
-my_utils.nkeymap("<F1>", function()
-    if vim.api.nvim_buf_get_option(0, "filetype") == "qf" then
-        vim.cmd.cclose()
-    else
-        vim.cmd.copen()
-    end
-end)
+-- Redo with Shift + U (opposite of undo - u), frees up C-r for something else
+-- This just makes more sense - inspired by Helix :)
+my_utils.nkeymap("U", vim.cmd.redo)
+
+-- -- Toggle quickfix window with <F1>
+-- my_utils.nkeymap("<F1>", function()
+--     if vim.api.nvim_buf_get_option(0, "filetype") == "qf" then
+--         vim.cmd.cclose()
+--     else
+--         vim.cmd.copen()
+--     end
+-- end)
 
 -- Toggle nvim-tree (or diffview if in diff mode) with <F2>
 my_utils.nkeymap("<F2>", function()
@@ -82,3 +86,14 @@ my_utils.nkeymap("<C-t>", "<C-w>T")
 
 -- Select last pasted text with gV
 my_utils.nkeymap("gV", "`[V`]")
+
+-- Break string into multiple lines (Python)
+-- Super ugly and error prone but gets the job done for now
+-- Best to use a treesitter transformation
+--
+-- variable = "some text |some more text"
+-- variable = (
+--     "some text "
+--     "|some more text"
+-- )
+my_utils.ikeymap("<S-Enter>", "\"\"<Esc>m`2F\"i(<Esc>4f\"a)<Esc>``a<CR><Esc>la")
