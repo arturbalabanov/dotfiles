@@ -1,4 +1,2 @@
 # For the zsh theme -- if the user is DEFAULT_USER, it is not shown
-export DEFAULT_USER="artur"
-
-# export PIPX_DEFAULT_PYTHON="$PYENV_ROOT/versions/3.10.6/bin/python"
+export DEFAULT_USER="artur.balabanov"
