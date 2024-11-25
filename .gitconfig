@@ -12,7 +12,7 @@
     navigate = true
     light = false
 	# syntax-theme = gruvbox-dark
-	syntax-theme = tokyonight_moon
+	syntax-theme = tokyonight_night
 
 [diff]
     colorMoved = default
