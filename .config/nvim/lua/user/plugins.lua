@@ -111,6 +111,8 @@ return packer.startup(function(use)
     }
 
     use 'onsails/lspkind.nvim'
+
+    -- TODO: neodev has reached EoL, replace it with folke/lazydev.nvim
     use "folke/neodev.nvim"
 
     use 'hrsh7th/nvim-cmp'

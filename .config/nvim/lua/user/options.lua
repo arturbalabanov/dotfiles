@@ -1,4 +1,3 @@
-local my_utils = require("user.utils")
 local opt = vim.opt
 
 -- basics
