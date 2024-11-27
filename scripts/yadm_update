@@ -29,6 +29,8 @@ function save_macos_settings() {
     # TODO: Support multiple profiles
     osascript $INCLUDE_DIR/export-btt-profile.scpt work $BTT_PRESETS_DIR
 
+    # TODO: Small ID changes result into a diff here. Can cause merge conflicts I think :(
+
     # TODO: Error handling for invalid profiles / export error
     #       For example, if the profile is not found, the above script will
     #       **not** fail and will generate an almost empty json string
