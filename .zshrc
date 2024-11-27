@@ -482,12 +482,6 @@ if _exists fzf; then
 fi
 
 function mkcd() { mkdir -p "$@" && cd "$_"; }
-function yadm_update() {
-    local commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
-
-    yadm add ~/.config/nvim/lua/user/*
-    yadm commit -am "$commit_msg" && yadm push;
-}
 
 function venv {
     if [[ -f "pdm.lock" ]]; then

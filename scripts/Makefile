@@ -12,6 +12,11 @@ BINARIES := $(shell find . -type f \
 			| grep -Ev '\.\w+' \
 			| grep -Ev '^\./Makefile')
 
+.PHONY: info
+info:
+	@echo "the following scripts will be installed in $(BINARIES_DIR):"
+	@$(foreach bin,$(BINARIES),echo "    $(bin)"; )
+
 .PHONY: install
 install:
 	mkdir -p $(BINARIES_DIR)
