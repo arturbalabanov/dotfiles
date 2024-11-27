@@ -15,7 +15,7 @@ function save_macos_settings() {
     echo -n "Saving work BTT preset into $BTT_PRESETS_DIR... "
 
     # TODO: Support multiple profiles
-    osascript $INCLUDE_DIR/export-btt-profiles.scpt work $BTT_PRESETS_DIR
+    osascript $INCLUDE_DIR/export-btt-profile.scpt work $BTT_PRESETS_DIR
 
     # TODO: Error handling for invalid profiles / export error
     #       For example, if the profile is not found, the above script will
