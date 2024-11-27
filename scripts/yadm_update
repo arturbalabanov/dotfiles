@@ -3,20 +3,48 @@
 SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
 INCLUDE_DIR="$SCRIPTS_DIR/include"
 
+MACOS_SETTINGS_DIR="$HOME/macos"
+BTT_PRESETS_DIR="$MACOS_SETTINGS_DIR/btt-presets"
+
 source "$SCRIPTS_DIR/common.sh"
 
+function save_macos_settings() {
+    mkdir -p "$MACOS_SETTINGS_DIR"
+    mkdir -p "$BTT_PRESETS_DIR"
+
+    echo -n "Saving work BTT preset into $BTT_PRESETS_DIR... "
+
+    # TODO: Support multiple profiles
+    osascript $INCLUDE_DIR/export-btt-profiles.scpt work $BTT_PRESETS_DIR
+
+    # TODO: Error handling for invalid profiles / export error
+    #       For example, if the profile is not found, the above script will
+    #       **not** fail and will generate an almost empty json string
+
+    # TODO: Error handling if the above fails (syntax error, btt is not runnign etc.)
+}
+
+# Add yadm files
 yadm add ~/scripts/*
 yadm add ~/scripts/**/*
 yadm add ~/.config/nvim/lua/user/*
 yadm add ~/.config/nvim/lua/user/**/*
 
+save_macos_settings
+
+# TODO: apply the same logic to the above dirs as well
+if [[ -d "$MACOS_SETTINGS_DIR" ]]; then
+    yadm add "$MACOS_SETTINGS_DIR/*"
+    yadm add "$MACOS_SETTINGS_DIR/**/*"
+fi
+
 yadm status
 
-read -p "Are you sure you want to commit these changes? " -n 1 -r
-echo    # move to a new line
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    error "Aborted, no changes were committed"
+if (confirm "Do you want to see the diff?"); then
+    yadm diff HEAD
 fi
+
+confirm "Are you sure you want to commit these changes?"
 
 commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
 
