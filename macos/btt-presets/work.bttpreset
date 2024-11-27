@@ -1,7 +1,7 @@
 {
   "BTTPresetName" : "work",
   "BTTPresetColor" : "54.723000, 188.700000, 68.120700, 255.000000",
-  "BTTPresetUUID" : "1120BAE8-8500-45BA-9448-88DF61A6951B",
+  "BTTPresetUUID" : "CA1DA24C-7AB5-4BC3-9104-D43B37F70B68",
   "BTTPresetContent" : [
     {
       "BTTAppBundleIdentifier" : "net.kovidgoyal.kitty",

@@ -8,6 +8,18 @@ BTT_PRESETS_DIR="$MACOS_SETTINGS_DIR/btt-presets"
 
 source "$SCRIPTS_DIR/common.sh"
 
+# TODO: Change to yadm_sync as follows:
+# * Check if in merge conflict and if so, resume from the step about the conflict bellow
+# * save macos settings
+# * yadm add
+# * yadm status
+# * If not empty, optionally show diff, confirm commit (abort stops the script)
+# * yadm commit
+# * yadm pull
+# * If merge conflict, deal with it
+# * [post pull actons, e.g. make install for scripts, apply saved macos settings]
+# * If local changes not pushed yet, yadm push
+
 function save_macos_settings() {
     mkdir -p "$MACOS_SETTINGS_DIR"
     mkdir -p "$BTT_PRESETS_DIR"
