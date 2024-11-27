@@ -1,9 +1,19 @@
 #!/bin/bash
 
+SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
+INCLUDE_DIR="$SCRIPTS_DIR/include"
+
+source "$SCRIPTS_DIR/common.sh"
+
 commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
 
 yadm add ~/scripts/*
 yadm add ~/scripts/**/*
 yadm add ~/.config/nvim/lua/user/*
 yadm add ~/.config/nvim/lua/user/**/*
+
+yadm status
+
+return 0
+
 yadm commit -am "$commit_msg" && yadm push;
