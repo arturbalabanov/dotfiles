@@ -5,8 +5,6 @@ INCLUDE_DIR="$SCRIPTS_DIR/include"
 
 source "$SCRIPTS_DIR/common.sh"
 
-commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
-
 yadm add ~/scripts/*
 yadm add ~/scripts/**/*
 yadm add ~/.config/nvim/lua/user/*
@@ -14,6 +12,12 @@ yadm add ~/.config/nvim/lua/user/**/*
 
 yadm status
 
-return 0
+read -p "Are you sure you want to commit these changes? " -n 1 -r
+echo    # move to a new line
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    error "Aborted, no changes were committed"
+fi
 
-yadm commit -am "$commit_msg" && yadm push;
+commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
+
+yadm commit -am "$commit_msg" && yadm push
