@@ -1,0 +1,9 @@
+#!/bin/bash
+
+commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
+
+yadm add ~/scripts/*
+yadm add ~/scripts/**/*
+yadm add ~/.config/nvim/lua/user/*
+yadm add ~/.config/nvim/lua/user/**/*
+yadm commit -am "$commit_msg" && yadm push;
