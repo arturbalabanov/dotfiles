@@ -2,6 +2,19 @@
 
 # TODO: Some duplication with ~/.zshrc
 
+
+# Usage: confirm [<prompt-message>] [error-message]
+function confirm() {
+    prompt="${1:-confirm?}"
+    error_msg="${2:-aborted}"
+
+    read -p "$prompt [y/N] " -n 1 -r
+    echo    # move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        error "$error_msg"
+    fi
+}
+
 # Usage: error [exit-code] <message...>
 function error() {
     # if the first argument is an integer, it is the exit code
