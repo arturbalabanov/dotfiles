@@ -1,56 +1,24 @@
 #!/bin/bash
 
 SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
-INCLUDE_DIR="$SCRIPTS_DIR/include"
-
-MACOS_SETTINGS_DIR="$HOME/macos"
-BTT_PRESETS_DIR="$MACOS_SETTINGS_DIR/btt-presets"
-
 source "$SCRIPTS_DIR/common.sh"
 
 # TODO: Change to yadm_sync as follows:
 # * Check if in merge conflict and if so, resume from the step about the conflict bellow
-# * save macos settings
 # * yadm add
 # * yadm status
 # * If not empty, optionally show diff, confirm commit (abort stops the script)
 # * yadm commit
 # * yadm pull
 # * If merge conflict, deal with it
-# * [post pull actons, e.g. make install for scripts, apply saved macos settings]
+# * [post pull actons, e.g. make install for scripts, yadm alt etc.]
 # * If local changes not pushed yet, yadm push
-
-function save_macos_settings() {
-    mkdir -p "$MACOS_SETTINGS_DIR"
-    mkdir -p "$BTT_PRESETS_DIR"
-
-    echo -n "Saving work BTT preset into $BTT_PRESETS_DIR... "
-
-    # TODO: Support multiple profiles
-    osascript $INCLUDE_DIR/export-btt-profile.scpt work $BTT_PRESETS_DIR
-
-    # TODO: Small ID changes result into a diff here. Can cause merge conflicts I think :(
-
-    # TODO: Error handling for invalid profiles / export error
-    #       For example, if the profile is not found, the above script will
-    #       **not** fail and will generate an almost empty json string
-
-    # TODO: Error handling if the above fails (syntax error, btt is not runnign etc.)
-}
 
 # Add yadm files
 yadm add ~/scripts/*
 yadm add ~/scripts/**/*
 yadm add ~/.config/nvim/lua/user/*
 yadm add ~/.config/nvim/lua/user/**/*
-
-save_macos_settings
-
-# TODO: apply the same logic to the above dirs as well
-if [[ -d "$MACOS_SETTINGS_DIR" ]]; then
-    yadm add "$MACOS_SETTINGS_DIR/*"
-    yadm add "$MACOS_SETTINGS_DIR/**/*"
-fi
 
 yadm status
 

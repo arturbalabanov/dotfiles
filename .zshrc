@@ -358,6 +358,10 @@ if _exists uv; then
     fi
 fi
 
+if _exists jira; then
+    eval "$(jira completion zsh)"
+fi
+
 
 # make & remake {{{
 
@@ -410,6 +414,14 @@ if _exists thefuck; then
     eval $(thefuck --alias)
 else
     alias fuck='eval "sudo $(fc -ln -1)"'
+fi
+
+if _exists act && _exists gh; then
+    original_act=$(type act | sed 's/^act is //')
+
+    function act {
+        $original_act -s GITHUB_TOKEN="$(gh auth token)" $@
+    }
 fi
 
 alias -g G='| grep -i'
