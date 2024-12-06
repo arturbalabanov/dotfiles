@@ -1,6 +1,3 @@
 [user]
 	name = Artur Balabanov
 	email = arturbalabanov97@gmail.com
-
-[credential]
-	helper = /usr/local/share/gcm-core/git-credential-manager

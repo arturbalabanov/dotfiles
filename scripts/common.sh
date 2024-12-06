@@ -73,3 +73,19 @@ function get_extension {
     file=$(basename -- "$1")
     echo "${file##*.}"
 }
+
+# Usage: op_get_credential "<item_name>" [field_name=credential]
+# ref: https://developer.1password.com/docs/cli/reference/
+# 
+# Run "op item list --vault ..." to get the list of all items in a given vault
+function op_get_credential {
+    if [[ "$#" -eq 0 ]]; then
+		error "at least 1 argument is required to run $0"
+	fi
+
+    item_name="$1"
+    field_name="${2:-credential}"
+
+    op item get "$item_name" --fields label="$field_name" --reveal
+}
+

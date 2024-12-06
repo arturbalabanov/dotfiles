@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eo pipefail
+
+SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
+source "$SCRIPTS_DIR/common.sh"
+
+if [[ -z "${JIRA_API_TOKEN}" ]]; then
+    export JIRA_API_TOKEN=$(op_get_credential "SoftwareOne: JIRA API Token")
+fi
+
+jira sprint list --current --assignee $(jira me) --status "~Done" --plain

@@ -1,4 +1,6 @@
-#!/usr/bin/env python3.11
+#!/usr/bin/env python3.13
+
+# TODO: Convert into uv script (note: it was initially built as python 3.11 script)
 
 """
 Generate JIRA and GitLab references and insert them in the commit message.
