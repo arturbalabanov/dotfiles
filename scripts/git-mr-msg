@@ -1,6 +1,8 @@
 #!/bin/bash
 
-git log --reverse --no-merges --grep="^Problem:" master.. --format="----------------
+main_branch=$(git branch | grep "^\s*\*\?\s*\(master\|main\)\s*$")
+
+git log --reverse --no-merges --grep="^Problem:" ${main_branch}.. --format="----------------
 
 
 **%h**

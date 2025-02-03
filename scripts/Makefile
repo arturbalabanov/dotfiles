@@ -12,6 +12,8 @@ BINARIES := $(shell find . -type f \
 			| grep -Ev '\.\w+' \
 			| grep -Ev '^\./Makefile')
 
+PYTHON_SCRIPTS := $(shell find . -type f -name '*.py')
+
 .PHONY: info
 info:
 	@echo "the following scripts will be installed in $(BINARIES_DIR):"
@@ -21,4 +23,5 @@ info:
 install:
 	mkdir -p $(BINARIES_DIR)
 	$(foreach bin,$(BINARIES),ln -sf $(shell realpath $(bin)) $(BINARIES_DIR)/; )
+	$(foreach script,$(PYTHON_SCRIPTS),echo '#!/usr/bin/env bash\nuv run --no-project "$(shell realpath $(script))" $$@' > $(BINARIES_DIR)/$(shell basename $(script) .py); )
 	chmod a+x $(BINARIES_DIR)/*

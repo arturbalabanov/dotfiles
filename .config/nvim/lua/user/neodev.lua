@@ -33,3 +33,4 @@ neodev.setup({
 --     plugins = { "neotest", },
 --     types = true
 -- },
+--  library = { plugins = { "nvim-dap-ui" }, types = true },

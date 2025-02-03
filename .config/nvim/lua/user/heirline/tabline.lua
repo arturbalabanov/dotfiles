@@ -281,7 +281,7 @@ local CloseTabBtnBlock = {
     {
         common.Space,
         {
-            provider = "",
+            provider = "x",
             on_click = {
                 callback = function(_, minwid)
                     vim.schedule(function()

@@ -89,7 +89,7 @@ M.BufferModifiedIndicator = {
     condition = function(self)
         return vim.api.nvim_buf_get_option(self.bufnr, "modified")
     end,
-    provider = " 雷",
+    provider = " ",
     hl = { fg = "green" },
 }
 
