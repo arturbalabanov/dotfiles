@@ -326,6 +326,29 @@ zstyle ':completion:*:*:*:default' list-colors "${(s.:.)LS_COLORS}"
 
 # }}}
 
+# Alias auto expand {{{
+
+# ref: https://github.com/rothgar/mastering-zsh/blob/master/docs/helpers/aliases.md#automatically-expand-aliases
+
+globalias() {
+   zle _expand_alias
+   zle expand-word
+   zle self-insert
+}
+zle -N globalias
+
+# space expands all aliases, including global
+bindkey -M emacs " " globalias
+bindkey -M viins " " globalias
+
+# control-space to make a normal space
+bindkey -M emacs "^ " magic-space
+bindkey -M viins "^ " magic-space
+
+# normal space during searches
+bindkey -M isearch " " magic-space
+# }}}
+
 if _exists fzf && _has_brew; then
     source "$(brew --prefix)/opt/fzf/shell/completion.zsh" 2> /dev/null
     source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
@@ -424,10 +447,23 @@ if _exists act && _exists gh; then
     }
 fi
 
+function _debug_alias {
+    local before_alias=$(echo $BUFFER | sed s/\$\($0\)//)
+    
+    if [[ $before_alias =~ "pytest " ]]; then
+        echo "-vvv -o log_cli=true -o log_cli_level=INFO"
+        return
+    fi
+
+    # Default to the original alias (i.e. don't expand)
+    echo "D"
+}
+
 alias -g G='| grep -i'
 alias -g L='| less'
 alias -g H='| head'
 alias -g T='| tail'
+alias -g D='$(_debug_alias)'
 
 if _exists fzf; then
     alias -g F='| fzf'

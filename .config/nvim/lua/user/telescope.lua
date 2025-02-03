@@ -18,6 +18,9 @@ local telescope_extensions_to_load = {
     "glyph",
 }
 
+for _, extension_name in pairs(telescope_extensions_to_load) do
+    telescope.load_extension(extension_name)
+end
 
 telescope.setup {
     defaults = {
@@ -112,10 +115,6 @@ telescope.setup {
         },
     }
 }
-
-for _, extension_name in pairs(telescope_extensions_to_load) do
-    telescope.load_extension(extension_name)
-end
 
 my_utils.nkeymap("<leader>t", telescope_builtin.builtin)
 my_utils.nkeymap("<leader>h", telescope_builtin.help_tags)

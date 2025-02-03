@@ -5,6 +5,8 @@ if focus == nil then
     return
 end
 
+local focus_common = require("user.focus.common")
+
 local config = {
     enable = true,            -- Enable module
     commands = true,          -- Create Focus commands
@@ -32,22 +34,21 @@ local config = {
             enable = false,                -- Display colorcolumn in the foccused window only
             list = '+1',                   -- Set the comma-saperated list for the colorcolumn
         },
-        signcolumn = true,                 -- Display signcolumn in the focussed window only
+        signcolumn = false,                -- Display signcolumn in the focussed window only
         winhighlight = false,              -- Auto highlighting for focussed/unfocussed windows
     }
 }
 
 focus.setup(config)
 
-local ignore_filetypes = { "toggleterm", "neotest-output", "NvimTree", "TelescopePrompt" }
-local ignore_buftypes = { 'nofile', 'prompt', 'popup', "help", "terminal" }
-
 local augroup = vim.api.nvim_create_augroup('UserFocusRules', { clear = true })
 
 vim.api.nvim_create_autocmd('WinEnter', {
     group = augroup,
     callback = function(_)
-        if vim.tbl_contains(ignore_buftypes, vim.bo.buftype) then
+        local winid = vim.api.nvim_get_current_win()
+
+        if focus_common.should_ignore_win(winid, "focus") then
             vim.b.focus_disable = true
             return
         end
@@ -68,7 +69,9 @@ vim.api.nvim_create_autocmd('WinLeave', {
 vim.api.nvim_create_autocmd('FileType', {
     group = augroup,
     callback = function(_)
-        if vim.tbl_contains(ignore_filetypes, vim.bo.filetype) then
+        local winid = vim.api.nvim_get_current_win()
+
+        if focus_common.should_ignore_win(winid, "focus") then
             vim.b.focus_disable = true
             return
         end

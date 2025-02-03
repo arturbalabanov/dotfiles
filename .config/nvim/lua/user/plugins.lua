@@ -155,6 +155,7 @@ return packer.startup(function(use)
     use {
         "nvim-neotest/neotest",
         requires = {
+            "nvim-neotest/nvim-nio",
             "nvim-lua/plenary.nvim",
             "nvim-treesitter/nvim-treesitter",
             "antoinemadec/FixCursorHold.nvim"
@@ -182,6 +183,21 @@ return packer.startup(function(use)
     }
 
     use "stevearc/overseer.nvim"
+
+    use "mfussenegger/nvim-dap"
+    use {
+        "rcarriga/nvim-dap-ui",
+        requires = {
+            "mfussenegger/nvim-dap",
+            "nvim-neotest/nvim-nio",
+        },
+    }
+    use {
+        "mfussenegger/nvim-dap-python",
+        requires = {
+            "mfussenegger/nvim-dap"
+        }
+    }
 
     use {
         "folke/noice.nvim",
@@ -212,13 +228,12 @@ return packer.startup(function(use)
         }
     }
 
-    -- TODO: re-enable (and make sure to address the avante.nvim's TODO too)
-    -- use {
-    --     "zbirenbaum/copilot.lua",
-    --     cmd = "Copilot",
-    --     event = "InsertEnter",
-    --     config = function() require("user.copilot") end
-    -- }
+    use {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function() require("user.copilot") end
+    }
 
     use {
         "yetone/avante.nvim",
@@ -248,11 +263,12 @@ return packer.startup(function(use)
     use "Pocco81/true-zen.nvim"
 
     use {
-        'saifulapm/chartoggle.nvim',
+        "saifulapm/commasemi.nvim",
         config = function()
-            require('chartoggle').setup({
+            require('commasemi').setup({
                 leader = ',',
-                keys = { ',', ';' },
+                keymaps = true,
+                commands = true
             })
         end
     }

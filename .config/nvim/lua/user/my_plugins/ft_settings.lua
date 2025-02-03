@@ -47,8 +47,16 @@ M.set_settings_in_augroups = function()
     for filetype, settings_by_type in pairs(M.ft_settings) do
         local function augroup_callback()
             for setting_type, settings in pairs(settings_by_type) do
-                for key, value in pairs(settings) do
-                    M.setting_type_to_dict[setting_type][key] = value
+                for key, setting_value in pairs(settings) do
+                    local actual_value
+
+                    if type(setting_value) == "function" then
+                        actual_value = setting_value()
+                    else
+                        actual_value = setting_value
+                    end
+
+                    M.setting_type_to_dict[setting_type][key] = actual_value
                 end
             end
         end

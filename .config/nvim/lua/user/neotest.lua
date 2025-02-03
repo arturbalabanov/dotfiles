@@ -68,4 +68,5 @@ neotest.setup({
 
 my_utils.nkeymap("<F4>", function() neotest.summary.toggle() end)
 my_utils.nkeymap("<F5>", function() neotest.run.run() end)
-my_utils.nkeymap("<F29>", function() neotest.output.open { enter = true } end) -- Ctrl + F5
+my_utils.nkeymap("<F29>", function() neotest.output.open { enter = true } end)  -- Ctrl + F5
+my_utils.nkeymap("<F17>", function() neotest.run.run({ strategy = "dap" }) end) -- Shift + F5

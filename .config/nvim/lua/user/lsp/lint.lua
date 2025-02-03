@@ -12,11 +12,13 @@ local function make_py_venv_linter(linter_name, opts)
         local bufnr = vim.api.nvim_get_current_buf()
         local venv_cmd_path = py_venv.buf_local_command_path(opts.cmd, bufnr)
 
-        if not my_utils.executable_exists(venv_cmd_path) and opts.fallback_to_global then
-            return opts.cmd
+        if my_utils.executable_exists(venv_cmd_path) then
+            return venv_cmd_path
         end
 
-        return venv_cmd_path
+        if opts.fallback_to_global then
+            return opts.cmd
+        end
     end
 end
 

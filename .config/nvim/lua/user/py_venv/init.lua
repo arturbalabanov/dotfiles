@@ -138,11 +138,14 @@ local function get_python_venv_no_cache(opts)
     local python_version = get_python_version(python_path,
         { disable_notifications = opts.disable_notifications, full_version = opts.full_version })
 
+    local pyproject_toml = Path:new(project_root):joinpath('pyproject.toml'):expand()
+
     return {
         name = get_venv_name(venv_python_path, project_root),
         bin_path = venv_bin_path,
         python_path = python_path,
         python_version = python_version,
+        pyproject_toml = pyproject_toml,
         venv_manager_name = my_utils.get(venv_manager, "name"),
     }
 end
