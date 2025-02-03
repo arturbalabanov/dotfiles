@@ -122,6 +122,13 @@ return packer.startup(function(use)
     use 'hrsh7th/cmp-cmdline'
 
     use {
+        -- TODO: replace with stevanmilic/nvim-lspimport once #7 is merged:
+        --       https://github.com/stevanmilic/nvim-lspimport/pull/7
+        'arturbalabanov/nvim-lspimport',
+        branch = "add-missing-imports",
+    }
+
+    use {
         "L3MON4D3/LuaSnip",
         -- follow latest release.
         tag = "v1.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
@@ -133,7 +140,6 @@ return packer.startup(function(use)
     use "gbprod/substitute.nvim"
 
     use 'ray-x/lsp_signature.nvim'
-    -- use "~/dev/definition-or-references.nvim"
     use 'KostkaBrukowa/definition-or-references.nvim'
 
     use "folke/trouble.nvim"

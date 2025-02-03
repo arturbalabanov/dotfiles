@@ -3,6 +3,8 @@ if not status_ok then
     return
 end
 
+local my_utils = require("user.utils")
+
 -- ref: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 
 local lsp_common = require("user.lsp.common")
@@ -10,10 +12,21 @@ local lsp_common = require("user.lsp.common")
 lspconfig.pyright.setup({
     on_attach = lsp_common.on_attach,
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
+
     handlers = {
         -- Disable all diagnostics from  pyright, use local tools like flake8, ruff etc. for that
-        ["textDocument/publishDiagnostics"] = function(...) end
-    }
+        -- We make an exception for reportUndefinedVariable as this is necesasry for stevanmilic/nvim-lspimport
+        ["textDocument/publishDiagnostics"] = vim.lsp.with(
+            function(err, result, ctx, config)
+                result.diagnostics = vim.tbl_filter(
+                    function(diagnostic) return diagnostic.code == "reportUndefinedVariable" end,
+                    result.diagnostics
+                )
+                vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+            end,
+            {}
+        )
+    },
 })
 
 lspconfig.lua_ls.setup({
