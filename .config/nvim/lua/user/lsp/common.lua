@@ -20,6 +20,8 @@ vim.api.nvim_create_user_command("ToggleLSPFormatting", function()
 end, {})
 
 
+
+-- TODO: Remove me, I think we're actually using it? Also remove the plugin
 local lsp_signature_config = {
     max_height = 3,
     max_width = 120,
@@ -52,6 +54,7 @@ end
 M.on_attach = function(client, bufnr)
     local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
 
+    -- TODO: Remove me, I think we're actually using it?
     -- require("lsp_signature").on_attach(lsp_signature_config, bufnr)
 
     if filetype == "python" then
@@ -61,8 +64,13 @@ M.on_attach = function(client, bufnr)
     if client.supports_method("textDocument/formatting") then
         setup_auto_format_autocmd(client, bufnr)
     end
+
+    if client.supports_method("textDocument/inlayHint") or client.server_capabilities.inlayHintProvider then
+        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
 end
 
+-- TODO: Remove me, don't think this is used?
 -- Open a new defintion (or reference, no matter if selected by telescope or not) in a new tab if not in the same file
 local original_handler = vim.lsp.handlers["textDocument/definition"]
 vim.lsp.handlers["textDocument/definition"] = function(err, result, ctx, config)

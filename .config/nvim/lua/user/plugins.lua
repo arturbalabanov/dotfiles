@@ -139,6 +139,7 @@ return packer.startup(function(use)
 
     use "gbprod/substitute.nvim"
 
+    -- TODO: remove me, I don't think it's being used atm (config in lsp/common.lua)
     use 'ray-x/lsp_signature.nvim'
     use 'KostkaBrukowa/definition-or-references.nvim'
 
