@@ -63,4 +63,6 @@ opt_require "user.noice"
 
 opt_require "user.tmux"
 
+opt_require("user.my_plugins.suppress_lint")
+
 opt_require "user.filetype"
