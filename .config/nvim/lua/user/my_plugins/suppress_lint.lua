@@ -29,21 +29,7 @@ local function get_supported_sources()
     return vim.tbl_keys(M.formats_per_source)
 end
 
-local function parse_existing_suppresses(bufnr, lnum)
-    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
-    local query = vim.treesitter.query.parse(filetype, [[
-        (((comment)+ @comment)
-         (#any-match? @comment "noqa"))
-    ]])
-    local tree = vim.treesitter.get_parser():parse()[1]
-    for id, node, metadata in query:iter_captures(tree:root(), bufnr, lnum, lnum + 1) do
-        -- Print the node name and source text.
-        vim.notify(vim.inspect({ node:type(), vim.treesitter.get_node_text(node, bufnr), metadata }))
-    end
-end
-
 local function get_diagnostics_on_line(bufnr, lnum)
-    parse_existing_suppresses()
     local supported_sources = get_supported_sources()
 
     return vim.tbl_filter(
@@ -65,8 +51,8 @@ local function format_diagnostic_suppress_text(diagnostic)
     end
 
     local source_format
-    if diagnostic.code ~= nil then
-        source_format = source_formats.with_code
+    if diagnostic.code == nil or diagnostic.code == vim.NIL then
+        source_format = source_formats.without_code
     else
         source_format = source_formats.with_code
     end
@@ -156,11 +142,42 @@ M.suppress_current_line_lint = function()
 end
 
 my_utils.nkeymap('<leader>s', M.suppress_current_line_lint)
+
+
+-- Experiments to try to support appending to existing suppreses, i.e. noqa: F123 -> noqa: F123,E432
+-- Cases to consider:
+--
+-- 1. Adding noqa:E432 with existing noqa
+--      Before: |  # noqa: F123
+--      After:  |  # noqa: F123,E432
+-- 2. Adding noqa:E432 with existing `type: ignore` after
+--      Before: |  # noqa: F123  # type: ignore
+--      After:  |  # noqa: F123,E432  # type: ignore
+-- 3. Adding noqa:E432 with existing `type: ignore` before
+--      Before: |  # type: ignore  # noqa: F123
+--      After:  |  # type: ignore  # noqa: F123,E432
+-- 4. Adding type: ignore[unused_import] to existing type: ignore[unused_variable]
+--      Before: |  # type: ignore[unused_variable]  # noqa: F123
+--      After:  |  # type: ignore[unused_variable,unused_import]  # noqa: F123
+-- {{{
+local function parse_existing_suppresses(bufnr, lnum)
+    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+    local query = vim.treesitter.query.parse(filetype, [[
+        (((comment)+ @comment)
+         (#any-match? @comment "noqa"))
+    ]])
+    local tree = vim.treesitter.get_parser():parse()[1]
+    for id, node, metadata in query:iter_captures(tree:root(), bufnr, lnum, lnum + 1) do
+        -- Print the node name and source text.
+        vim.notify(vim.inspect({ node:type(), vim.treesitter.get_node_text(node, bufnr), metadata }))
+    end
+end
 my_utils.nkeymap('<leader>q', function()
     local bufnr = vim.api.nvim_get_current_buf()
     local winnr = vim.api.nvim_get_current_win()
     local linenr, _ = unpack(vim.api.nvim_win_get_cursor(winnr))
     parse_existing_suppresses(bufnr, linenr - 1)
 end)
+-- }}}
 
 return M

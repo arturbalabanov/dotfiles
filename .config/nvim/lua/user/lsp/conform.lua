@@ -40,6 +40,7 @@ require("conform").setup({
     },
     formatters_by_ft = {
         python = { "ruff_fix", "ruff_format", "isort", "black" },
+        toml = { "taplo" },
         markdown = { "inject" },
         proto = { "buf" },
         ["*"] = { "codespell" },

@@ -1,0 +1,25 @@
+name: ffc-ops
+root: ~/dev/software-one/mpt-finops-operations
+on_project_stop: docker compose down
+
+windows:
+  - code:
+      layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
+      panes:
+        - editor:
+          - venv
+          - nvim +"Telescope find_files"
+        - tests:
+          - docker compose up test_db -d
+        - git:
+          - git status
+  - repl:
+      layout: even-horizontal
+      panes:
+        - py:
+           - repl py --env local
+        - db:
+           - repl sql --env local
+  - server:
+      panes:
+        - docker compose up app

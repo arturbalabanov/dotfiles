@@ -1,0 +1,23 @@
+[default_session]
+startup_command = 'nvim +"Telescope find_files"'
+preview_command = 'lsd --color=always --icon=always -l {}'
+
+[[session]]
+name = 'tmux-config'
+path = '~'
+startup_command = 'nvim .tmux.conf'
+preview_command = 'bat --language=tmux --style=snip --color=always ~/.tmux.conf'
+
+[[session]]
+name = 'sesh-config'
+path = '~/.config/sesh'
+startup_command = 'nvim sesh.toml'
+preview_command = 'bat --language=toml --style=snip --color=always ~/.config/sesh/sesh.toml'
+
+[[session]]
+name = 'neovim-config'
+path = '~/.config/nvim'
+startup_command = 'nvim sesh.toml'
+preview_command = 'bat --language=toml --style=snip --color=always ~/.config/sesh/sesh.toml'
+
+# NOTE: More complex projects are defined in ~/.config/tmuxinator

@@ -13,4 +13,9 @@ if [[ -z "${JIRA_API_TOKEN}" ]]; then
 	error "No JIRA API Token provided"
 fi
 
-jira sprint list --current --assignee $(jira me) --status "~Done" --plain
+jira sprint list \
+    --current \
+    --assignee $(jira me) \
+    --status "~Done" \
+    --order-by "status" \
+    --plain 

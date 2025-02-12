@@ -1,5 +1,4 @@
 # Don't load if it's been already loaded (e.g. tmuxp loads this for every tmux pane it seems)
-
 if [[ $ZPROFILE_LOADED ]]; then
     return
 fi
