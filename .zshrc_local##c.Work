@@ -2,3 +2,4 @@
 export DEFAULT_USER="artur.balabanov"
 
 export ANTHROPIC_API_KEY=$(cat "$HOME/tokens/claude-ai.txt")
+export JIRA_API_TOKEN=$(cat "$HOME/tokens/jira.txt")
