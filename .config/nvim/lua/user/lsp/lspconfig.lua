@@ -5,7 +5,7 @@ end
 
 local my_utils = require("user.utils")
 
--- ref: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+-- ref: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
 
 local lsp_common = require("user.lsp.common")
 
@@ -98,10 +98,12 @@ lspconfig.taplo.setup {
     capabilities = require("cmp_nvim_lsp").default_capabilities(),
 }
 
+lspconfig.dockerls.setup {
+    on_attach = lsp_common.on_attach,
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+}
 
--- TODO: Add JSON and YAML LSPs supporting schemas from:
--- * JSON (and hopefully YAML): https://www.schemastore.org/json/
--- Maybe use this LSP: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#yamlls
-
--- TODO: Add an LSP for Dockerfiles
--- e.g. https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#dockerls
+lspconfig.yamlls.setup {
+    on_attach = lsp_common.on_attach,
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+}
