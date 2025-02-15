@@ -24,4 +24,3 @@ lspsaga.setup {
 
 my_utils.nkeymap("<leader>r", { vim.cmd.Lspsaga, "rename" })
 my_utils.nkeymap("<leader>a", { vim.cmd.Lspsaga, "code_action" })
-my_utils.nkeymap("gD", { vim.cmd.Lspsaga, "hover_doc" })

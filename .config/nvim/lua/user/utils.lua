@@ -343,19 +343,6 @@ function M.opt_require(module_path)
     return module
 end
 
-function M.set_filetype(filetype, ft_pattern)
-    local augroup_name = "user_set_filetype_" .. filetype:gsub('[.-]', '_')
-    local augroup = vim.api.nvim_create_augroup(augroup_name, { clear = true })
-
-    vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
-        group = augroup,
-        pattern = ft_pattern,
-        callback = function()
-            vim.opt_local.filetype = filetype
-        end,
-    })
-end
-
 function M.timeout(ms, fn)
     local timer = vim.loop.new_timer()
 

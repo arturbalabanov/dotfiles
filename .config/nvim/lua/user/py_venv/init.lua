@@ -180,6 +180,27 @@ local set_venv_per_client = {
     pyright = pyright_set_venv,
 }
 
+
+-- TODO: Extract this into a config option, or even better -- make autocommands
+--       for entering and leaving an environment and allow the user to hook into them
+--       ref: https://github.com/akinsho/toggleterm.nvim/blob/e76134e682c1a866e3dfcdaeb691eb7b01068668/lua/toggleterm.lua#L343
+local function post_set_venv_hook(bufnr, client, venv)
+    if not venv or not venv.pyproject_toml then
+        return
+    end
+
+    -- TODO: Remove dependancy on dasel and use a lua library instead
+    local cmd = "dasel -f " .. vim.b.py_venv_info.pyproject_toml .. " 'tool.ruff.line-length'"
+    local line_length = my_utils.run_shell_cmd(cmd, { disable_notifications = false, show_error = true })
+
+    if not line_length then
+        return
+    end
+
+    vim.cmd(string.format('setlocal colorcolumn=%s', line_length))
+    vim.cmd(string.format('setlocal textwidth=%s', line_length))
+end
+
 function M.on_attach(client, bufnr)
     local norm_client_name = client.name:gsub('%-', '_')
     local set_venv = set_venv_per_client[norm_client_name]
@@ -193,9 +214,15 @@ function M.on_attach(client, bufnr)
     local found, saved_venv = pcall(vim.api.nvim_buf_get_var, bufnr, var_name)
     local venv = M.get_python_venv(bufnr, { disable_notifications = false, fallback_to_system_python = true })
 
+    -- TODO: Duplication with what we have down
+    if venv == nil then
+        return
+    end
+
     if not found or saved_venv ~= venv then
         vim.api.nvim_buf_set_var(bufnr, var_name, venv)
         set_venv(client, venv)
+        post_set_venv_hook(bufnr, client, venv)
     end
 
     vim.api.nvim_create_autocmd("BufEnter", {
@@ -205,9 +232,14 @@ function M.on_attach(client, bufnr)
             found, saved_venv = pcall(vim.api.nvim_buf_get_var, bufnr, var_name)
             venv = M.get_python_venv(bufnr, { disable_notifications = false, fallback_to_system_python = true })
 
+            if venv == nil then
+                return
+            end
+
             if not found or saved_venv ~= venv then
                 vim.api.nvim_buf_set_var(bufnr, var_name, venv)
                 set_venv(client, venv)
+                post_set_venv_hook(bufnr, client, venv)
             end
         end
     })

@@ -17,6 +17,8 @@ source "$SCRIPTS_DIR/common.sh"
 # Add yadm files
 yadm add ~/scripts/*
 yadm add ~/scripts/**/*
+yadm add ~/.config/nvim/after/*
+yadm add ~/.config/nvim/after/**/*
 yadm add ~/.config/nvim/lua/user/*
 yadm add ~/.config/nvim/lua/user/**/*
 
