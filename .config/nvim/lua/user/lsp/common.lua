@@ -92,4 +92,6 @@ vim.lsp.handlers["textDocument/definition"] = function(err, result, ctx, config)
     return original_result
 end
 
+my_utils.nkeymap("gD", vim.lsp.buf.hover)
+
 return M

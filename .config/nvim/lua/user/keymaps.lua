@@ -19,9 +19,6 @@ my_utils.vkeymap("H", "^")
 my_utils.nkeymap("L", "$")
 my_utils.vkeymap("L", "g_")
 
--- Toggle folds with <Tab>
-my_utils.nkeymap("<Tab>", "za")
-
 -- Redo with Shift + U (opposite of undo - u), frees up C-r for something else
 -- This just makes more sense - inspired by Helix :)
 my_utils.nkeymap("U", vim.cmd.redo)

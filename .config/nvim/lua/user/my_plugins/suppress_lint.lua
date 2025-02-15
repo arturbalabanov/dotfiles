@@ -1,4 +1,5 @@
 local my_utils = require("user.utils")
+local severity = vim.diagnostic.severity
 
 local M = {
     formats_per_source = {
@@ -17,6 +18,11 @@ local M = {
         flake8 = {
             with_code = "noqa: %s",
             without_code = "noqa",
+        },
+        -- TODO: Add pragma: no branch ... somehow
+        coverage = {
+            without_code = "pragma: no cover",
+            with_code = "pragma: no cover",
         }
     },
     source_aliases = {
@@ -34,7 +40,7 @@ local function get_diagnostics_on_line(bufnr, lnum)
 
     return vim.tbl_filter(
         function(diagnostic)
-            return vim.tbl_contains(supported_sources, diagnostic.source)
+            return vim.list_contains(supported_sources, diagnostic.source)
         end,
         vim.diagnostic.get(bufnr, { lnum = lnum })
     )
@@ -84,8 +90,6 @@ local function add_suppress_diagnostics(diagnostic, bufnr, lnum)
 end
 
 local function format_diagnostic(diagnostic)
-    local severity = vim.diagnostic.severity
-
     -- TODO: Add a colour to the sign, that's the texthl property (instead of text)
     local sign_per_severity = {
         [severity.ERROR] = vim.fn.sign_getdefined("DiagnosticSignError")[1],
@@ -104,9 +108,55 @@ local function format_diagnostic(diagnostic)
 
     local source = M.source_aliases[diagnostic.source] or diagnostic.source
 
-    return string.format("%s %s %s %s", sign.text, source, diagnostic.code, diagnostic.message)
+    local code
+    if diagnostic.code == vim.NIL or diagnostic.code == nil then
+        code = ""
+    else
+        code = diagnostic.code
+    end
+
+    return string.format("%s %s %s %s", sign.text, source, code, diagnostic.message)
 end
 
+local function get_coverage_diagnostics(bufnr, lnum)
+    local coverage_signs = vim.fn.sign_getplaced(bufnr, { group = "coverage", lnum = lnum })[1].signs
+
+    if coverage_signs == nil or vim.tbl_isempty(coverage_signs) then
+        return {}
+    end
+
+    local signs_to_convert = vim.tbl_filter(function(sign)
+        return vim.list_contains({ "coverage_uncovered", "coverage_partial" }, sign.name)
+    end, coverage_signs)
+
+    return vim.tbl_map(function(sign)
+        local diagnostic_severity, message
+
+        if sign.name == "coverage_uncovered" then
+            diagnostic_severity = severity.ERROR
+            message = "Uncovered line"
+        elseif sign.name == "coverage_partial" then
+            diagnostic_severity = severity.WARN
+            message = "Partially covered line"
+        else
+            error("invalid branch")
+        end
+
+        return {
+            bufnr = bufnr,
+            lnum = lnum,
+            -- TODO: Add end_lnum and maybe add pragma: no cover to the whole block?
+            col = 1,
+            severity = diagnostic_severity,
+            message = message,
+            source = sign.group,
+            code = sign.name,
+        }
+    end, signs_to_convert)
+end
+
+-- TODO: We need better names throughout to include
+--       linting errors, type errors, coverage etc.
 M.suppress_current_line_lint = function()
     vim.schedule(function()
         local bufnr = vim.api.nvim_get_current_buf()
@@ -114,27 +164,40 @@ M.suppress_current_line_lint = function()
         local linenr, _ = unpack(vim.api.nvim_win_get_cursor(winnr))
         local diagnostics = get_diagnostics_on_line(bufnr, linenr - 1)
 
-        if vim.tbl_isempty(diagnostics) then
-            vim.notify("No suppressable linting errors found for the current lint")
+        -- If it's hacky but it works it ain't hacky!
+        local coverage_diagnostics = get_coverage_diagnostics(bufnr, linenr)
+
+        local combined_diagnostics = {}
+
+        for _, value in ipairs(diagnostics) do
+            if value ~= nil and value ~= vim.NIL then
+                table.insert(combined_diagnostics, value)
+            end
+        end
+
+        for _, value in ipairs(coverage_diagnostics) do
+            if value ~= nil and value ~= vim.NIL then
+                table.insert(combined_diagnostics, value)
+            end
+        end
+
+        if vim.tbl_isempty(combined_diagnostics) then
+            vim.notify("No suppressable linting errors or uncovered signs found for the current line")
             return
         end
 
-        if #diagnostics == 1 then
-            add_suppress_diagnostics(diagnostics[1], bufnr, linenr - 1)
+        if #combined_diagnostics == 1 then
+            add_suppress_diagnostics(combined_diagnostics[1], bufnr, linenr - 1)
             return
         end
 
         vim.ui.select(
-            diagnostics,
+            combined_diagnostics,
             {
                 prompt = "Select which linting error to suppress",
                 format_item = format_diagnostic,
             },
             function(diagnostic, _)
-                if diagnostic == nil then
-                    return
-                end
-
                 add_suppress_diagnostics(diagnostic, bufnr, linenr - 1)
             end
         )

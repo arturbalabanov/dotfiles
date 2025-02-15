@@ -7,6 +7,7 @@ local actions = require("telescope.actions")
 local actions_layout = require("telescope.actions.layout")
 local telescope_builtin = require('telescope.builtin')
 local trouble = require("trouble.sources.telescope")
+local nvim_search = require('search')
 
 local my_utils = require("user.utils")
 
@@ -82,22 +83,10 @@ telescope.setup {
             previewer = false,
         },
         builtin = {
-            -- theme = "dropdown",
             include_extensions = true,
             previewer = false,
             border = true,
-            borderchars = {
-                prompt = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
-                results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
-                preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-            },
             layout_strategy = 'vertical',
-            layout_config = {
-                vertical = {
-                    width = 0.3,
-                    prompt_position = "top"
-                },
-            },
         }
     },
     extensions = {
@@ -116,25 +105,64 @@ telescope.setup {
     }
 }
 
-my_utils.nkeymap("<leader>t", telescope_builtin.builtin)
-my_utils.nkeymap("<leader>h", telescope_builtin.help_tags)
+nvim_search.setup({
+    mappings = { -- NOTE: will be set in normal and insert mode(!)
+        next = "<Tab>",
+        prev = "<S-Tab>"
+    },
+    append_tabs = { -- These will always be added to every tab group
+        {
+            name = "Others",
+            tele_func = telescope_builtin.builtin,
+        },
+    },
+    tabs = {
+        {
+            name = "Files",
+            tele_func = function(opts)
+                opts = opts or {}
 
-my_utils.nkeymap("<leader>f", telescope_builtin.live_grep)
+                local tabpage = vim.api.nvim_get_current_tabpage()
+                local tabnr = vim.api.nvim_tabpage_get_number(tabpage)
+                local winnr = vim.api.nvim_tabpage_get_win(tabpage)
+
+                if vim.fn.getcwd(winnr, tabnr) == vim.fn.expand("$HOME") then
+                    opts.cwd = '~/.config/nvim'
+                end
+
+                telescope_builtin.find_files(opts)
+            end
+        },
+        {
+            name = "Live Grep",
+            tele_func = telescope_builtin.live_grep,
+        },
+        {
+            name = "Commits",
+            tele_func = telescope_builtin.git_commits,
+            available = function()
+                -- TODO: make this work with yadm_files too
+                return vim.fn.isdirectory(".git") == 1
+            end,
+        },
+        {
+            name = "Glyphs",
+            tele_func = telescope.extensions.glyph.glyph,
+        },
+        {
+            name = "Projects",
+            tele_func = telescope.extensions.projects.projects,
+        },
+        {
+            name = "Help",
+            tele_func = telescope_builtin.help_tags,
+        },
+    },
+})
+
+my_utils.nkeymap("<leader>p", nvim_search.open)
+my_utils.nkeymap("<leader>f", function() nvim_search.open({ tab_name = "Live Grep" }) end)
+my_utils.nkeymap("<leader>h", function() nvim_search.open({ tab_name = "Help" }) end)
 my_utils.nkeymap("<leader>*", telescope_builtin.grep_string)
 
-my_utils.nkeymap("<leader>p", function()
-    local tabpage = vim.api.nvim_get_current_tabpage()
-    local tabnr = vim.api.nvim_tabpage_get_number(tabpage)
-    local winnr = vim.api.nvim_tabpage_get_win(tabpage)
-
-    local args = {}
-    if vim.fn.getcwd(winnr, tabnr) == vim.fn.expand("$HOME") then
-        args.cwd = '~/.config/nvim'
-    end
-
-    telescope_builtin.find_files(args)
-end)
-
-my_utils.nkeymap("<leader><leader>", telescope.extensions.projects.projects)
-my_utils.nkeymap("<leader>g", telescope.extensions.glyph.glyph)
 my_utils.nkeymap("<leader>c", telescope.extensions.yadm_files.yadm_files)

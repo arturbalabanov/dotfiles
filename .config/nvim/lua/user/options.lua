@@ -54,9 +54,6 @@ opt.incsearch = true
 opt.ignorecase = true
 opt.smartcase = true
 
--- folding
-opt.foldenable = false
-
 -- other
 opt.wildignore:append('*.pyc')
 opt.wildignore:append('*.pyo')

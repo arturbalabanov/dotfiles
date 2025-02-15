@@ -60,9 +60,8 @@ opt_require "user.avante"
 opt_require "user.diffview"
 opt_require "user.focus"
 opt_require "user.noice"
+opt_require "user.ufo"
 
 opt_require "user.tmux"
 
 opt_require("user.my_plugins.suppress_lint")
-
-opt_require "user.filetype"

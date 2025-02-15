@@ -14,6 +14,10 @@ nvim_tree.setup({
         enable = true,
         update_root = true,
     },
+    notify = {
+        threshold = vim.log.levels.WARN, -- only notify on warnings or above
+        absolute_path = false,
+    },
     on_attach = function(bufnr)
         local function nkeymap(input, action, desc)
             my_utils.nkeymap(input, action, {

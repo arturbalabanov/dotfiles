@@ -1,5 +1,3 @@
--- vim: set foldmethod=marker:
-
 -- Automatically install packer {{{
 local install_path = vim.fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
@@ -80,6 +78,12 @@ return packer.startup(function(use)
     }
     use {
         "ghassan0/telescope-glyph.nvim",
+        requires = { "nvim-telescope/telescope.nvim" },
+    }
+
+    use {
+        "FabianWirth/search.nvim",
+        requires = { "nvim-telescope/telescope.nvim" },
     }
 
     use {
@@ -175,6 +179,16 @@ return packer.startup(function(use)
             "nvim-lua/plenary.nvim",
         }
     }
+
+
+    -- folding with nvim-ufo
+    use {
+        'kevinhwang91/nvim-ufo',
+        requires = {
+            'kevinhwang91/promise-async',
+        },
+    }
+
     use { "akinsho/toggleterm.nvim", tag = '*' }
     use "chentoast/marks.nvim"
 
@@ -253,8 +267,6 @@ return packer.startup(function(use)
             require('avante_lib').load()
         end,
     }
-
-    -- }}}
 
     use "declancm/cinnamon.nvim"
     use "sindrets/diffview.nvim"
