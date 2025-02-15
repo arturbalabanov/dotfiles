@@ -11,8 +11,8 @@ todo_comments.setup({
     -- keywords recognized as todo comments
     keywords = {
         FIX = {
-            icon = " ",                              -- icon used for the sign, and in search results
-            color = "error",                            -- can be a hex color, or a named color (see below)
+            icon = " ", -- icon used for the sign, and in search results
+            color = "error", -- can be a hex color, or a named color (see below)
             alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
             -- signs = false, -- configure signs for some keywords individually
         },
@@ -69,3 +69,7 @@ todo_comments.setup({
         -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
     },
 })
+
+-- Move between TODOs with [t and ]t
+my_utils.nkeymap('[t', todo_comments.jump_prev)
+my_utils.nkeymap(']t', todo_comments.jump_next)
