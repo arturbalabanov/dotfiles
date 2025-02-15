@@ -1,3 +1,5 @@
+local my_utils = require("user.utils")
+
 local status_ok, gitsigns = pcall(require, 'gitsigns')
 if not status_ok then
     return
@@ -12,7 +14,7 @@ gitsigns.setup {
         changedelete = { text = '~' },
         untracked    = { text = '┆' },
     },
-    signcolumn                      = false,  -- Toggle with `:Gitsigns toggle_signs`
+    signcolumn                      = false, -- Toggle with `:Gitsigns toggle_signs`
     numhl                           = false, -- Toggle with `:Gitsigns toggle_numhl`
     linehl                          = false, -- Toggle with `:Gitsigns toggle_linehl`
     word_diff                       = false, -- Toggle with `:Gitsigns toggle_word_diff`
@@ -48,3 +50,7 @@ gitsigns.setup {
         require("gitsigns-yadm").yadm_signs(callback)
     end,
 }
+
+-- Jump between git hunks with [g and ]g
+my_utils.nkeymap('[g', function() gitsigns.nav_hunk('prev') end)
+my_utils.nkeymap(']g', function() gitsigns.nav_hunk('next') end)

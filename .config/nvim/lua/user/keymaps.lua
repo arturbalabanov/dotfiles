@@ -94,3 +94,7 @@ my_utils.nkeymap("gV", "`[V`]")
 --     "|some more text"
 -- )
 my_utils.ikeymap("<S-Enter>", "\"\"<Esc>m`2F\"i(<Esc>4f\"a)<Esc>``a<CR><Esc>la")
+
+-- Move between buffers with [b and ]b
+my_utils.nkeymap("[b", vim.cmd.bprev)
+my_utils.nkeymap("]b", vim.cmd.bnext)

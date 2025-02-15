@@ -235,6 +235,7 @@ local function parse_existing_suppresses(bufnr, lnum)
         vim.notify(vim.inspect({ node:type(), vim.treesitter.get_node_text(node, bufnr), metadata }))
     end
 end
+
 my_utils.nkeymap('<leader>q', function()
     local bufnr = vim.api.nvim_get_current_buf()
     local winnr = vim.api.nvim_get_current_win()
