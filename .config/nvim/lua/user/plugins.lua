@@ -142,6 +142,13 @@ return packer.startup(function(use)
         run = "make install_jsregexp",
     }
     use 'saadparwaiz1/cmp_luasnip'
+    use {
+        "chrisgrieser/nvim-scissors",
+        dependencies = {
+            "L3MON4D3/LuaSnip",
+            "nvim-telescope/telescope.nvim",
+        }
+    }
 
     use "gbprod/substitute.nvim"
 
@@ -184,6 +191,7 @@ return packer.startup(function(use)
         }
     }
 
+    use "chrisgrieser/nvim-puppeteer"
 
     -- folding with nvim-ufo
     use {
