@@ -19,3 +19,22 @@ jira sprint list \
     --status "~Done" \
     --order-by "status" \
     --plain 
+ 
+# jira-my-issues | sed '1d' | fzf | awk -F '\t{1,}' '{                                                                                                                           
+#     branch_type = "chore";
+#     if ($1 == "Story")
+#         branch_type = "feat";
+#
+#     issue_key = $2;
+#     issue_summary = $3;
+#
+#     normalized_summary = tolower(issue_summary);
+#     gsub(/[^[:alnum:]]/, " ", normalized_summary);
+#     gsub("^ +", "", normalized_summary);
+#     gsub(" +$", "", normalized_summary);
+#     gsub(" +", "-", normalized_summary);
+#
+#     printf("%s/%s-%s", branch_type, issue_key, normalized_summary)
+# }'
+#
+# TODO: Add a preview to fzf with `jira issue view $issue_key`

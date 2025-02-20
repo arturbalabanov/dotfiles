@@ -43,6 +43,7 @@ opt_require "user.todo_comments"
 opt_require "user.project_nvim"
 opt_require "user.overseer"
 
+opt_require "user.rulebook"
 opt_require "user.indent_blankline"
 opt_require "user.gitsigns"
 opt_require "user.cmp"
@@ -61,7 +62,6 @@ opt_require "user.diffview"
 opt_require "user.focus"
 opt_require "user.noice"
 opt_require "user.ufo"
+opt_require "user.octo"
 
 opt_require "user.tmux"
-
-opt_require("user.my_plugins.suppress_lint")

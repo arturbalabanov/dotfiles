@@ -14,11 +14,6 @@ vim.treesitter.query.set("lua", "folds", [[
   (function_declaration) @fold
 ]])
 
-vim.treesitter.query.set("python", "folds", [[
-  (decorated_definition) @fold
-  (function_definition) @fold
-  (class_definition) @fold
-]])
 
 vim.treesitter.query.set("go", "folds", [[
   (function_declaration) @fold
@@ -27,20 +22,20 @@ vim.treesitter.query.set("go", "folds", [[
 ]])
 
 ufo.setup({
-    open_fold_hl_timeout = 0, -- disable highlighting on opening folds
-    close_fold_kinds_for_ft = {
-        zsh = { 'marker' },
-    },
-    provider_selector = function(bufnr, filetype, buftype)
-        local folds_per_ft = {
-            zsh = 'marker',
-            python = { 'treesitter' },
-            lua = { 'marker', 'treesitter' },
-            go = { 'treesitter' },
-        }
+  open_fold_hl_timeout = 0, -- disable highlighting on opening folds
+  close_fold_kinds_for_ft = {
+    zsh = { 'marker' },
+  },
+  provider_selector = function(bufnr, filetype, buftype)
+    local folds_per_ft = {
+      zsh = 'marker',
+      python = { 'treesitter' },
+      lua = { 'marker', 'treesitter' },
+      go = { 'treesitter' },
+    }
 
-        return folds_per_ft[filetype] or { 'marker', 'treesitter' }
-    end
+    return folds_per_ft[filetype] or { 'marker', 'treesitter' }
+  end
 })
 
 
@@ -52,11 +47,11 @@ vim.keymap.set('n', 'zR', ufo.openAllFolds)
 vim.keymap.set('n', 'zM', ufo.closeAllFolds)
 -- peek a fold with <Shift+Tab>
 vim.keymap.set('n', '<S-Tab>', function()
-    local winid = ufo.peekFoldedLinesUnderCursor()
+  local winid = ufo.peekFoldedLinesUnderCursor()
 
-    if not winid then
-        vim.lsp.buf.hover()
-    end
+  if not winid then
+    vim.lsp.buf.hover()
+  end
 end)
 
 -- Toggle folds with <Tab>
