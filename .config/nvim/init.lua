@@ -22,6 +22,7 @@ opt_require "user.options"
 opt_require "user.keymaps"
 opt_require "user.commands"
 
+opt_require "user.theme"
 opt_require "user.plugins"
 
 opt_require "user.substitute"
@@ -32,7 +33,6 @@ opt_require "user.better_escape"
 opt_require "user.autoreload_config"
 opt_require "user.treesitter"
 opt_require "user.treesj"
-opt_require "user.theme"
 opt_require "user.guess_indent"
 
 opt_require "user.neodev"
