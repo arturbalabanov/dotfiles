@@ -146,7 +146,7 @@ local LSPActive = {
 
                     local item = "* `" .. linter_name .. "`"
 
-                    if not my_utils.executable_exists(linter_cmd) then
+                    if not linter_cmd or (not my_utils.executable_exists(linter_cmd)) then
                         item = item .. " **NOT AVAILABLE**"
                     elseif self.py_venv ~= nil and linter_cmd:find(self.py_venv.bin_path, 1, true) == 1 then
                         item = item .. " "

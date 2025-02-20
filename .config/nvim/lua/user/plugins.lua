@@ -150,6 +150,8 @@ return packer.startup(function(use)
     use "folke/trouble.nvim"
     use "folke/todo-comments.nvim"
 
+    use "chrisgrieser/nvim-rulebook"
+
     use "darfink/vim-plist"
     use {
         'nvimdev/lspsaga.nvim',
@@ -232,6 +234,15 @@ return packer.startup(function(use)
         },
     }
     use "ahmedkhalf/project.nvim"
+
+    use {
+        'pwntester/octo.nvim',
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'nvim-telescope/telescope.nvim',
+            'nvim-tree/nvim-web-devicons',
+        },
+    }
 
     -- AI {{
     use {
