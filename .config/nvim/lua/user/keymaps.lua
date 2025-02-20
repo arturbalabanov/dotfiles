@@ -3,7 +3,6 @@ local my_utils = require("user.utils")
 -- Use Space as a leader key
 vim.g.mapleader = ' '
 
-my_utils.ikeymap("jj", "<Esc>")
 my_utils.nkeymap(";", ":", { silent = false })
 
 -- Use vv to select current line without leading and trailing indentation
@@ -80,6 +79,25 @@ my_utils.nkeymap("<C-e>", vim.cmd.Inspect)
 
 -- Move a window to a new tab
 my_utils.nkeymap("<C-t>", "<C-w>T")
+
+-- Move a window to a split bellow
+my_utils.nkeymap("<C-w>j", function()
+    local winnr = vim.api.nvim_get_current_win()
+    vim.cmd.split()
+    vim.api.nvim_win_close(winnr, false)
+
+    vim.api.nvim_win_set_height(0, 20)
+end)
+
+-- Move a window to a split right
+my_utils.nkeymap("<C-w>l", function()
+    local winnr = vim.api.nvim_get_current_win()
+    vim.cmd.vsplit()
+    vim.api.nvim_win_close(winnr, false)
+
+    vim.api.nvim_win_set_width(0, 60)
+end)
+
 
 -- Select last pasted text with gV
 my_utils.nkeymap("gV", "`[V`]")

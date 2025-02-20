@@ -12,7 +12,7 @@ opt.undofile = true
 opt.termguicolors = true
 opt.showmode = false
 opt.ruler = false
-opt.cmdheight = 1
+opt.cmdheight = 0
 opt.cursorline = true
 opt.colorcolumn = "130"
 opt.signcolumn = "yes"
@@ -28,7 +28,7 @@ opt.mouse = "a"
 opt.mousescroll = "ver:3,hor:0"
 
 opt.number = true
-opt.relativenumber = true
+opt.relativenumber = false
 opt.numberwidth = 4
 
 -- text
