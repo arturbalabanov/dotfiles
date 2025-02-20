@@ -43,6 +43,8 @@ return packer.startup(function(use)
     use "mfussenegger/nvim-lint"
     use "stevearc/conform.nvim"
 
+    use "max397574/better-escape.nvim"
+
     use { 'echasnovski/mini.nvim' }
     use { "ellisonleao/gruvbox.nvim" }
     use { "folke/tokyonight.nvim" }
@@ -226,6 +228,12 @@ return packer.startup(function(use)
     }
 
     use "rebelot/heirline.nvim"
+    use {
+        "b0o/incline.nvim",
+        requires = {
+            "nvim-tree/nvim-web-devicons",
+        }
+    }
     use "lewis6991/gitsigns.nvim"
     use {
         "purarue/gitsigns-yadm.nvim",
@@ -244,7 +252,22 @@ return packer.startup(function(use)
         },
     }
 
-    -- AI {{
+    use {
+        "ThePrimeagen/refactoring.nvim",
+        requires = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter"
+        }
+    }
+
+    use {
+        "MagicDuck/grug-far.nvim",
+        requires = {
+            "nvim-tree/nvim-web-devicons",
+        },
+    }
+
+    -- AI {{{
     use {
         "jackMort/ChatGPT.nvim",
         requires = {
@@ -278,6 +301,7 @@ return packer.startup(function(use)
             require('avante_lib').load()
         end,
     }
+    -- }}}
 
     use "declancm/cinnamon.nvim"
     use "sindrets/diffview.nvim"
