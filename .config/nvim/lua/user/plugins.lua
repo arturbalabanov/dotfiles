@@ -149,6 +149,7 @@ return packer.startup(function(use)
             "nvim-telescope/telescope.nvim",
         }
     }
+    use "rafamadriz/friendly-snippets"
 
     use "gbprod/substitute.nvim"
 

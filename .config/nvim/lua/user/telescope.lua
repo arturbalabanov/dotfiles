@@ -198,3 +198,4 @@ my_utils.nkeymap("<leader>h", function() nvim_search.open({ tab_name = "Help" })
 my_utils.nkeymap("<leader>*", telescope_builtin.grep_string)
 
 my_utils.nkeymap("<leader>c", telescope.extensions.yadm_files.yadm_files)
+my_utils.nkeymap("<leader>tc", telescope_builtin.commands)
