@@ -55,7 +55,6 @@ return packer.startup(function(use)
     use { "scottmckendry/cyberdream.nvim" }
     --- }}}
 
-    use "tpope/vim-fugitive"
     use {
         'nvim-tree/nvim-web-devicons',
         tag = 'nerd-v2-compat',
@@ -70,8 +69,19 @@ return packer.startup(function(use)
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.8',
     }
+    use {
+        "ghassan0/telescope-glyph.nvim",
+        requires = { "nvim-telescope/telescope.nvim" },
+    }
 
-    use "pschmitt/telescope-yadm.nvim"
+    use {
+        "FabianWirth/search.nvim",
+        requires = { "nvim-telescope/telescope.nvim" },
+    }
+
+
+    -- Git {{{
+    use "tpope/vim-fugitive"
 
     use {
         "aaronhallaert/advanced-git-search.nvim",
@@ -84,15 +94,27 @@ return packer.startup(function(use)
             "sindrets/diffview.nvim",
         },
     }
+    use "sindrets/diffview.nvim"
+    use "lewis6991/gitsigns.nvim"
     use {
-        "ghassan0/telescope-glyph.nvim",
-        requires = { "nvim-telescope/telescope.nvim" },
+        "purarue/gitsigns-yadm.nvim",
+        requires = {
+            "lewis6991/gitsigns.nvim",
+        },
     }
-
     use {
-        "FabianWirth/search.nvim",
-        requires = { "nvim-telescope/telescope.nvim" },
+        "pschmitt/telescope-yadm.nvim",
+        requires = "nvim-telescope/telescope.nvim",
     }
+    use {
+        'pwntester/octo.nvim',
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'nvim-telescope/telescope.nvim',
+            'nvim-tree/nvim-web-devicons',
+        },
+    }
+    -- }}}
 
     use {
         'nvim-treesitter/nvim-treesitter',
@@ -107,6 +129,7 @@ return packer.startup(function(use)
         ft = 'qf',
     }
 
+    -- TODO: remove me as this is now built-in
     use 'nvim-treesitter/playground'
 
     use 'Wansmer/treesj'
@@ -127,18 +150,12 @@ return packer.startup(function(use)
     -- TODO: neodev has reached EoL, replace it with folke/lazydev.nvim
     use "folke/neodev.nvim"
 
+    -- Autocomplete (incl. snippets) {{{
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-buffer'
     use 'hrsh7th/cmp-path'
     use 'hrsh7th/cmp-cmdline'
-
-    use {
-        -- TODO: replace with stevanmilic/nvim-lspimport once #7 is merged:
-        --       https://github.com/stevanmilic/nvim-lspimport/pull/7
-        'arturbalabanov/nvim-lspimport',
-        branch = "add-missing-imports",
-    }
 
     use {
         "L3MON4D3/LuaSnip",
@@ -159,6 +176,13 @@ return packer.startup(function(use)
         }
     }
     use "rafamadriz/friendly-snippets"
+    -- }}}
+    use {
+        -- TODO: replace with stevanmilic/nvim-lspimport once #7 is merged:
+        --       https://github.com/stevanmilic/nvim-lspimport/pull/7
+        'arturbalabanov/nvim-lspimport',
+        branch = "add-missing-imports",
+    }
 
     use "gbprod/substitute.nvim"
 
@@ -178,6 +202,7 @@ return packer.startup(function(use)
     }
     use "rmagatti/goto-preview"
 
+    -- Testing {{{
     use {
         "nvim-neotest/neotest",
         requires = {
@@ -200,7 +225,9 @@ return packer.startup(function(use)
             "nvim-lua/plenary.nvim",
         }
     }
+    -- }}}
 
+    -- automatically convert strings to f-strings in python (and similar in other languages)
     use "chrisgrieser/nvim-puppeteer"
 
     -- folding with nvim-ufo
@@ -221,6 +248,7 @@ return packer.startup(function(use)
 
     use "stevearc/overseer.nvim"
 
+    -- Debugging {{{
     use "mfussenegger/nvim-dap"
     use {
         "rcarriga/nvim-dap-ui",
@@ -235,6 +263,7 @@ return packer.startup(function(use)
             "mfussenegger/nvim-dap"
         }
     }
+    -- }}}
 
     use {
         "folke/noice.nvim",
@@ -252,23 +281,8 @@ return packer.startup(function(use)
             "nvim-tree/nvim-web-devicons",
         }
     }
-    use "lewis6991/gitsigns.nvim"
-    use {
-        "purarue/gitsigns-yadm.nvim",
-        requires = {
-            "lewis6991/gitsigns.nvim",
-        },
-    }
     use "ahmedkhalf/project.nvim"
 
-    use {
-        'pwntester/octo.nvim',
-        requires = {
-            'nvim-lua/plenary.nvim',
-            'nvim-telescope/telescope.nvim',
-            'nvim-tree/nvim-web-devicons',
-        },
-    }
 
     use {
         "ThePrimeagen/refactoring.nvim",
@@ -299,7 +313,7 @@ return packer.startup(function(use)
         "zbirenbaum/copilot.lua",
         cmd = "Copilot",
         event = "InsertEnter",
-        config = function() require("user.copilot") end
+        config = function() require("user.ai.copilot") end
     }
 
     use {
@@ -311,7 +325,7 @@ return packer.startup(function(use)
             "MunifTanjim/nui.nvim",
             "nvim-tree/nvim-web-devicons",
             -- "zbirenbaum/copilot.lua", -- for providers='copilot'  -- TODO: re-enable
-            -- "HakonHarnes/img-clip.nvim", -- support for image pasting  -- TODO: enable and check the avante.nvim's READNE for setup
+            "HakonHarnes/img-clip.nvim", -- support for image pasting
             "MeanderingProgrammer/render-markdown.nvim",
         },
         run = "make",
@@ -322,7 +336,6 @@ return packer.startup(function(use)
     -- }}}
 
     use "declancm/cinnamon.nvim"
-    use "sindrets/diffview.nvim"
     use "nmac427/guess-indent.nvim"
     use "beauwilliams/focus.nvim"
     use "levouh/tint.nvim"
@@ -359,6 +372,7 @@ return packer.startup(function(use)
     use "pearofducks/ansible-vim"
 
     use "aserowy/tmux.nvim"
+    use { 'mistricky/codesnap.nvim', run = 'make' }
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
