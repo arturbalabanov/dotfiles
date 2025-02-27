@@ -54,3 +54,4 @@ gitsigns.setup {
 -- Jump between git hunks with [g and ]g
 my_utils.nkeymap('[g', function() gitsigns.nav_hunk('prev') end)
 my_utils.nkeymap(']g', function() gitsigns.nav_hunk('next') end)
+my_utils.nkeymap('<leader>gs', gitsigns.toggle_signs)

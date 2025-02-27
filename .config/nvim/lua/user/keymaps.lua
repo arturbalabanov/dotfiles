@@ -32,7 +32,7 @@ my_utils.nkeymap("U", vim.cmd.redo)
 -- end)
 
 -- Toggle nvim-tree (or diffview if in diff mode) with <F2>
-my_utils.nkeymap("<F2>", function()
+local toggle_file_tree = function()
     local diff_mode = vim.opt_local.diff:get()
 
     local win = vim.api.nvim_get_current_win()
@@ -45,7 +45,13 @@ my_utils.nkeymap("<F2>", function()
     end
 
     vim.cmd.NvimTreeToggle()
+end
+my_utils.nkeymap("<F2>", toggle_file_tree)
+my_utils.ikeymap("<F2>", function() 
+    vim.cmd.stopinsert() 
+    toggle_file_tree()
 end)
+
 
 -- Toggle the line numbers with <F6>
 my_utils.nkeymap("<F6>", function()

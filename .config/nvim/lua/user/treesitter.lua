@@ -22,8 +22,8 @@ configs.setup {
                 ["if"] = "@function.inner",
                 ["ic"] = "@class.inner",
                 ["ac"] = "@class.outer",
-                ["ib"] = "@block.inner",
-                ["ab"] = "@block.outer",
+                ["iB"] = "@block.inner",
+                ["aB"] = "@block.outer",
 
                 -- You can also use captures from other query groups like `locals.scm`
                 -- ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },

@@ -1,3 +1,5 @@
+local my_utils = require("user.utils")
+
 local status_ok, diffview = pcall(require, "diffview")
 if not status_ok then
     return
@@ -352,3 +354,15 @@ diffview.setup({
         },
     },
 })
+
+my_utils.nkeymap('<leader>gd', function()
+    local diff_mode = vim.opt_local.diff:get()
+    local filetype = vim.api.nvim_buf_get_option(0, "filetype")
+
+    if diff_mode or filetype == "DiffviewFiles" then
+        vim.cmd.DiffviewClose()
+        return
+    end
+
+    vim.cmd.DiffviewOpen()
+end)
