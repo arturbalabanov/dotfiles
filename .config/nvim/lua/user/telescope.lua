@@ -197,5 +197,6 @@ my_utils.nkeymap("<leader>f", function() nvim_search.open({ tab_name = "Live Gre
 my_utils.nkeymap("<leader>h", function() nvim_search.open({ tab_name = "Help" }) end)
 my_utils.nkeymap("<leader>*", telescope_builtin.grep_string)
 
-my_utils.nkeymap("<leader>c", telescope.extensions.yadm_files.yadm_files)
-my_utils.nkeymap("<leader>tc", telescope_builtin.commands)
+my_utils.nkeymap("<leader>d", telescope.extensions.yadm_files.yadm_files)
+my_utils.nkeymap("<leader>c", telescope_builtin.commands)
+my_utils.nkeymap("<leader><leader>", telescope_builtin.builtin)

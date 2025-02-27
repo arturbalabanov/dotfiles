@@ -16,6 +16,9 @@ better_escape.setup {
             j = {
                 j = "<Esc>",
             },
+            k = {
+                k = "<Esc>",
+            },
         },
     }
 }
