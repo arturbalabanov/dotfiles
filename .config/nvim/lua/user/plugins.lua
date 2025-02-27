@@ -46,8 +46,14 @@ return packer.startup(function(use)
     use "max397574/better-escape.nvim"
 
     use { 'echasnovski/mini.nvim' }
+
+    --- Themes {{{
     use { "ellisonleao/gruvbox.nvim" }
     use { "folke/tokyonight.nvim" }
+    use { "EdenEast/nightfox.nvim" }
+    use { "tiagovla/tokyodark.nvim" }
+    use { "scottmckendry/cyberdream.nvim" }
+    --- }}}
 
     use "tpope/vim-fugitive"
     use {
@@ -140,6 +146,9 @@ return packer.startup(function(use)
         tag = "v1.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
         -- install jsregexp (optional!:).
         run = "make install_jsregexp",
+        dependencies = {
+            "rafamadriz/friendly-snippets",
+        }
     }
     use 'saadparwaiz1/cmp_luasnip'
     use {
