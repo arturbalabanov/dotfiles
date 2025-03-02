@@ -47,8 +47,8 @@ local toggle_file_tree = function()
     vim.cmd.NvimTreeToggle()
 end
 my_utils.nkeymap("<F2>", toggle_file_tree)
-my_utils.ikeymap("<F2>", function() 
-    vim.cmd.stopinsert() 
+my_utils.ikeymap("<F2>", function()
+    vim.cmd.stopinsert()
     toggle_file_tree()
 end)
 
