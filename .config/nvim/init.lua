@@ -44,6 +44,7 @@ opt_require "user.trouble"
 opt_require "user.todo_comments"
 opt_require "user.project_nvim"
 opt_require "user.overseer"
+opt_require "user.pytrize"
 
 opt_require "user.rulebook"
 opt_require "user.indent_blankline"

@@ -201,6 +201,15 @@ return packer.startup(function(use)
         after = 'nvim-lspconfig',
     }
     use "rmagatti/goto-preview"
+    -- TODO: this is a fork of AckslD/nvim-pytrize.lua, replace with original once PR is merged
+    --       https://github.com/AckslD/nvim-pytrize.lua/pull/10
+    use {
+        "Nosterx/nvim-pytrize.lua",
+        requires = {
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope.nvim",
+        },
+    }
 
     -- Testing {{{
     use {

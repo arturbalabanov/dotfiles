@@ -416,4 +416,27 @@ M.md.to_list = function(tbl, opts)
     return table.concat(lines, "\n")
 end
 
+M.move_jump_to_new_tab = function(jump_func)
+    local usage_error = M.usage_error("move_jump_to_new_tab")
+
+    if type(jump_func) ~= "function" then
+        usage_error("jump_func must be a function")
+    end
+
+    local orig_winnr = vim.api.nvim_get_current_win()
+    local orig_bufnr = vim.api.nvim_get_current_buf()
+
+    jump_func()
+
+    local post_jump_bufnr = vim.api.nvim_get_current_buf()
+
+    if orig_bufnr == post_jump_bufnr then
+        return
+    end
+
+    vim.cmd("tab split")
+    vim.api.nvim_win_set_buf(orig_winnr, orig_bufnr)
+end
+
+
 return M

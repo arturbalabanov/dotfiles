@@ -120,13 +120,19 @@ local Diagnostics = {
 
 local BufferNumber = {
     provider = function(self)
-        return self.bufnr .. ' '
+        return 'b:' .. self.bufnr .. ' '
+    end,
+}
+
+local WindowNumber = {
+    provider = function(self)
+        return 'w:' .. self.winnr .. ' '
     end,
 }
 
 RelativeFilePathBlock = utils.insert(common.CurrentTabFileBlock,
     common.Space,
-    utils.insert(common.FileIcon, BufferNumber),
+    utils.insert(common.FileIcon, BufferNumber, WindowNumber),
     common.RelativeFilePath,
     common.FileFlags,
     { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
