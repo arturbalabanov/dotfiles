@@ -50,6 +50,8 @@ telescope.setup {
                 ["<C-q>"] = actions.smart_send_to_qflist,
                 ["<C-f>"] = actions.preview_scrolling_down,
                 ["<C-p>"] = actions.preview_scrolling_up,
+                ["<C-j>"] = actions.move_selection_next,
+                ["<C-k>"] = actions.move_selection_previous,
             },
             n = {
                 ["t"] = actions.select_tab,
@@ -197,6 +199,9 @@ my_utils.nkeymap("<leader>f", function() nvim_search.open({ tab_name = "Live Gre
 my_utils.nkeymap("<leader>h", function() nvim_search.open({ tab_name = "Help" }) end)
 my_utils.nkeymap("<leader>*", telescope_builtin.grep_string)
 
-my_utils.nkeymap("<leader>d", telescope.extensions.yadm_files.yadm_files)
-my_utils.nkeymap("<leader>c", telescope_builtin.commands)
+my_utils.nkeymap("<leader>c", telescope.extensions.yadm_files.yadm_files)
+my_utils.nkeymap("<leader>C", telescope_builtin.commands)
 my_utils.nkeymap("<leader><leader>", telescope_builtin.builtin)
+my_utils.nkeymap("<leader>l", function()
+    telescope_builtin.lsp_document_symbols({ symbols = { "class", "function" } })
+end)
