@@ -1,6 +1,6 @@
 # Configuration file for ipython.
 
-c = get_config()  #noqa
+c = get_config()  # noqa  # pyright: ignore [reportUndefinedVariable]
 
 #------------------------------------------------------------------------------
 # InteractiveShellApp(Configurable) configuration
@@ -880,7 +880,7 @@ c.TerminalInteractiveShell.editing_mode = 'vi'
 #  
 #              printf "\x1b[38;2;255;100;0mTRUECOLOR\x1b[0m\n"
 #  Default: False
-# c.TerminalInteractiveShell.true_color = False
+c.TerminalInteractiveShell.true_color = True
 
 ## The time in milliseconds that is waited for a key code
 #         to complete.
