@@ -24,3 +24,38 @@ vim.api.nvim_create_user_command('P', function(ctx)
 
     loadstring(template:format(ctx.args))()
 end, { nargs = '+', complete = 'lua' })
+
+vim.api.nvim_create_user_command("ToggleLSPFormatting", function(ctx)
+    local context
+    local enabled_str
+
+    if ctx.bang then
+        vim.g.disable_autoformat = not vim.g.disable_autoformat
+        context = "globally"
+
+        if vim.g.disable_autoformat then
+            enabled_str = "DISABLED"
+        else
+            enabled_str = "ENABLED"
+        end
+    else
+        if vim.g.disable_autoformat and vim.b.disable_autoformat == nil then
+            vim.b.disable_autoformat = true
+        else
+            vim.b.disable_autoformat = not vim.b.disable_autoformat
+        end
+
+        context = "for the current buffer"
+
+        if vim.b.disable_autoformat then
+            enabled_str = "DISABLED"
+        else
+            enabled_str = "ENABLED"
+        end
+    end
+
+    my_utils.simple_notify("Formatting " .. enabled_str .. " " .. context)
+end, {
+    desc = "Toggle autoformat on save for the current buffer (or globally when used with !)",
+    bang = true,
+})

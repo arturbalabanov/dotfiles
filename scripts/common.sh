@@ -3,15 +3,24 @@
 # TODO: Some duplication with ~/.zshrc
 
 
-# Usage: confirm [<prompt-message>] [error-message]
+# Usage: confirm [<prompt-message>] [default=Y] [error-message] 
 function confirm() {
     prompt="${1:-confirm?}"
-    error_msg="${2:-aborted}"
+    default="${2:-N}"
+    error_msg="${3:-aborted}"
 
-    read -p "$prompt [y/N] " -n 1 -r
-    echo    # move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        error "$error_msg"
+    if [[ "$default" =~ ^[Yy]$ ]]; then
+        read -p "$prompt [Y/n] " -n 1 -r
+        echo    # move to a new line
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            error "$error_msg"
+        fi
+    elif [[ "$default" =~ ^[Nn]$ ]]; then
+        read -p "$prompt [y/N] " -n 1 -r
+        echo    # move to a new line
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            error "$error_msg"
+        fi
     fi
 }
 

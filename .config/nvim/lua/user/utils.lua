@@ -1,7 +1,33 @@
-local plenary_tbl = require("plenary.tbl")
-local plenary_functional = require("plenary.functional")
-
 local M = {}
+
+M.apply_defaults = function(original, defaults)
+    if original == nil then
+        original = {}
+    end
+
+    original = vim.deepcopy(original)
+
+    for k, v in pairs(defaults) do
+        if original[k] == nil then
+            original[k] = v
+        end
+    end
+
+    return original
+end
+
+
+M.partial = function(fun, ...)
+    local function bind_n(fn, n, a, ...)
+        if n == 0 then
+            return fn
+        end
+        return bind_n(function(...)
+            return fn(a, ...)
+        end, n - 1, ...)
+    end
+    return bind_n(fun, select("#", ...), ...)
+end
 
 local unpack = unpack or table.unpack
 
@@ -25,7 +51,7 @@ M.executable_exists = function(executable)
 end
 
 M.run_shell_cmd = function(cmd, opts)
-    local opts = plenary_tbl.apply_defaults(opts, { cwd = nil, show_error = true, disable_notifications = false })
+    local opts = M.apply_defaults(opts, { cwd = nil, show_error = true, disable_notifications = false })
 
     if opts.cwd ~= nil then
         vim.cmd.lcd(opts.cwd)
@@ -143,7 +169,7 @@ M.keymap = function(mode, input, output, opts)
     local usage_error = M.usage_error("keymap")
 
     local default_keymap_opts = { silent = true, remap = false }
-    local opts_with_defaults = plenary_tbl.apply_defaults(opts, default_keymap_opts)
+    local opts_with_defaults = M.apply_defaults(opts, default_keymap_opts)
 
     if output == nil then
         usage_error("output is nil")
@@ -162,7 +188,7 @@ M.keymap = function(mode, input, output, opts)
 
         local args = output or {}
 
-        output = plenary_functional.partial(func, unpack(args))
+        output = M.partial(func, unpack(args))
     end
 
     return vim.keymap.set(mode, input, output, opts_with_defaults)
@@ -195,27 +221,16 @@ local function t_mode_keymap(zsh_vim_mode, input, output, opts)
     end, opts)
 end
 
-M.nkeymap = plenary_functional.partial(M.keymap, "n")
-M.ikeymap = plenary_functional.partial(M.keymap, "i")
-M.vkeymap = plenary_functional.partial(M.keymap, "v")
-M.xkeymap = plenary_functional.partial(M.keymap, "x")
-M.tkeymap = plenary_functional.partial(M.keymap, "t")
+M.nkeymap = M.partial(M.keymap, "n")
+M.ikeymap = M.partial(M.keymap, "i")
+M.vkeymap = M.partial(M.keymap, "v")
+M.xkeymap = M.partial(M.keymap, "x")
+M.tkeymap = M.partial(M.keymap, "t")
 
-M.tikeymap = plenary_functional.partial(t_mode_keymap, "insert")
-M.tnkeymap = plenary_functional.partial(t_mode_keymap, "normal")
-M.tvkeymap = plenary_functional.partial(t_mode_keymap, "visual")
+M.tikeymap = M.partial(t_mode_keymap, "insert")
+M.tnkeymap = M.partial(t_mode_keymap, "normal")
+M.tvkeymap = M.partial(t_mode_keymap, "visual")
 
-
-function M.simple_autocmd(event_name, callback, opts)
-    local opts = plenary_tbl.apply_defaults(opts, { clear = true })
-    local augroup = vim.api.nvim_create_augroup("User", { clear = opts.clear })
-
-    vim.api.nvim_create_autocmd(event_name, {
-        group = augroup,
-        callback = callback,
-        pattern = opts.pattern,
-    })
-end
 
 function M.get(tbl, ...)
     local path = { ... }
@@ -250,10 +265,8 @@ function M.simple_notify(msg, level)
     vim.notify(msg, level, { render = "compact" })
 end
 
-M.partial = plenary_functional.partial
-
 function M.show_in_split(str, opts)
-    local opts_with_defaults = plenary_tbl.apply_defaults(opts, { filetype = "text", split_cmd = "split" })
+    local opts_with_defaults = M.apply_defaults(opts, { filetype = "text", split_cmd = "split" })
 
     local buf = vim.api.nvim_create_buf(false, true) -- args: listed, scratch
 
@@ -270,7 +283,7 @@ local NO_VALUE = '__NO_VALUE_SENTINEL__'
 local cache_vault = {}
 
 M.get_or_update_cache = function(namespace, key, get_value_func, opts)
-    opts = plenary_tbl.apply_defaults(opts, { save_nil_values = true })
+    opts = M.apply_defaults(opts, { save_nil_values = true })
 
     local vault = cache_vault[namespace]
 
@@ -403,7 +416,7 @@ M.md.to_list = function(tbl, opts)
     local default_opts = {
         value_format = "%s",
     }
-    opts = plenary_tbl.apply_defaults(opts, default_opts)
+    opts = M.apply_defaults(opts, default_opts)
 
     local lines = {}
 
@@ -436,6 +449,41 @@ M.move_jump_to_new_tab = function(jump_func)
 
     vim.cmd("tab split")
     vim.api.nvim_win_set_buf(orig_winnr, orig_bufnr)
+end
+
+-- the "plugin" functions bellow are adapted from LazyVim
+-- ref: https://github.com/LazyVim/LazyVim/blob/ec5981dfb1222c3bf246d9bcaa713d5cfa486fbd/lua/lazyvim/util/init.lua
+
+M.plugin_is_loaded = function(plugin_name)
+    local Config = require("lazy.core.config")
+    return Config.plugins[plugin_name] and Config.plugins[plugin_name]._.loaded
+end
+
+M.get_plugin_opts = function(plugin_name)
+    local plugin = require("lazy.core.config").spec.plugins[plugin_name]
+    if not plugin then
+        return {}
+    end
+
+    local Plugin = require("lazy.core.plugin")
+    return Plugin.values(plugin, "opts", false)
+end
+
+M.on_plugin_load = function(plugin_name, callback_func)
+    if M.plugin_is_loaded(plugin_name) then
+        callback_func(plugin_name)
+        return
+    else
+        vim.api.nvim_create_autocmd("User", {
+            pattern = "LazyLoad",
+            callback = function(event)
+                if event.data == plugin_name then
+                    callback_func(plugin_name)
+                    return true
+                end
+            end,
+        })
+    end
 end
 
 
