@@ -15,12 +15,8 @@ source "$SCRIPTS_DIR/common.sh"
 # * If local changes not pushed yet, yadm push
 
 # Add yadm files
-yadm add ~/scripts/*
-yadm add ~/scripts/**/*
-yadm add ~/.config/nvim/after/*
-yadm add ~/.config/nvim/after/**/*
-yadm add ~/.config/nvim/lua/user/*
-yadm add ~/.config/nvim/lua/user/**/*
+yadm add ~/scripts
+yadm add ~/.config/nvim
 
 yadm status
 
@@ -28,7 +24,7 @@ if (confirm "Do you want to see the diff?"); then
     yadm diff HEAD
 fi
 
-confirm "Are you sure you want to commit these changes?"
+confirm "Are you sure you want to commit these changes?" "y"
 
 commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
 
