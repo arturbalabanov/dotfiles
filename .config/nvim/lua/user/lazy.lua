@@ -97,6 +97,8 @@ return lazy.setup {
     --     },
     -- },
 
+    "RRethy/nvim-treesitter-endwise",
+
     {
         "saifulapm/commasemi.nvim",
         keys = {
