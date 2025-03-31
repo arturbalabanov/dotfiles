@@ -13,6 +13,11 @@ if [[ -z "${JIRA_API_TOKEN}" ]]; then
 	error "No JIRA API Token provided"
 fi
 
+detail() {
+    # TODO: If not set, default to issue from current branch name
+    issue_key="$1"
+    jira issue view --plain "$issue_key"
+}
 
 new() {
     echo "TODO: Implement"
@@ -87,16 +92,19 @@ review() {
     git push --set-upstream origin "$branch_name"
     gh pr create
     jira issue move "$jira_issue" "Code Review"
-    # TODO: auto populate time tracking
 }
 
 complete() {
-    echo "TODO: Implement"
-    # TODO: Merge PR if it's still open
-    # 
-    # TODO: Make sure that time tracking is updated too
-    # jira issue move "$jira_issue" "Resolve"
-    # jira issue move "$jira_issue" "Verify"
+    branch_name=$(git rev-parse --abbrev-ref HEAD)
+    jira_issue=$(echo -n "$branch_name" | sed -E -n 's|^.*/(([A-Z]{2,}\-[0-9]+)\-)?.*$|\2|p')
+    
+    gh pr merge --squash
+    
+    jira issue move "$jira_issue" "Resolve"
+    jira issue move "$jira_issue" "Verify"
+    echo "Update time tracking for $jira_issue"
+    jira issue view "$jira_issue"
+    # TODO: automate time tracking
 }
 
 if [ "$1" = "new" ]; then
@@ -114,4 +122,7 @@ elif [ "$1" = "review" ]; then
 elif [ "$1" = "complete" ]; then
     shift
     complete "$@"
+elif [ "$1" = "detail" ]; then
+    shift
+    detail "$@"
 fi

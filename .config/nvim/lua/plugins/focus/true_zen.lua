@@ -26,7 +26,7 @@ return {
                         vim.api.nvim_win_set_option(0, "relativenumber", false)
 
                         require("true-zen.integrations.tmux").on()
-                        require("user.utils").kitty.send_cmd("set-font-size", "+5")
+                        require("utils.kitty").send_cmd("set-font-size", "+5")
                     end,
                     close_pre = nil,
                     close_pos = function()
@@ -34,7 +34,7 @@ return {
                         vim.api.nvim_win_set_option(0, "relativenumber", true)
 
                         require("true-zen.integrations.tmux").off()
-                        require("user.utils").kitty.send_cmd("set-font-size", "-5")
+                        require("utils.kitty").send_cmd("set-font-size", "-5")
                     end
                 },
             },

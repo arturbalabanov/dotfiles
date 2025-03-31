@@ -5,7 +5,6 @@ local common = require("plugins.heirline.common")
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 
-local my_utils = require('user.utils')
 local py_venv = require('user.py_venv')
 
 local treesitter_hl = require("vim.treesitter.highlighter")
@@ -146,7 +145,7 @@ local LSPActive = {
 
                     local item = "* `" .. linter_name .. "`"
 
-                    if not linter_cmd or (not my_utils.executable_exists(linter_cmd)) then
+                    if not linter_cmd or (not require("utils.shell").executable_exists(linter_cmd)) then
                         item = item .. " **NOT AVAILABLE**"
                     elseif self.py_venv ~= nil and linter_cmd:find(self.py_venv.bin_path, 1, true) == 1 then
                         item = item .. " "
@@ -187,7 +186,7 @@ local LSPActive = {
                 table.insert(info_strings, info_string)
             end
 
-            my_utils.markdown_notify('Running LSP Clients for buffer ' .. self.bufnr, info_strings)
+            require("utils.markdown").notify('Running LSP Clients for buffer ' .. self.bufnr, info_strings)
         end,
         update = true,
         name = 'lsp_active_on_click',

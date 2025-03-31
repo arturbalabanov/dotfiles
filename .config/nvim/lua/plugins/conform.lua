@@ -1,4 +1,4 @@
-local my_utils = require("user.utils")
+local my_utils = require("utils")
 
 local function py_venv_formatter(formatter_name)
     local status_ok, formatter_module = pcall(require, "conform.formatters." .. formatter_name)

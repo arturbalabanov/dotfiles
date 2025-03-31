@@ -1,6 +1,6 @@
 local conditions = require("heirline.conditions")
 
-M = {}
+local M = {}
 
 M.Align = { provider = "%=" }
 M.Space = { provider = " " }

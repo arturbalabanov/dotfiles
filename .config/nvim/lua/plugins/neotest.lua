@@ -1,4 +1,4 @@
-local my_utils = require("user.utils")
+local my_utils = require("utils")
 
 return {
     "nvim-neotest/neotest",

@@ -1,4 +1,4 @@
-local my_utils = require("user.utils")
+local my_utils = require("utils")
 
 -- TODO: Use plenary.reload.reload_module
 -- TODO: Remove all mappings
@@ -52,20 +52,21 @@ local function reload_tmux_config()
         return
     end
 
-    my_utils.run_shell_cmd("tmux source-file ~/.tmux.conf")
+    require("utils.shell").run_cmd("tmux source-file ~/.tmux.conf")
 end
 
 local function reload_kitty_config()
-    my_utils.run_shell_cmd("kill -SIGUSR1 $(pgrep -a kitty)")
+    require("utils.kitty").reload_config()
 end
 
 local reload_configs = {
-    {
-        aliases = { "neovim", "nvim", "vim" },
-        reload_func = reload_nvim_config,
-        files_pattern = "*.lua",
-        project_name = "nvim",
-    },
+    -- TODO: Re-enable
+    -- {
+    --     aliases = { "neovim", "nvim", "vim" },
+    --     reload_func = reload_nvim_config,
+    --     files_pattern = "*.lua",
+    --     project_name = "nvim",
+    -- },
     {
         aliases = { "tmux" },
         reload_func = reload_tmux_config,

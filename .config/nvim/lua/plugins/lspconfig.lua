@@ -26,7 +26,7 @@ return {
                 default_config = {
                     cmd = { 'tmux-language-server' },
                     filetypes = { 'tmux' },
-                    -- single_file_support = true,
+                    single_file_support = true,
                 },
                 docs = {
                     description = [[
@@ -125,7 +125,8 @@ return {
             taplo = {},
             dockerls = {},
             yamlls = {},
-            tmux_language_server = {},
+            jsonls = {},
+            -- tmux_language_server = {},
         },
     },
     config = function(_, opts)
@@ -152,7 +153,7 @@ return {
                 if require("lspconfig")[server_name] then
                     require("lspconfig")[server_name].setup(server_opts)
                 else
-                    require("user.utils").error_fmt("LSP server '%s' not found in lspconfig", server_name)
+                    require("utils").error_fmt("LSP server '%s' not found in lspconfig", server_name)
                 end
             end
         end

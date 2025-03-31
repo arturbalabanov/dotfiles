@@ -69,6 +69,8 @@ return lazy.setup {
     --       https://github.com/AckslD/nvim-pytrize.lua/pull/10
     {
         "Nosterx/nvim-pytrize.lua",
+        -- TODO: Re-enable
+        enabled = false,
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-telescope/telescope.nvim",
@@ -78,7 +80,7 @@ return lazy.setup {
         keys = {
             {
                 "gf",
-                function() require("user.utils").move_jump_to_new_tab(vim.cmd.PytrizeJumpFixture) end,
+                function() require("utils").move_jump_to_new_tab(vim.cmd.PytrizeJumpFixture) end,
                 desc = "Go To Pytest fixture defintion",
             },
         }

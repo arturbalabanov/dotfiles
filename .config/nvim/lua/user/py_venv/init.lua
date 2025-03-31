@@ -6,16 +6,18 @@ end
 local Path = require("plenary.path")
 local plenary_tbl = require("plenary.tbl")
 
-local my_utils = require("user.utils")
+local my_utils = require("utils")
 
 local venv_managers = require("user.py_venv.venv_managers")
+
+-- TODO: Use buffer-local variables instead of utils.cache
 
 local M = {}
 
 function M.get_project_venv_python_path(project_root, opts)
     opts = plenary_tbl.apply_defaults(opts, { disable_notifications = false, venv_manager = nil })
 
-    return my_utils.get_or_update_cache('get_project_venv_python_path', project_root, function()
+    return require("utils.cache").get_or_update('get_project_venv_python_path', project_root, function()
         if vim.env.VIRTUAL_ENV then
             if not opts.disable_notifications then
                 my_utils.simple_notify("Using activated venv" .. vim.env.VIRTUAL_ENV, "info")
@@ -63,7 +65,7 @@ end
 local function get_python_version(python_path, opts)
     opts = plenary_tbl.apply_defaults(opts, { disable_notifications = false, full_version = false })
 
-    local py_version_output = my_utils.run_shell_cmd(python_path .. ' --version',
+    local py_version_output = require("utils.shell").run_cmd(python_path .. ' --version',
         { disable_notifications = opts.disable_notifications })
 
     if py_version_output == nil then
@@ -158,7 +160,8 @@ function M.get_python_venv(bufnr, opts)
         bufnr = vim.api.nvim_get_current_buf()
     end
 
-    return my_utils.get_or_update_cache('get_python_venv', bufnr, function() return get_python_venv_no_cache(opts) end)
+    return require("utils.cache").get_or_update('get_python_venv', bufnr,
+        function() return get_python_venv_no_cache(opts) end)
 end
 
 function M.buf_local_command_path(command, bufnr)
@@ -191,7 +194,7 @@ local function post_set_venv_hook(bufnr, client, venv)
 
     -- TODO: Remove dependancy on dasel and use a lua library instead
     local cmd = "dasel -f " .. vim.b.py_venv_info.pyproject_toml .. " 'tool.ruff.line-length'"
-    local line_length = my_utils.run_shell_cmd(cmd, { disable_notifications = false, show_error = true })
+    local line_length = require("utils.shell").run_cmd(cmd, { disable_notifications = false, show_error = true })
 
     if not line_length then
         return

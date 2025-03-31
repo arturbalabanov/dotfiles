@@ -1,10 +1,10 @@
-local my_utils = require("user.utils")
-
 vim.g.neovide_cursor_animation_length = 0
 vim.o.guifont = "Hack Nerd Font:h14"
 vim.opt.linespace = 0
 
-vim.g.neovide_input_use_logo = 1            -- enable use of the logo (cmd) key
+vim.g.neovide_input_use_logo = 1 -- enable use of the logo (cmd) key
+
+-- TODO: set desc for all keymaps
 
 vim.keymap.set('v', '<D-c>', '"+y')         -- Copy
 vim.keymap.set('n', '<D-s>', ':w<CR>')      -- Save

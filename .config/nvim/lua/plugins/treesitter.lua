@@ -1,4 +1,4 @@
-local my_utils = require("user.utils")
+local my_utils = require("utils")
 
 return {
     {
@@ -131,9 +131,11 @@ return {
             -- config stolen from LazyVim
             -- ref: https://github.com/LazyVim/LazyVim/blob/ec5981dfb1222c3bf246d9bcaa713d5cfa486fbd/lua/lazyvim/plugins/treesitter.lua#L95
 
+            local plugin_utils = require("utils.plugin")
+
             -- If treesitter is already loaded, we need to run config again for textobjects
-            if my_utils.plugin_is_loaded("nvim-treesitter") then
-                local opts = my_utils.get_plugin_opts("nvim-treesitter")
+            if plugin_utils.is_loaded("nvim-treesitter") then
+                local opts = plugin_utils.get_opts("nvim-treesitter")
                 require("nvim-treesitter.configs").setup({ textobjects = opts.textobjects }) ---@diagnostic disable-line: missing-fields
             end
 

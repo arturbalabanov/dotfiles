@@ -35,7 +35,6 @@ opt.numberwidth = 4
 opt.wrap = false
 opt.spell = false
 opt.textwidth = 130
-opt.whichwrap:append("<,>,[,],h,l")         -- keys allowed to move to the previous/next line when the beginning/end of line is reached
 opt.iskeyword:append("-")                   -- treats words with `-` as single words
 opt.iskeyword:remove(":")                   -- make sure words seperated by `:` are treated as different words
 opt.formatoptions:remove({ "c", "r", "o" }) -- This is a sequence of letters which describes how automatic formatting is to be done
@@ -77,10 +76,3 @@ opt.wildignore:append('**/.mypy_cache/**')
 -- disable netrw because we use nvim-tree
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-
-vim.cmd [[
-    augroup highlight_on_yank_user
-        autocmd!
-        autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup="Search", timeout=100}
-    augroup end
-]]

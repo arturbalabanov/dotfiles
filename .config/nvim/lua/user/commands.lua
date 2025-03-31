@@ -1,4 +1,4 @@
-local my_utils = require("user.utils")
+local my_utils = require("utils")
 
 vim.api.nvim_create_user_command('Redir', function(ctx)
     local result = vim.api.nvim_exec2(ctx.args, { output = true })
@@ -7,7 +7,7 @@ end, { nargs = '+', complete = 'command' })
 
 vim.api.nvim_create_user_command('P', function(ctx)
     local template = [[
-        local my_utils = require("user.utils")
+        local my_utils = require("utils")
 
         local output_str = vim.inspect(%s)
 
@@ -57,5 +57,27 @@ vim.api.nvim_create_user_command("ToggleLSPFormatting", function(ctx)
     my_utils.simple_notify("Formatting " .. enabled_str .. " " .. context)
 end, {
     desc = "Toggle autoformat on save for the current buffer (or globally when used with !)",
+    bang = true,
+})
+
+vim.api.nvim_create_user_command('Make', function(params)
+    local cmd, num_subs = vim.o.makeprg:gsub('%$%*', params.args)
+
+    if num_subs == 0 then
+        cmd = cmd .. ' ' .. params.args
+    end
+
+    local task = require("overseer").new_task {
+        cmd = vim.fn.expandcmd(cmd),
+        components = {
+            { 'on_output_summarize', max_lines = 10 },
+            { 'on_complete_notify' },
+            'default',
+        },
+    }
+    task:start()
+end, {
+    desc = 'Run your makeprg as an Overseer task',
+    nargs = '*',
     bang = true,
 })

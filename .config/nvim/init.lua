@@ -23,6 +23,7 @@ opt_require "user.options"
 opt_require "user.diagnostic"
 opt_require "user.keymaps"
 opt_require "user.commands"
--- opt_require "user.autoreload_config"
+opt_require "user.autocmds"
+opt_require "user.autoreload_config"
 
 opt_require "user.lazy"

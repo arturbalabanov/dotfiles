@@ -150,14 +150,12 @@ services_by_name = {service.name: service for service in all_services}
 PYTHON_SHELL_START_LINES = """
     from app.db.models import *
     from app.db.handlers import *
-    from app.db.db import db_engine
-    from sqlalchemy.ext.asyncio import (
-        AsyncSession,
-        async_sessionmaker,
-        create_async_engine,
-    )
+    from app.db.base import configure_db_engine, session_factory
+    from app.conf import get_settings
 
-    session = async_sessionmaker(bind=db_engine, class_=AsyncSession, expire_on_commit=False)()
+    settings = get_settings()
+    db_engine = configure_db_engine(settings)
+    session = session_factory()
 """
 
 SYNTAX_THEME = "monokai"

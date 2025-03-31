@@ -1,37 +1,28 @@
-local my_utils = require("user.utils")
+local keymap = require("utils.keymap")
 
 -- Use Space as the leader key and comma as the localleader key
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 
-my_utils.nkeymap(";", ":", { silent = false }, { desc = "Enter command mode" })
+keymap.set_n(";", ":", { silent = false }, { desc = "Enter command mode" })
 
-my_utils.nkeymap("vv", "^vg_", { desc = "Select current line (excl. leading whitespace)" })
+keymap.set_n("vv", "^vg_", { desc = "Select current line (excl. leading whitespace)" })
 
-my_utils.vkeymap("<", "<gv", { desc = "Reselect visual block after indent" })
-my_utils.vkeymap(">", ">gv", { desc = "Reselect visual block after dedent" })
+keymap.set_v("<", "<gv", { desc = "Reselect visual block after indent" })
+keymap.set_v(">", ">gv", { desc = "Reselect visual block after dedent" })
 
 -- Easily go to the beginning/end of the line
-my_utils.nkeymap("H", "^", { desc = "Move to beginning of line" })
-my_utils.vkeymap("H", "^", { desc = "Move to beginning of line" })
-my_utils.nkeymap("L", "$", { desc = "Move to end of line" })
-my_utils.vkeymap("L", "g_", { desc = "Move to end of line" })
+keymap.set_n("H", "^", { desc = "Move to beginning of line" })
+keymap.set_v("H", "^", { desc = "Move to beginning of line" })
+keymap.set_n("L", "$", { desc = "Move to end of line" })
+keymap.set_v("L", "g_", { desc = "Move to end of line" })
 
 -- Redo with Shift + U (opposite of undo - u), frees up C-r for something else
 -- This just makes more sense - inspired by Helix :)
-my_utils.nkeymap("U", vim.cmd.redo, { desc = "Redo" })
+keymap.set_n("U", vim.cmd.redo, { desc = "Redo" })
 
--- -- Toggle quickfix window with <F1>
--- my_utils.nkeymap("<F1>", function()
---     if vim.api.nvim_buf_get_option(0, "filetype") == "qf" then
---         vim.cmd.cclose()
---     else
---         vim.cmd.copen()
---     end
--- end, { desc = "Toggle quickfix window" })
-
--- Toggle nvim-tree (or diffview if in diff mode) with <F2>
 local toggle_file_tree = function()
+    -- Toggle nvim-tree (or diffview if in diff mode)
     local diff_mode = vim.opt_local.diff:get()
 
     local win = vim.api.nvim_get_current_win()
@@ -45,14 +36,14 @@ local toggle_file_tree = function()
 
     vim.cmd.NvimTreeToggle()
 end
-my_utils.nkeymap("<F2>", toggle_file_tree, { desc = "Toggle file tree" })
-my_utils.ikeymap("<F2>", function()
+keymap.set_n("<F2>", toggle_file_tree, { desc = "Toggle file tree" })
+keymap.set_i("<F2>", function()
     vim.cmd.stopinsert()
     toggle_file_tree()
 end, { desc = "Toggle file tree" })
 
 
-my_utils.nkeymap("<F6>", function()
+keymap.set_n("<F6>", function()
     local ignore_fts = { "NvimTree", "OverseerList", "neotest-summary", "toggleterm" }
 
     local win = vim.api.nvim_get_current_win()
@@ -69,19 +60,21 @@ my_utils.nkeymap("<F6>", function()
     end
 end, { desc = "Toggle line numbers" })
 
-my_utils.nkeymap(",/", vim.cmd.nohlsearch, { desc = "Clear search highlight" })
+keymap.set_n(",/", vim.cmd.nohlsearch, { desc = "Clear search highlight" })
 
-my_utils.nkeymap("<C-l>", vim.cmd.tabn, { desc = "Next tab" })
-my_utils.nkeymap("<C-h>", vim.cmd.tabp, { desc = "Previous tab" })
+keymap.set_n("<C-l>", vim.cmd.tabn, { desc = "Next tab" })
+keymap.set_n("<C-h>", vim.cmd.tabp, { desc = "Previous tab" })
 
-my_utils.nkeymap("<C-u>", "gUiw", { desc = "Uppercase word under cursor" })
-my_utils.ikeymap("<C-u>", "<C-o>gUiw", { desc = "Uppercase word under cursor" })
+-- TODO: replace with this plugin https://github.com/johmsalas/text-case.nvim
+-- TODO: Maybe better mapping would be gcu to lowercase. or maybe use a motion and make this an operator, e.g. gcuiw
+keymap.set_n("<C-u>", "gUiw", { desc = "Uppercase word under cursor" })
+keymap.set_i("<C-u>", "<C-o>gUiw", { desc = "Uppercase word under cursor" })
 
-my_utils.nkeymap("<C-e>", vim.cmd.Inspect, { desc = "Inspect word under cursor" })
+keymap.set_n("<C-e>", vim.cmd.Inspect, { desc = "Inspect word under cursor" })
 
-my_utils.nkeymap("<C-t>", "<C-w>T", { desc = "Move window to new tab" })
+keymap.set_n("<C-t>", "<C-w>T", { desc = "Move window to new tab" })
 
-my_utils.nkeymap("<C-w>j", function()
+keymap.set_n("<C-w>j", function()
     local winnr = vim.api.nvim_get_current_win()
     vim.cmd.split()
     vim.api.nvim_win_close(winnr, false)
@@ -89,7 +82,7 @@ my_utils.nkeymap("<C-w>j", function()
     vim.api.nvim_win_set_height(0, 20)
 end, { desc = "Move window to split below" })
 
-my_utils.nkeymap("<C-w>l", function()
+keymap.set_n("<C-w>l", function()
     local winnr = vim.api.nvim_get_current_win()
     vim.cmd.vsplit()
     vim.api.nvim_win_close(winnr, false)
@@ -98,8 +91,9 @@ my_utils.nkeymap("<C-w>l", function()
 end, { desc = "Move window to split right" })
 
 
-my_utils.nkeymap("gV", "`[V`]", { desc = "Select last pasted text" })
+keymap.set_n("gV", "`[V`]", { desc = "Select last pasted text" })
 
+-- TODO: Refactor this to use treesitter and move to after/plugin/python (as a buffer-local keymap too)
 -- Break string into multiple lines (Python)
 -- Super ugly and error prone but gets the job done for now
 -- Best to use a treesitter transformation
@@ -109,12 +103,27 @@ my_utils.nkeymap("gV", "`[V`]", { desc = "Select last pasted text" })
 --     "some text "
 --     "|some more text"
 -- )
-my_utils.ikeymap("<S-Enter>", "\"\"<Esc>m`2F\"i(<Esc>4f\"a)<Esc>``a<CR><Esc>la")
+keymap.set_i("<S-Enter>", "\"\"<Esc>m`2F\"i(<Esc>4f\"a)<Esc>``a<CR><Esc>la",
+    { desc = "Break python string into multiple lines" })
 
--- Move between buffers with [b and ]b
-my_utils.nkeymap("[b", vim.cmd.bprev, { desc = "Previous buffer" })
-my_utils.nkeymap("]b", vim.cmd.bnext, { desc = "Next buffer" })
+keymap.set_n("[b", vim.cmd.bprev, { desc = "Previous buffer" })
+keymap.set_n("]b", vim.cmd.bnext, { desc = "Next buffer" })
 
-my_utils.nkeymap("<leader>e", vim.diagnostic.open_float, { desc = "Open diagnostic float" })
-my_utils.nkeymap("[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-my_utils.nkeymap("]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+keymap.set_n("<leader>e", vim.diagnostic.open_float, { desc = "Open diagnostic float" })
+keymap.set_n("[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+keymap.set_n("]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+
+keymap.set_n("<C-q>", function()
+    local buf_filetype = vim.api.nvim_buf_get_option(0, "filetype")
+
+    if buf_filetype == "TelescopePrompt" then
+        require("telescope.actions").smart_send_to_qflist()
+        vim.cmd.copen()
+    elseif buf_filetype == "qf" then
+        vim.cmd.cclose()
+    else
+        vim.cmd.copen()
+    end
+end, { desc = "Toggle quickfix window" })
+keymap.set_n("[q", vim.cmd.cprev, { desc = "Previous quickfix item" })
+keymap.set_n("]q", vim.cmd.cnext, { desc = "Next quickfix item" })

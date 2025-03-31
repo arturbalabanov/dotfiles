@@ -203,9 +203,12 @@ return {
             {
                 filter = {
                     any = {
-                        { event = "msg_show", kind = "",     find = "written" },
-                        { event = "msg_show", kind = "wmsg", find = "search hit BOTTOM" },
-                        { event = "msg_show", kind = "wmsg", find = "search hit TOP" },
+                        { event = "msg_show", kind = "",                              find = "written" },
+                        { event = "msg_show", kind = "wmsg",                          find = "search hit BOTTOM" },
+                        { event = "msg_show", kind = "wmsg",                          find = "search hit TOP" },
+                        -- ref: https://github.com/zbirenbaum/copilot.lua/issues/321
+                        { event = 'msg_show', find = 'Agent service not initialized.' },
+                        -- 2025-03-31 11:46:44.645 [4] [ERROR]: RPC[Error] code_name = ServerNotInitialized, message = "Agent service not initialized."
                     },
                 },
                 opts = { skip = true },

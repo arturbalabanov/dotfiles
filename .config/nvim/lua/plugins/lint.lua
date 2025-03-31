@@ -38,7 +38,6 @@ return {
     config = function(_, opts)
         local lint = require('lint')
         local plenary_tbl = require("plenary.tbl")
-        local my_utils = require("user.utils")
         local py_venv = require('user.py_venv')
 
         local function make_py_venv_linter(linter_name, opts)
@@ -50,7 +49,7 @@ return {
                 local bufnr = vim.api.nvim_get_current_buf()
                 local venv_cmd_path = py_venv.buf_local_command_path(opts.cmd, bufnr)
 
-                if my_utils.executable_exists(venv_cmd_path) then
+                if require("utils.shell").executable_exists(venv_cmd_path) then
                     return venv_cmd_path
                 end
 
@@ -70,6 +69,7 @@ return {
 
         lint.linters_by_ft = opts.linters_by_ft
 
+        -- TODO: maybe extract into user.autcmds
         vim.api.nvim_create_autocmd(opts.lint_on_events, {
             group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
             callback = function()

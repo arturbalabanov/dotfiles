@@ -25,7 +25,7 @@ return {
         },
         on_attach = function(bufnr)
             local function nkeymap(input, action, desc)
-                require("user.utils").nkeymap(input, action, {
+                require("utils.keymap").set_n(input, action, {
                     desc = "nvim-tree: " .. desc,
                     buffer = bufnr,
                     noremap = true,

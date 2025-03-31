@@ -118,19 +118,6 @@ local Diagnostics = {
     },
 }
 
-local BufferNumber = {
-    provider = function()
-        return 'b:' .. vim.api.nvim_get_current_buf()
-    end,
-}
-
-local WindowNumber = {
-    provider = function()
-        return 'w:' .. vim.api.nvim_get_current_win()
-    end,
-}
-
-
 RelativeFilePathBlock = utils.insert(common.CurrentTabFileBlock,
     common.Space,
     common.FileIcon,
@@ -168,19 +155,33 @@ local FileType = {
     provider = function()
         return vim.bo.filetype
     end,
-    hl = {
-        fg = 'green',
-    }
+    hl = { fg = 'green' },
 }
+
 local BufferType = {
     -- TODO: Add the icon with a seperate compoennt for it (using the one in the filename)
     provider = function()
         return vim.bo.buftype
     end,
-    hl = {
-        fg = 'blue',
-    }
+    hl = { fg = 'blue' },
 }
+
+local BufferNumber = {
+    provider = function()
+        return 'b:' .. vim.api.nvim_get_current_buf()
+    end,
+    hl = { fg = 'blue' },
+}
+
+local WindowNumber = {
+    provider = function()
+        return 'w:' .. vim.api.nvim_get_current_win()
+    end,
+    hl = { fg = 'yellow' },
+}
+
+
+
 local FileEncoding = {
     provider = function()
         local encoding = (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc

@@ -1,13 +1,11 @@
 local Path = require("plenary.path")
 local plenary_tbl = require("plenary.tbl")
 
-local my_utils = require("user.utils")
-
 local M = {}
 
 local function run_shell_cmd(cmd, opts)
     opts = plenary_tbl.apply_defaults(opts, { disable_notifications = true })
-    return my_utils.run_shell_cmd(cmd, opts)
+    return require("utils.shell").run_cmd(cmd, opts)
 end
 
 local function file_present_in_proj_checker(file_name)
@@ -48,8 +46,6 @@ local function uv_get_python_path(project_root)
     return run_shell_cmd('uv python find', { cwd = project_root })
 end
 
-
-
 M.default_venv_managers = {
     {
         name = 'uv',
@@ -85,7 +81,7 @@ M.default_venv_managers = {
 M.enabled_venv_managers = {}
 
 for _, venv_manager in pairs(M.default_venv_managers) do
-    if my_utils.executable_exists(venv_manager.executable_name) then
+    if require("utils.shell").executable_exists(venv_manager.executable_name) then
         table.insert(M.enabled_venv_managers, venv_manager)
     end
 end
