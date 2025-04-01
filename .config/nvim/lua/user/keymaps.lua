@@ -1,17 +1,18 @@
 local cmd = vim.cmd
 local utils = require("user.utils")
 
-vim.g.mapleader = ','
+-- Use Space as a leader key
+vim.g.mapleader = ' '
 
 utils.ikeymap("jj", "<Esc>")
-utils.nkeymap(";", ":")
+utils.nkeymap(";", ":", { silent = false })
 
 -- Use vv to select current line without leading and trailing indentation
 utils.nkeymap("vv", "^vg_")
 
 -- Use Shift+K and Shift+L to navigate tabs
-utils.nkeymap("K", cmd.tabp)
-utils.nkeymap("J", cmd.tabn)
+utils.nkeymap("K", cmd.tabn)
+utils.nkeymap("J", cmd.tabp)
 
 utils.nkeymap("<M-h>", function() cmd.wincmd("h") end)
 utils.nkeymap("<M-j>", function() cmd.wincmd("j") end)
@@ -26,3 +27,6 @@ utils.vkeymap(">", ">gv")
 utils.nkeymap("H", "^")
 utils.nkeymap("L", "$")
 utils.vkeymap("L", "g_")
+
+-- Toggle folds with <Tab>
+utils.nkeymap("<Tab>", "za")

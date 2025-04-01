@@ -4,7 +4,10 @@ local keymap = vim.keymap.set
 
 local function set_default_opts(opts)
     local opts_with_defaults = opts or {}
-    opts_with_defaults.silent = opts_with_defaults.silent or true
+
+    if opts_with_defaults.silent == nil then
+        opts_with_defaults.silent = true
+    end
 
     return opts_with_defaults
 end

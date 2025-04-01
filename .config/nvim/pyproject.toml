@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "nvim-py3"
+version = "0.1.0"
+description = ""
+authors = ["Artur"]
+readme = "README.md"
+packages = [{include = "nvim_py3"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pynvim = "^0.4.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -15,7 +15,9 @@ plugins=(git git-extras zsh-syntax-highlighting vi-mode zle-vi-visual)
 source $ZSH/oh-my-zsh.sh
 # }}}
 # Terminal wizardry {{{
-eval $(dircolors ~/.dircolors)
+if type dircolors > /dev/null; then
+	eval $(dircolors ~/.dircolors)
+fi
 
 # Stupid Ctrl-S!
 stty -ixon
@@ -177,6 +179,11 @@ export BROWSER="google-chrome-stable"
 
 export PATH="$PATH:/bin:/usr/local/games:/usr/games:$HOME/.local/bin:$HOME/node_modules/.bin"
 export MANPATH="$MANPATH:$HOME/.local/man"
+
+if type go > /dev/null; then
+    export GOPATH=$(go env GOPATH)
+    export PATH=$PATH:$GOPATH/bin
+fi
 # }}}
 # External Tools {{{
 if [[ -r "$HOME/.local/share/z/z.sh" ]]; then

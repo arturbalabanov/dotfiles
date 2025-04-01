@@ -19,7 +19,14 @@ gruvbox.setup({
     contrast = "hard", -- can be "hard", "soft" or empty string
     palette_overrides = {},
     overrides = {
-        SignColumn = { bg = palette.dark0_hard }
+        SignColumn = { bg = palette.colors.dark0_hard },
+        GruvboxRedSign = { bg = palette.colors.dark0_hard },
+        GruvboxGreenSign = { bg = palette.colors.dark0_hard },
+        GruvboxYellowSign = { bg = palette.colors.dark0_hard },
+        GruvboxBlueSign = { bg = palette.colors.dark0_hard },
+        GruvboxPurpleSign = { bg = palette.colors.dark0_hard },
+        GruvboxAquaSign = { bg = palette.colors.dark0_hard },
+        GruvboxOrangeSign = { bg = palette.colors.dark0_hard },
     },
     dim_inactive = false,
     transparent_mode = false,

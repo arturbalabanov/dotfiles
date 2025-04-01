@@ -25,11 +25,15 @@ cmp.setup({
         end,
     },
     window = {
-        completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
     },
+    formatting = {
+        format = require('lspkind').cmp_format({
+            with_text = false,
+        }),
+    },
     mapping = cmp.mapping.preset.insert({
-        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-b>'] = cmp.mapping.scroll_docs( -4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<C-e>'] = cmp.mapping.abort(),
@@ -54,7 +58,7 @@ cmp.setup({
         ["<S-Tab>"] = cmp.mapping(function()
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+            elseif vim.fn["vsnip#jumpable"]( -1) == 1 then
                 feedkey("<Plug>(vsnip-jump-prev)", "")
             end
         end, { "i", "s" }),
@@ -62,9 +66,10 @@ cmp.setup({
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
         { name = 'vsnip' },
-    }, {
-        { name = 'buffer' },
     })
+    -- {
+    --    { name = 'buffer' },
+    -- }
 })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).

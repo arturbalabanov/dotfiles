@@ -25,5 +25,23 @@ configs.setup {
     },
 }
 
+-- ref: https://github.com/nvim-treesitter/nvim-treesitter/tree/master/queries
+
+vim.treesitter.set_query("lua", "folds", [[
+    (function_definition) @fold
+]])
+
+-- TODO: Add decorators
+vim.treesitter.set_query("python", "folds", [[
+    (function_definition) @fold
+    (class_definition) @fold
+]])
+
+-- vim.treesitter.set_query("go", "folds", [[
+--    (function_declaration) @fold
+--    (method_declaration) @fold
+--    (type_declaration) @fold
+--]])
+
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
