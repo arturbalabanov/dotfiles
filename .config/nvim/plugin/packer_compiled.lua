@@ -119,6 +119,11 @@ _G.packer_plugins = {
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/lspkind.nvim",
     url = "https://github.com/onsails/lspkind.nvim"
   },
+  ["lspsaga.nvim"] = {
+    loaded = true,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/lspsaga.nvim",
+    url = "https://github.com/glepnir/lspsaga.nvim"
+  },
   ["lualine.nvim"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/lualine.nvim",
@@ -138,6 +143,16 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/mason.nvim",
     url = "https://github.com/williamboman/mason.nvim"
+  },
+  ["mini.nvim"] = {
+    loaded = true,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/mini.nvim",
+    url = "https://github.com/echasnovski/mini.nvim"
+  },
+  ["neodev.nvim"] = {
+    loaded = true,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/neodev.nvim",
+    url = "https://github.com/folke/neodev.nvim"
   },
   ["null-ls.nvim"] = {
     loaded = true,
@@ -174,10 +189,20 @@ _G.packer_plugins = {
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/packer.nvim",
     url = "https://github.com/wbthomason/packer.nvim"
   },
+  playground = {
+    loaded = true,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/playground",
+    url = "https://github.com/nvim-treesitter/playground"
+  },
   ["plenary.nvim"] = {
     loaded = true,
     path = "/Users/artur/.local/share/nvim/site/pack/packer/start/plenary.nvim",
     url = "https://github.com/nvim-lua/plenary.nvim"
+  },
+  ["telescope-live-grep-args.nvim"] = {
+    loaded = true,
+    path = "/Users/artur/.local/share/nvim/site/pack/packer/start/telescope-live-grep-args.nvim",
+    url = "https://github.com/nvim-telescope/telescope-live-grep-args.nvim"
   },
   ["telescope-yadm.nvim"] = {
     loaded = true,

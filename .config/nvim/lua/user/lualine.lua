@@ -18,6 +18,10 @@ else
 end
 
 
+local lsp_location = function()
+    return require('lspsaga.symbolwinbar'):get_winbar() or ""
+end
+
 lualine.setup {
     options = {
         icons_enabled = true,
@@ -40,10 +44,13 @@ lualine.setup {
     sections = {
         lualine_a = { { 'mode', fmt = function(str) return str:sub(1, 1) end } },
         lualine_b = { 'diagnostics' },
-        lualine_c = { 'filename' },
-        lualine_x = { 'encoding', 'fileformat', 'filetype' },
-        lualine_y = { 'progress' },
-        lualine_z = { 'location' }
+        lualine_c = { {
+            'filename',
+            path = 1, -- Relative path
+        } },
+        lualine_x = { lsp_location },
+        lualine_y = { 'encoding', 'fileformat', 'filetype' },
+        lualine_z = { 'progress', 'location' }
     },
     extensions = {}
 }
