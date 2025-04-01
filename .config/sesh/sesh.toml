@@ -1,23 +1,32 @@
 [default_session]
-startup_command = 'nvim +"Telescope find_files"'
+startup_command = 'nvim'
 preview_command = 'lsd --color=always --icon=always -l {}'
 
 [[session]]
 name = 'tmux-config'
 path = '~'
-startup_command = 'nvim .tmux.conf'
-preview_command = 'bat --language=tmux --style=snip --color=always ~/.tmux.conf'
+startup_command = 'nvim -p .tmux.conf .tmux-powerlinerc'
+# NOTE: bat doesn't support tmux config syntax but sh is good enough
+preview_command = 'bat --language=sh --style=snip --color=always ~/.tmux.conf'
 
 [[session]]
 name = 'sesh-config'
-path = '~/.config/sesh'
-startup_command = 'nvim sesh.toml'
-preview_command = 'bat --language=toml --style=snip --color=always ~/.config/sesh/sesh.toml'
+path = '~/.config/tmuxinator'
+startup_command = 'tmux split-window -h -l 33% && tmux select-pane -L && nvim -p ~/.config/sesh/sesh.toml *.yml'
+preview_command = 'lsd --tree --color=always --icon=always -l ~/.config/sesh/ ~/.config/tmuxinator/'
 
 [[session]]
 name = 'neovim-config'
 path = '~/.config/nvim'
-startup_command = 'nvim sesh.toml'
-preview_command = 'bat --language=toml --style=snip --color=always ~/.config/sesh/sesh.toml'
+
+[[session]]
+name = 'zsh-config'
+path = '~'
+startup_command = 'nvim -p .zshrc .zprofile .zshrc_local'
+preview_command = 'bat --style=snip --color=always ~/.zshrc'
+
+[[session]]
+name = 'scripts'
+path = '~/scripts'
 
 # NOTE: More complex projects are defined in ~/.config/tmuxinator

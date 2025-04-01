@@ -10,7 +10,7 @@ windows:
           - venv
           - nvim +"Telescope find_files"
         - tests:
-          - docker compose up test_db -d
+          - docker compose up test_db azure -d
         - git:
           - git status
   - repl:

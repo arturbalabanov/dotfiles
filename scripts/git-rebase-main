@@ -1,6 +1,12 @@
 #!/bin/bash
 
-git checkout master && git pull && git checkout - && git rebase master
+main_branch=$(git config init.defaultBranch)
+
+if [[ -z $main_branch ]]; then
+    main_branch="master"
+fi
+
+git checkout "$main_branch" && git pull && git checkout - && git rebase "$main_branch"
 
 if [[ $? -eq 0 ]]; then
     git push --force

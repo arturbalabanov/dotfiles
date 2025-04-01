@@ -7,7 +7,13 @@ if [[ $reply =~ ^[Nn]$ ]]; then
 	exit 1
 fi
 
-git checkout master && git pull && git checkout - && git merge master
+main_branch=$(git config init.defaultBranch)
+
+if [[ -z $main_branch ]]; then
+    main_branch="master"
+fi
+
+git checkout "$main_branch" && git pull && git checkout - && git merge "$main_branch"
 
 if [[ $? -eq 0 ]]; then
     git add . && git commit --no-edit && git push
