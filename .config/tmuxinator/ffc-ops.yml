@@ -8,9 +8,9 @@ windows:
       panes:
         - editor:
           - venv
-          - nvim +"Telescope find_files"
+          - nvim
         - tests:
-          - docker compose up test_db azure -d
+          - docker compose up test_db azurite -d
         - git:
           - git status
   - repl:

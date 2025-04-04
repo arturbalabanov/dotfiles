@@ -17,6 +17,7 @@ source "$SCRIPTS_DIR/common.sh"
 # Add yadm files
 yadm add ~/scripts
 yadm add ~/.config/nvim
+yadm add ~/.config/tmuxinator
 
 yadm status
 

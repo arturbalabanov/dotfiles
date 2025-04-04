@@ -92,6 +92,7 @@ return {
                 pickers = {
                     find_files = {
                         hidden = true,
+                        find_command = { "rg", "--files", "--sortr=modified" },
                     },
                     live_grep = {
                         layout_strategy = 'vertical',
