@@ -3,4 +3,41 @@
 SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
 source "$SCRIPTS_DIR/common.sh"
 
+# ref: https://stackoverflow.com/a/66538954
+unpushed_commits=$(yadm rev-list --count @{upstream}..HEAD)
+
+if [[ $unpushed_commits -gt 0 ]]; then
+    echo "There are $unpushed_commits unpushed commits. Please push them before pulling."
+    exit 1
+fi
+
+# Check if there are any uncommitted changes
+uncommited_changes=$(git status --porcelain)
+if [[ -n $(git status --porcelain) ]]; then
+    echo "There are uncommitted changes. Please commit or stash them before pulling."
+    echo "$uncommited_changes"
+    exit 1
+fi
+
 yadm pull
+
+if [[ $? -ne 0 ]]; then
+    echo "Failed to pull changes from the remote repository."
+    exit 1
+fi
+
+merge_conflicts=$(git ls-files -u | wc -l)
+# check if there are merge conflicts
+if [[ $merge_conflicts -gt 0 ]]; then
+    echo "There are $merge_conflicts merge conflicts. Please resolve them before continuing."
+    exit 1
+fi
+
+echo "Creating alt files..."
+yadm alt
+
+echo "Installing scripts..."
+(cd "~/scripts" && make install)
+
+echo "Installing brew packages..."
+brew bundle install --global

@@ -15,7 +15,7 @@ source "$SCRIPTS_DIR/common.sh"
 # * If local changes not pushed yet, yadm push
 
 echo -n "Updating brew packages list... "
-brew leaves > ~/.brew_leaves.txt
+brew bundle dump  --force --global
 echo "Done"
 
 # Add yadm any new files from these directories
