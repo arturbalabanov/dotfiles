@@ -1,6 +1,5 @@
 tap "ankitpokhrel/jira-cli"
 tap "azure/kubelogin"
-tap "homebrew/cask-fonts"
 brew "act"
 brew "ast-grep"
 brew "azure-cli"
