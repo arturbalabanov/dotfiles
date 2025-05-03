@@ -11,10 +11,14 @@ source "$SCRIPTS_DIR/common.sh"
 # * yadm commit
 # * yadm pull
 # * If merge conflict, deal with it
-# * [post pull actons, e.g. make install for scripts, yadm alt etc.]
+# * [post pull actons, e.g. make install for scripts, yadm alt, brew install from leaves etc.]
 # * If local changes not pushed yet, yadm push
 
-# Add yadm files
+echo -n "Updating brew packages list... "
+brew leaves > ~/.brew_leaves.txt
+echo "Done"
+
+# Add yadm any new files from these directories
 yadm add ~/scripts
 yadm add ~/.config/nvim
 yadm add ~/.config/tmuxinator
