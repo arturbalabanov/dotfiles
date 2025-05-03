@@ -3,7 +3,7 @@
 SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
 source "$SCRIPTS_DIR/common.sh"
 
-# TODO: Change to yadm_sync as follows:
+# TODO: Change to yadm_sync as follows (see also the yadm_pull script):
 # * Check if in merge conflict and if so, resume from the step about the conflict bellow
 # * yadm add
 # * yadm status
