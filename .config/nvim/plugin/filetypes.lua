@@ -3,6 +3,7 @@ vim.filetype.add {
         fountain = 'fountain',
         jinja = 'jinja2',
         jinja2 = 'jinja2',
+        service = "systemd",
     },
     pattern = {
         -- match .env, .env.local, etc.

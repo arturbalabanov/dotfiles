@@ -21,6 +21,7 @@ fi
 
 yadm pull
 
+# shellcheck disable=2181
 if [[ $? -ne 0 ]]; then
     echo "Failed to pull changes from the remote repository."
     exit 1
@@ -37,7 +38,7 @@ echo "Creating alt files..."
 yadm alt
 
 echo "Installing scripts..."
-(cd "~/scripts" && make install)
+(cd "$HOME/scripts" && make install)
 
 echo "Installing brew packages..."
 brew bundle install --global

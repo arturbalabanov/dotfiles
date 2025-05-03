@@ -69,7 +69,7 @@ source $ZSH/oh-my-zsh.sh
 # }}}
 # Colors and Text Formatting {{{
 if _exists vivid; then
-    export LS_COLORS="$(vivid --color-mode 8-bit generate tokyonight_night)"
+    export LS_COLORS="$(vivid generate tokyonight-night)"
 elif test -r ~/.dircolors; then
     if _exists gdircolors; then
         alias dircolors=gdircolors
