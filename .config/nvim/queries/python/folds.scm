@@ -1,11 +1,28 @@
 ;; TODO: there is overlap between this and the function / class definitions bellow
 ;;       what i really want is to fold either (!) non-decorated functions OR decorated
 ;;       functions together with their decorator, same with classes
-(decorated_definition) @fold
 
-(function_definition) @fold
+;; Fold all function definitions (with an without decorators)
+[
+  (
+   module
+   (function_definition) @fold
+  )
+  (decorated_definition
+    (function_definition)
+  ) @fold
+]
 
-(class_definition) @fold
+;; Fold all class definitions (with an without decorators)
+[
+  (
+   module
+   (class_definition) @fold
+  )
+  (decorated_definition
+    (class_definition)
+  ) @fold
+]
 
 ;; fold all import statements
 ;;

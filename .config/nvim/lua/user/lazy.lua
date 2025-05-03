@@ -139,5 +139,11 @@ return lazy.setup {
             },
         },
     },
+
+    {
+        "meznaric/key-analyzer.nvim",
+        opts = {},
+        cmd = { "KeyAnalyzer" },
+    },
 }
 -- }}}

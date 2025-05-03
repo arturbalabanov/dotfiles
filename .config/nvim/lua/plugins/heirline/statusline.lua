@@ -300,6 +300,7 @@ return {
     GitInfo,
     Diagnostics,
     common.Lpad(MacroRecording),
+    common.Lpad(common.Arrow),
     RelativeFilePathBlock,
 
     common.Align,

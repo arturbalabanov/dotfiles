@@ -449,8 +449,18 @@ alias emacs='emacs -nw'          # cli mode
 alias cdtmp='cd $(mktemp -d)'
 alias rm='rm -rf'
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
-alias cb-copy="xclip -selection clipboard"
 alias gst="git status"
+alias glog="git log"
+
+if ! _exists pbcopy; then   # pbcopy and pbpaste are macOS specific
+    if _exists xclip; then
+        alias pbcopy='xclip -selection clipboard'
+        alias pbpaste='xclip -selection clipboard -o'
+    elif _exists xsel; then
+        alias pbcopy='xsel --clipboard --input'
+        alias pbpaste='xsel --clipboard --output'
+    fi
+fi
 
 if _exists thefuck; then
     eval $(thefuck --alias)

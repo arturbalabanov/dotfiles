@@ -48,6 +48,7 @@ return {
             adapters = {
                 require("neotest-python")({
                     runner = "pytest",
+                    args = { "-vvv", "--no-cov" },
                     python = function(project_root)
                         return require("user.py_venv").get_project_venv_python_path(
                             project_root,

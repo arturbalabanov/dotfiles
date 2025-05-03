@@ -113,4 +113,15 @@ M.FileFlags = {
     M.BufferLockOrTerminalIndicator,
 }
 
+M.Arrow = {
+    conditions = function(self)
+        return require('arrow.statusline').is_on_arrow_file() ~= nil
+    end,
+
+    provider = function(self)
+        return " " .. require('arrow.statusline').text_for_statusline()
+    end,
+    hl = { fg = "green", bold = true },
+}
+
 return M

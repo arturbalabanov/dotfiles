@@ -114,7 +114,11 @@ return {
                         previewer = false,
                         border = true,
                         layout_strategy = 'vertical',
-                    }
+                    },
+                    lsp_document_symbols = {
+                        layout_strategy = 'vertical',
+                        symbol_width = 80,
+                    },
                 },
                 extensions = {
                     advanced_git_search = {
