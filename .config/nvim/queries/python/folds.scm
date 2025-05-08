@@ -3,6 +3,9 @@
 ;;       functions together with their decorator, same with classes
 
 ;; Fold all function definitions (with an without decorators)
+
+;; take a look at this, may help: https://github.com/nvim-treesitter/nvim-treesitter/blob/28d480e0624b259095e56f353ec911f9f2a0f404/queries/elm/folds.scm#L2
+
 [
   (
    module
@@ -25,22 +28,32 @@
 ]
 
 ;; fold all import statements
+[
+  (future_import_statement)
+  (import_statement)
+  (import_from_statement)
+  ((import_from_statement) (comment))
+  ((import_statement) (comment))
+  ((future_import_statement) (comment))
+]+ @fold
+
+;; fold all import statements
 ;;
 ;; stolen from: https://github.com/wookayin/dotfiles/blob/af9b864ac35b65e8aeeb68e863dfe61844d8f693/nvim/after/queries/python/folds.scm 
 
-(module
-  . (comment)*
-  . (expression_statement)?   ; an optional docstring at the very first top
-  . (comment)*
-  ; Capture a region of consecutive import statements to fold
-  . [(import_statement) (import_from_statement) (future_import_statement)] @_start
-  . [(import_statement) (import_from_statement) (future_import_statement) (comment)]*
-  . [(import_statement) (import_from_statement) (future_import_statement)]+ @_end
-  ; ... until the first non-import node.
-  . (_)  @_non_import1  (#not-kind-eq? @_non_import1  import_statement import_from_statement future_import_statement)
-  ; However, don't match if followed by another import statement,
-  ; to ensure the capture group is maximial and avoid nested foldings.
-  . (_)? @_non_import2  (#not-kind-eq? @_non_import2  import_statement import_from_statement future_import_statement)
-
-  (#make-range! "fold" @_start @_end)
-)
+; (module
+;   . (comment)*
+;   . (expression_statement)?   ; an optional docstring at the very first top
+;   . (comment)*
+;   ; Capture a region of consecutive import statements to fold
+;   . [(import_statement) (import_from_statement) (future_import_statement)] @_start
+;   . [(import_statement) (import_from_statement) (future_import_statement) (comment)]*
+;   . [(import_statement) (import_from_statement) (future_import_statement)]+ @_end
+;   ; ... until the first non-import node.
+;   . (_)  @_non_import1  (#not-kind-eq? @_non_import1  import_statement import_from_statement future_import_statement)
+;   ; However, don't match if followed by another import statement,
+;   ; to ensure the capture group is maximial and avoid nested foldings.
+;   . (_)? @_non_import2  (#not-kind-eq? @_non_import2  import_statement import_from_statement future_import_statement)
+;
+;   (#make-range! "fold" @_start @_end)
+; )
