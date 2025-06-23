@@ -1,51 +1,56 @@
 {
-    "Code Section": {
-        "prefix": "section",
-        "body": [
-            "# ==============================",
-            "# ${1:Section Name}",
-            "# ==============================",
-            "${0}"
-        ],
-        "description": "Comment to seperate different sections of code"
-    },
-    "Code Section": {
-        "prefix": "decorator",
+    "typed_decorator_with_args_async": {
+        "prefix": "typed_decorator_with_args_async",
+        "description": "Typed decorator with args for async functions definition",
         "body": [
             "from functools import wraps",
-            "from typing import Callable, TypeVar, ParamSpec",
+            "from typing import Callable",
+            "from collections.abc import Awaitable",
             "",
             "",
-            "_RT = TypeVar(\"_RT\")",
-            "_PS = ParamSpec(\"_PS\")",
+            "",
+            "def ${1:name}[**P, R](${2:args}) -> Callable[[Callable[P, Awaitable[R]]], Callable[P, Awaitable[R]]]:",
+            "    def decorator(func: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:",
+            "        @wraps(func)",
+            "        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:",
+            "            ${3}",
+            "            return await func(*args, **kwargs)",
+            "",
+            "        return wrapper",
+            "",
+            "    return decorator",
+            "${0}"
+        ]
+    },
+    "typed_decorator": {
+        "prefix": "typed_decorator",
+        "description": "Typed decorator for regular functions definition",
+        "body": [
+            "from functools import wraps",
+            "from typing import Callable",
             "",
             "",
-            "def ${1}(func: Callable[_PS, _RT]) -> Callable[_PS, _RT]:",
+            "def ${1:name}[**P, R](func: Callable[P, R]) -> Callable[P, R]:",
             "    @wraps(func)",
-            "    def wrapper(*args: _PS.args, **kwargs: _PS.kwargs) -> _RT:",
+            "    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:",
             "        ${2}",
             "        return func(*args, **kwargs)",
             "",
             "    return wrapper",
             "${0}"
-        ],
-        "description": "Typed decorator defintion"
+        ]
     },
-    "Code Section": {
-        "prefix": "decorator_with_args",
+    "typed_decorator_with_args": {
         "body": [
             "from functools import wraps",
-            "from typing import Callable, TypeVar, ParamSpec",
+            "from typing import Callable",
             "",
             "",
-            "_RT = TypeVar(\"_RT\")",
-            "_PS = ParamSpec(\"_PS\")",
             "",
-            "",
-            "def ${1}(${2}) -> Callable[[Callable[_PS, _RT]], Callable[_PS, _RT]]:",
-            "    def decorator(func: Callable[_PS, _RT]) -> Callable[_PS, _RT]:",
+            "def ${1:name}[**P, R](${2:args}) -> Callable[[Callable[P, R]], Callable[P, R]]:",
+            "    def decorator(func: Callable[P, R]) -> Callable[P, R]:",
             "        @wraps(func)",
-            "        def wrapper(*args: _PS.args, **kwargs: _PS.kwargs) -> _RT:",
+            "        def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:",
             "            ${3}",
             "            return func(*args, **kwargs)",
             "",
@@ -54,6 +59,26 @@
             "    return decorator",
             "${0}"
         ],
-        "description": "Typed decorator with arguments defintion"
+        "prefix": "typed_decorator_with_args",
+        "description": "Typed decorator with args for regular functions defintion"
+    },
+    "typed_decorator_async": {
+        "prefix": "typed_decorator_async",
+        "description": "Typed decorator for async functions defintion",
+        "body": [
+            "from functools import wraps",
+            "from typing import Callable",
+            "from collections.abc import Awaitable",
+            "",
+            "",
+            "def ${1:name}[**P, R](func: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:",
+            "    @wraps(func)",
+            "    async def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:",
+            "        ${2}",
+            "        return await func(*args, **kwargs)",
+            "",
+            "    return wrapper",
+            "${0}"
+        ]
     }
 }

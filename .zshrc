@@ -404,6 +404,9 @@ if _exists jira; then
     eval "$(jira completion zsh)"
 fi
 
+if _exists docker; then
+    eval "$(docker completion zsh)"
+fi
 
 # make & remake {{{
 
@@ -451,6 +454,13 @@ alias rm='rm -rf'
 alias dad="curl -k https://icanhazdadjoke.com/ && echo"
 alias gst="git status"
 alias glog="git log"
+
+# docker compose aliases
+alias dc='docker compose'
+alias dcu='docker compose up'
+alias dcd='docker compose down'
+alias dce='docker compose exec'
+alias dcw='docker compose watch --no-up'
 
 if ! _exists pbcopy; then   # pbcopy and pbpaste are macOS specific
     if _exists xclip; then

@@ -7,6 +7,7 @@ M.executable_exists = function(executable)
     -- return status_ok and (vim.v.shell_error == 0)
 end
 
+-- TODO: replace with vim.system
 M.run_cmd = function(cmd, opts)
     opts = require("utils").apply_defaults(opts, { cwd = nil, show_error = true, disable_notifications = false })
 

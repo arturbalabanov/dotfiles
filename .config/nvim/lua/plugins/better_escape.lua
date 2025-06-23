@@ -15,3 +15,11 @@ return {
         }
     }
 }
+
+-- -- create an autocmd for buffer enter to set the timeout length
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--     callback = function()
+--         require("utils.plugin").("better_escape")
+--         require("better_escape").set_timeoutlen(vim.o.timeoutlen)
+--     end,
+-- })

@@ -97,12 +97,12 @@ return {
                     live_grep = {
                         layout_strategy = 'vertical',
                         disable_coordinates = true,
-                        additional_args = { '--trim' },
+                        additional_args = { '--trim', "--sortr=modified" },
                     },
                     grep_string = {
                         layout_strategy = 'vertical',
                         disable_coordinates = true,
-                        additional_args = { '--trim' },
+                        additional_args = { '--trim', "--sortr=modified" },
                     },
                     colorscheme = {
                         theme = "dropdown",

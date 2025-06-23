@@ -38,7 +38,7 @@ return {
     config = function(_, opts)
         local lint = require('lint')
         local plenary_tbl = require("plenary.tbl")
-        local py_venv = require('user.py_venv')
+        local py_venv = require('auto-venv')
 
         local function make_py_venv_linter(linter_name, opts)
             opts = plenary_tbl.apply_defaults(opts, { cmd = linter_name, fallback_to_global = false, args = nil })

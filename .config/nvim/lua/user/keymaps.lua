@@ -125,5 +125,9 @@ keymap.set_n("<C-q>", function()
         vim.cmd.copen()
     end
 end, { desc = "Toggle quickfix window" })
+
 keymap.set_n("[q", vim.cmd.cprev, { desc = "Previous quickfix item" })
 keymap.set_n("]q", vim.cmd.cnext, { desc = "Next quickfix item" })
+
+keymap.set_x('/', '<C-\\><C-n>`</\\%V', { desc = 'Search forward within visual selection' })
+keymap.set_x('?', '<C-\\><C-n>`>?\\%V', { desc = 'Search backward within visual selection' })

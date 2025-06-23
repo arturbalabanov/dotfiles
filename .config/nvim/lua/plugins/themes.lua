@@ -45,6 +45,9 @@ return {
                 hl.DiagnosticVirtualTextWarn = { fg = c.warning }
                 hl.DiagnosticVirtualTextInfo = { fg = c.info }
                 hl.DiagnosticVirtualTextHint = { fg = c.hint }
+
+                -- disable highlighting unused code as comments
+                hl.DiagnosticUnnecessary = {}
             end,
         },
         config = function(_, opts)

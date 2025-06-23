@@ -15,7 +15,7 @@ return {
         -- All the patterns used to detect root dir, when **"pattern"** is in
         -- detection_methods
         -- patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "init.lua", "pyproject.toml", "Makefile", "package.json" },
-        patterns = { ".project_root", ".git", "_darcs", ".hg", ".bzr", ".svn" },
+        patterns = { ".project_root", ".git", "_darcs", ".hg", ".bzr", ".svn", ".venv" },
 
         -- Table of lsp clients to ignore by name
         -- eg: { "efm", ... }

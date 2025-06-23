@@ -25,8 +25,20 @@ if not status_ok then
     return
 end
 
+local lazy_config = {
+    dev = {
+        -- Directory where you store your local plugin projects. If a function is used,
+        -- the plugin directory (e.g. `~/projects/plugin-name`) must be returned.
+        ---@type string | fun(plugin: LazyPlugin): string
+        path = "~/dev/side",
+        ---@type string[] plugins that match these patterns will use your local versions instead of being fetched from GitHub
+        patterns = {},   -- For example {"folke"}
+        fallback = true, -- Fallback to git when local plugin doesn't exist
+    },
+}
+
 -- Plugins {{{
-return lazy.setup {
+local plugin_specs = {
     { import = "plugins" },
     { import = "plugins.mini" },
     { import = "plugins.git" },
@@ -114,19 +126,6 @@ return lazy.setup {
         },
     },
 
-    -- Markdown {{{
-    {
-        'MeanderingProgrammer/render-markdown.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
-        ft = { 'markdown', 'md', 'Avante', 'quarto' },
-        ---@module 'render-markdown'
-        ---@type render.md.UserConfig
-        opts = {
-            file_types = { 'markdown', 'md', 'Avante', 'quarto' },
-        }
-    },
-    -- }}}
-
     -- WARN: Do not lazy load this plugin as it is already lazy-loaded.
     -- Lazy-loading will cause more time for the previews to load when starting Neovim.
     {
@@ -147,3 +146,7 @@ return lazy.setup {
     },
 }
 -- }}}
+
+lazy_config.spec = plugin_specs
+
+return lazy.setup(lazy_config)

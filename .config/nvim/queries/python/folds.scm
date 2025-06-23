@@ -1,31 +1,27 @@
-;; TODO: there is overlap between this and the function / class definitions bellow
-;;       what i really want is to fold either (!) non-decorated functions OR decorated
-;;       functions together with their decorator, same with classes
+;; Fold all decorated functions
+(
+  decorated_definition
+  (function_definition)
+) @fold
 
-;; Fold all function definitions (with an without decorators)
+;; Fold all non-decorated functions (split is necessary to avoid double folding of decorated functions)
+(
+  (function_definition) @_fn
+  (#not-has-parent? @_fn decorated_definition)
+) @fold
 
-;; take a look at this, may help: https://github.com/nvim-treesitter/nvim-treesitter/blob/28d480e0624b259095e56f353ec911f9f2a0f404/queries/elm/folds.scm#L2
 
-[
-  (
-   module
-   (function_definition) @fold
-  )
-  (decorated_definition
-    (function_definition)
-  ) @fold
-]
+;; Fold all decorated classes
+(
+  decorated_definition
+  (class_definition)
+) @fold
 
-;; Fold all class definitions (with an without decorators)
-[
-  (
-   module
-   (class_definition) @fold
-  )
-  (decorated_definition
-    (class_definition)
-  ) @fold
-]
+;; Fold all non-decorated classes (split is necessary to avoid double folding of decorated classes)
+(
+  (class_definition) @_fn
+  (#not-has-parent? @_fn decorated_definition)
+) @fold
 
 ;; fold all import statements
 [

@@ -1,15 +1,30 @@
 local my_utils = require("utils")
 
--- TODO: Use plenary.reload.reload_module
+-- TODO: Use plenary.reload.reload_module  (maybe???)
 -- TODO: Remove all mappings
 -- TODO: Remove all autocommands and augroups
 -- TODO: Improve based on NvChad's reload mechanism
 -- ref: https://github.com/NvChad/NvChad/blob/v2.0/lua/core/init.lua#L74
 
---- Reload the entire configuration
+
+-- lazy.nvim has a reload function, use with caution as it doesn't work for all plugins (ref: https://github.com/folke/lazy.nvim/issues/445)
+-- I defined a wrapper for it in utils.plugin.reload. Create an autocmd to reload the relevant plugin(s) when
+-- the config file is saved. Can be a bit tricky when multiple are defined but maybe lazy.nvim already stores the file where
+-- they are defined in the plugin spec somewhere. but that way you can reload only one plugin at a time :)
+-- For the time being this will do
+vim.api.nvim_create_user_command(
+    'ReloadPlugin',
+    function(ctx)
+        require("utils.plugin").reload(ctx.args)
+        vim.notify("Reloaded plugin " .. ctx.args, vim.log.levels.INFO)
+    end,
+    { nargs = 1 }
+)
+
+--- Reload the entire configuration (disabled for now)
 local function reload_nvim_config()
     -- stop all lsp clients
-    for _, client in pairs(vim.lsp.get_active_clients()) do
+    for _, client in pairs(vim.lsp.get_clients()) do
         client.stop(true) -- force: true
 
         -- local client_fts = my_utils.get(client, "conf", "filetypes") or {}

@@ -1,3 +1,6 @@
+-- all neovim modes (see `:help map-table`):
+local all_modes = { "n", "i", "v", "x", "s", "c", "o", "t", "l" }
+
 return {
     "aserowy/tmux.nvim",
     opts = {
@@ -57,9 +60,9 @@ return {
         },
     },
     keys = {
-        { "<M-h>", function() require("tmux").move_left() end,   desc = "tmux move left" },
-        { "<M-j>", function() require("tmux").move_bottom() end, desc = "tmux move bottom" },
-        { "<M-k>", function() require("tmux").move_top() end,    desc = "tmux move top" },
-        { "<M-l>", function() require("tmux").move_right() end,  desc = "tmux move right" },
+        { "<M-h>", function() require("tmux").move_left() end,   mode = all_modes, desc = "tmux move left" },
+        { "<M-j>", function() require("tmux").move_bottom() end, mode = all_modes, desc = "tmux move bottom" },
+        { "<M-k>", function() require("tmux").move_top() end,    mode = all_modes, desc = "tmux move top" },
+        { "<M-l>", function() require("tmux").move_right() end,  mode = all_modes, desc = "tmux move right" },
     },
 }

@@ -37,4 +37,17 @@ M.on_load = function(plugin_name, callback_func)
     end
 end
 
+M.reload = function(plugin_name)
+    local plugin = require("lazy.core.config").plugins[plugin_name]
+
+    if not plugin then
+        error("Plugin '" .. plugin_name .. "' not found", vim.log.levels.ERROR)
+    end
+
+    if plugin._.loaded then
+        require("lazy.core.loader").reload(plugin)
+        return
+    end
+end
+
 return M

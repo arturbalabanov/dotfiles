@@ -1,4 +1,4 @@
-local handler = function(virtText, lnum, endLnum, width, truncate, ctx)
+local virtTextHandler = function(virtText, lnum, endLnum, width, truncate, ctx)
   -- Skip decorators (hacky but it works)
   -- TODO: Only implement this for python
 
@@ -6,23 +6,42 @@ local handler = function(virtText, lnum, endLnum, width, truncate, ctx)
   for i = lnum, endLnum do
     local lineVirtText = ctx.get_fold_virt_text(i)
 
-    local firstChunk = lineVirtText[1]
-    local lastChunk = lineVirtText[#lineVirtText]
+    local firstNonWhitespaceChunk = nil
 
-    if firstChunk[1] == '@' then
-      if lastChunk[1] == '(' then
-        inMultiLineDecorator = true
-      end
-    else
-      if not inMultiLineDecorator then
-        virtText = lineVirtText
+    for chunkIndex, chunk in ipairs(lineVirtText) do ---@diagnostic disable-line: unused-local
+      local chunkText = chunk[1]
+
+      -- if it's only whitespace
+      if not chunkText:match('^%s*$') then
+        firstNonWhitespaceChunk = chunk
         break
       end
     end
 
-    if inMultiLineDecorator then
-      if #lineVirtText == 1 and lastChunk[1] == ')' then
-        inMultiLineDecorator = false
+    local firstChar = nil
+    if firstNonWhitespaceChunk ~= nil then
+      firstChar = firstNonWhitespaceChunk[1]:sub(1, 1)
+    end
+
+    if firstChar ~= nil then
+      local lastChunk = lineVirtText[#lineVirtText]
+
+      if firstChar == '@' then
+        if lastChunk[1] == '(' then
+          inMultiLineDecorator = true
+        end
+      else
+        if not inMultiLineDecorator then
+          virtText = lineVirtText
+          break
+        end
+      end
+
+      if inMultiLineDecorator then
+        -- if #lineVirtText == 1 and lastChunk[1] == ')' then
+        if firstChar == ')' then
+          inMultiLineDecorator = false
+        end
       end
     end
   end
@@ -72,10 +91,11 @@ return {
     vim.o.foldlevelstart = 99
     vim.o.foldenable = true
   end,
+  lazy = false,
   opts = {
     open_fold_hl_timeout = 0, -- disable highlighting on opening folds
     enable_get_fold_virt_text = true,
-    fold_virt_text_handler = handler,
+    fold_virt_text_handler = virtTextHandler,
     close_fold_kinds_for_ft = {
       zsh = { 'marker' },
     },
@@ -83,8 +103,9 @@ return {
       local folds_per_ft = {
         zsh = 'marker',
         python = { 'treesitter' },
-        lua = { 'marker', 'treesitter' },
+        lua = { 'marker', 'treesitter' }, -- TODO: this breaks 'treesitter'
         go = { 'treesitter' },
+        markdown = { 'treesitter' },
       }
 
       return folds_per_ft[filetype] or { 'marker', 'treesitter' }

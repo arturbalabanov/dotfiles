@@ -1,8 +1,8 @@
-name: ffc-optscale
-root: ~/dev/software-one/optscale
+name: open-telemetry
+root: ~/dev/software-one/opentelemetry-python-contrib
 
 windows:
-  - code:
+  - python-contrib:
       layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
       panes:
         - editor:

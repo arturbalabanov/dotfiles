@@ -48,11 +48,7 @@ return {
             ["*"] = function()
                 return {
                     on_attach = function(client, bufnr)
-                        local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
-
-                        if filetype == "python" then
-                            require("user.py_venv").on_attach(client, bufnr)
-                        end
+                        require("auto-venv.contrib.lspconfig").on_attach(client, bufnr)
 
                         if client.supports_method("textDocument/formatting") then
                             setup_auto_format_autocmd(client, bufnr)
@@ -84,6 +80,13 @@ return {
             lua_ls = {
                 settings = {
                     Lua = {
+                        runtime = {
+                            version = 'LuaJIT',
+                            path = {
+                                'lua/?.lua',
+                                'lua/?/init.lua',
+                            },
+                        },
                         format = {
                             enable = true,
                             -- Put format options here
@@ -98,6 +101,12 @@ return {
                         },
                         workspace = {
                             checkThirdParty = false,
+                            library = {
+                                vim.env.VIMRUNTIME,
+                                -- TODO: add these
+                                -- '${3rd}/luv/library'
+                                -- '${3rd}/busted/library'
+                            }
                         },
                         diagnostics = {
                             globals = { 'vim' }
@@ -107,7 +116,7 @@ return {
             },
             gopls = {},
             terraformls = {},
-            ansiblels = {},
+            -- ansiblels = {},
             ruby_lsp = {},
             buf_ls = {},
             rust_analyzer = {

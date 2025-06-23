@@ -16,10 +16,6 @@ startup_command = 'tmux split-window -h -l 33% && tmux select-pane -L && nvim -p
 preview_command = 'lsd --tree --color=always --icon=always -l ~/.config/sesh/ ~/.config/tmuxinator/'
 
 [[session]]
-name = 'neovim-config'
-path = '~/.config/nvim'
-
-[[session]]
 name = 'zsh-config'
 path = '~'
 startup_command = 'nvim -p .zshrc .zprofile .zshrc_local'

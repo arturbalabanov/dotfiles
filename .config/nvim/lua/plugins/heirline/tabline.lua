@@ -5,7 +5,7 @@ local common = require("plugins.heirline.common")
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 
-local py_venv = require('user.py_venv')
+
 
 local treesitter_hl = require("vim.treesitter.highlighter")
 
@@ -63,13 +63,20 @@ local PyVenvInfo = {
     condition = conditions.lsp_attached,
 
     init      = function(self)
-        self.py_venv = py_venv.get_python_venv(self.bufnr, { disable_notifications = true, full_version = true })
+        self.py_venv = require('auto-venv').get_python_venv(self.bufnr,
+            { disable_notifications = true, full_version = true })
     end,
 
-    hl        = { fg = "green", bold = true },
+    hl        = function(self)
+        local is_builtin = self.py_venv == nil or self.py_venv.name == "<system>"
+        return {
+            fg = is_builtin and "red" or "green",
+            bold = true,
+        }
+    end,
 
     provider  = function(self)
-        return self.py_venv ~= nil and ' ' .. (self.py_venv.name or "<system>")
+        return self.py_venv ~= nil and ' ' .. (self.py_venv.name)
     end,
 }
 
@@ -77,10 +84,11 @@ local LSPActive = {
     update   = { 'LspAttach', 'LspDetach', "BufEnter" },
 
     init     = function(self)
-        self.py_venv = py_venv.get_python_venv(self.bufnr, { disable_notifications = true, full_version = true })
+        self.py_venv = require('auto-venv').get_python_venv(self.bufnr,
+            { disable_notifications = true, full_version = true })
         self.clients = {}
 
-        for _, client in pairs(vim.lsp.get_active_clients({ bufnr = self.bufnr })) do
+        for _, client in pairs(vim.lsp.get_clients({ bufnr = self.bufnr })) do
             local client_info = {
                 name = client.name,
                 sources = {},
@@ -146,7 +154,7 @@ local LSPActive = {
                     local item = "* `" .. linter_name .. "`"
 
                     if not linter_cmd or (not require("utils.shell").executable_exists(linter_cmd)) then
-                        item = item .. " **NOT AVAILABLE**"
+                        item = "* ~~`" .. linter_name .. "`~~" .. " **(NOT AVAILABLE)**"
                     elseif self.py_venv ~= nil and linter_cmd:find(self.py_venv.bin_path, 1, true) == 1 then
                         item = item .. " "
                     end
