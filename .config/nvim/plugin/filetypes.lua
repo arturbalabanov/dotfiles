@@ -15,5 +15,7 @@ vim.filetype.add {
         ["Dockerfile%.%w+"] = 'dockerfile',
         -- match Dockerfile_local, Dockerfile_dev, etc.
         ["Dockerfile_%w+"] = 'dockerfile',
+        ["%.yamllint"] = 'yaml',
+        ["%.ansible%-lint"] = 'yaml',
     }
 }

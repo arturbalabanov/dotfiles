@@ -1,0 +1,21 @@
+---
+# TODO: Add a bunch of other things here like installing Homebrew, installing packages from .Brewfile etc.
+#       ref: https://github.com/TalkingQuickly/ansible-osx-setup/blob/master/ansible_osx.yml
+
+- name: Main dotfiles play
+  hosts: localhost
+  tasks:
+    # TODO: Only apply for macos
+    - name: Remove delay from showing and hiding the Dock on MacOS
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: autohide-delay
+        type: float
+        value: 0
+        state: present
+    # TODO: Only run this if the above has made any changes
+    - name: Restart Dock
+      command: "killall Dock"
+      ignore_errors: true
+      failed_when: false
+      changed_when: false

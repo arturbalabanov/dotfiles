@@ -580,7 +580,7 @@ function venv {
     elif [[ -f ".venv/bin/activate" ]]; then
         venv_path=".venv"
     else
-        echo "No pdm.lock, poetry.lock or Pipfile.lock found :("
+        echo "No pdm.lock, poetry.lock, Pipfile.lock or .venv found :("
         return 1
     fi
 

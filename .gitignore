@@ -1,3 +1,5 @@
 ~/scripts/.mypy_cache/
+~/dotfiles-ansible/.venv/
+~/dotfiles-ansible/.ansible/
 ~/.config/nvim/.mypy_cache/
 .DS_Store

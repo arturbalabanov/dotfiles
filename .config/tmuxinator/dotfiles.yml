@@ -1,0 +1,51 @@
+name: dotfiles
+root: "~"
+
+windows:
+  - neovim:
+      root: ~/.config/nvim
+      layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
+      panes:
+        - editor:
+          - nvim +"Telescope find_files"
+        - tests:
+          -
+  - sesh:
+      root: ~/.config/tmuxinator
+      layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
+      panes:
+        - editor:
+          - nvim -p ~/.config/sesh/sesh.toml *.yml
+        - tests:
+          -
+  - zsh:
+      layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
+      panes:
+        - editor:
+          - nvim -p .zshrc .zprofile .zshrc_local
+        - tests:
+          -
+  - tmux:
+      layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
+      panes:
+        - editor:
+          - nvim -p .tmux.conf .tmux-powerlinerc
+        - tests:
+          -
+  - scripts:
+      root: ~/scripts
+      layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
+      panes:
+        - editor:
+          - nvim +"Telescope find_files" 
+        - tests:
+          - 
+  - ansible:
+      root: ~/dotfiles-ansible
+      layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
+      panes:
+        - editor:
+          - venv
+          - nvim +"Telescope find_files"
+        - tests:
+          - venv

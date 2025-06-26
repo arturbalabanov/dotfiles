@@ -40,6 +40,9 @@ fi
 echo "Creating alt files..."
 yadm alt
 
+echo "Running ansible playbook..."
+uv run --directory ~/dotfiles-ansible ansible-playbook -i "localhost," -c local main_playbook.yaml
+
 echo "Installing scripts..."
 (cd "$HOME/scripts" && make install)
 

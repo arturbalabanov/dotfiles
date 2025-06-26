@@ -1,3 +1,6 @@
+# TODO: replace this with the new ansible playbooks
+#       also requires changes to the yadm_pull and yadm_update scripts
+
 BINARIES_DIR := $(HOME)/.local/bin
 
 # in the order of the greps:

@@ -32,7 +32,7 @@ return {
             -- NOTE: If you enable messages, then the cmdline is enabled automatically.
             -- This is a current Neovim limitation.
             enabled = true,            -- enables the Noice messages UI
-            view = "messages",         -- default view for messages
+            view = "cmdline",          -- default view for messages
             view_error = "notify",     -- view for errors
             view_warn = "notify",      -- view for warnings
             view_history = "messages", -- view for :messages
@@ -197,13 +197,19 @@ return {
         },
         throttle = 1000 / 30,             -- how frequently does Noice need to check for ui updates? This has no effect when in blocking mode.
         ---@type NoiceConfigViews
-        views = {}, ---@see section on views
+        views = {
+            cmdline = {
+                timeout = 3000
+            },
+        }, ---@see section on views
         ---@type NoiceRouteConfig[]
         routes = {
             {
                 filter = {
                     any = {
                         { event = "msg_show", kind = "",                              find = "written" },
+                        { event = "msg_show", kind = "",                              find = "^%d+ lines yanked$" },
+                        { event = "msg_show", kind = "",                              find = "^%d+ more lines$" },
                         { event = "msg_show", kind = "wmsg",                          find = "search hit BOTTOM" },
                         { event = "msg_show", kind = "wmsg",                          find = "search hit TOP" },
                         -- ref: https://github.com/zbirenbaum/copilot.lua/issues/321

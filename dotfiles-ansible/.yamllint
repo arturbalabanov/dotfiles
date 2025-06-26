@@ -1,0 +1,23 @@
+---
+extends: default
+
+yaml-files:
+  - "*.yaml"
+  - "*.yml"
+  - .yamllint
+  - .ansible-lint
+
+ignore:
+  - .venv/
+  - node_modules/
+
+rules:
+  comments:
+    # necessary for compatibility with `ansible-lint --write`
+    min-spaces-from-content: 1
+  document-start: disable
+  key-duplicates: enable
+  line-length:
+    max: 120
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: false

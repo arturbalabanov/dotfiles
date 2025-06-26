@@ -1,0 +1,8 @@
+---
+profile: safety
+strict: true
+exclude_paths:
+  - venv/
+  - .github/
+  - .yamllint
+  - .ansible-lint
