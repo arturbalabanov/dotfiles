@@ -1,0 +1,17 @@
+---
+- name: Remove delay from showing and hiding the Dock on MacOS
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: autohide-delay
+    type: float
+    value: 0
+    state: present
+  register: dock_autohide_delay
+
+# NOTE: If applying multiple settings, consider using a handler instead: https://stackoverflow.com/a/38144933
+- name: Restart Dock
+  command: "killall Dock"
+  when: dock_autohide_delay is changed
+  ignore_errors: true
+  failed_when: false
+  changed_when: false

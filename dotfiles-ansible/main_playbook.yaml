@@ -4,18 +4,8 @@
 
 - name: Main dotfiles play
   hosts: localhost
-  tasks:
-    # TODO: Only apply for macos
-    - name: Remove delay from showing and hiding the Dock on MacOS
-      community.general.osx_defaults:
-        domain: com.apple.dock
-        key: autohide-delay
-        type: float
-        value: 0
-        state: present
-    # TODO: Only run this if the above has made any changes
-    - name: Restart Dock
-      command: "killall Dock"
-      ignore_errors: true
-      failed_when: false
-      changed_when: false
+  connection: local
+  gather_facts: true
+  roles:
+    - role: macos_config
+      when: ansible_facts['os_family'] == 'Darwin'
