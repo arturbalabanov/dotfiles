@@ -24,8 +24,8 @@ return {
             -- ref: https://github.com/neovim/nvim-lspconfig/blob/master/CONTRIBUTING.md#adding-a-server-to-lspconfig
             tmux_language_server = {
                 default_config = {
-                    cmd = { 'tmux-language-server' },
-                    filetypes = { 'tmux' },
+                    cmd = { "tmux-language-server" },
+                    filetypes = { "tmux" },
                     single_file_support = true,
                 },
                 docs = {
@@ -81,23 +81,24 @@ return {
                 settings = {
                     Lua = {
                         runtime = {
-                            version = 'LuaJIT',
+                            version = "LuaJIT",
                             path = {
-                                'lua/?.lua',
-                                'lua/?/init.lua',
+                                "lua/?.lua",
+                                "lua/?/init.lua",
                             },
                         },
                         format = {
-                            enable = true,
-                            -- Put format options here
-                            -- NOTE: the value should be STRING!!
-
-                            -- ref: https://github.com/CppCXY/EmmyLuaCodeStyle/blob/master/docs/format_config_EN.md
-                            -- (convert to cammel case)
-
-                            defaultConfig = {
-                                quoteStyle = "double",
-                            },
+                            --- we're using stylua for formatting via conform.nvim
+                            enable = false,
+                            -- -- Put format options here
+                            -- -- NOTE: the value should be STRING!!
+                            --
+                            -- -- ref: https://github.com/CppCXY/EmmyLuaCodeStyle/blob/master/docs/format_config_EN.md
+                            -- -- (convert to cammel case)
+                            --
+                            -- defaultConfig = {
+                            --     quote_style = "double",
+                            -- },
                         },
                         workspace = {
                             checkThirdParty = false,
@@ -109,7 +110,7 @@ return {
                             }
                         },
                         diagnostics = {
-                            globals = { 'vim' }
+                            globals = { "vim" }
                         },
                     },
                 },
@@ -121,7 +122,7 @@ return {
             buf_ls = {},
             rust_analyzer = {
                 settings = {
-                    ['rust-analyzer'] = {
+                    ["rust-analyzer"] = {
                         check = {
                             command = "clippy",
                         },
@@ -145,7 +146,7 @@ return {
             end
         end
 
-        local default_server_opts = opts.server_configs['*']
+        local default_server_opts = opts.server_configs["*"]
 
         if type(default_server_opts) == "function" then
             default_server_opts = default_server_opts()
@@ -156,7 +157,7 @@ return {
         end
 
         for server_name, server_opts in pairs(opts.server_configs) do
-            if server_name ~= '*' then
+            if server_name ~= "*" then
                 server_opts = vim.tbl_deep_extend("keep", server_opts, default_server_opts)
 
                 if require("lspconfig")[server_name] then

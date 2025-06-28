@@ -15,7 +15,7 @@ local function py_venv_formatter(formatter_name)
     --       (there is probably a utility function for that in conform.nvim)
 
     return function(bufnr)
-        formatter_conf.command = require('auto-venv').buf_local_command_path(original_command, bufnr)
+        formatter_conf.command = require("auto-venv").buf_local_command_path(original_command, bufnr)
         return formatter_conf
     end
 end
@@ -50,6 +50,7 @@ return {
                 python = { "ruff_fix", "ruff_format", "isort", "black" },
                 markdown = { "inject" },
                 proto = { "buf" },
+                lua = { "stylua" },
                 ["*"] = { "codespell" },
             },
         }

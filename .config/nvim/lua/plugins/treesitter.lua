@@ -6,6 +6,7 @@ return {
         -- ref: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/treesitter.lua
 
         'nvim-treesitter/nvim-treesitter',
+        -- TODO: switch to main branch: https://github.com/nvim-treesitter/nvim-treesitter/tree/main
         event = { "BufReadPost", "BufNewFile", "BufWritePre", "VeryLazy" },
         cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
         lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
