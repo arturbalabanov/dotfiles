@@ -1,10 +1,38 @@
+local ignore_buftypes = {
+    'nofile',
+    'prompt',
+    'popup',
+    "help",
+    "terminal",
+}
+
+local ignore_filetypes = {
+    "help",
+    "toggleterm",
+    "neotest-output",
+    "neotest-summary",
+    "NvimTree",
+    "TelescopePrompt",
+    "DressingInput",
+    "OverseerList",
+    "Avante",
+    "AvanteInput",
+    "codecompanion",
+    "dapui_breakpoints",
+    "dapui_scopes",
+    "dapui_stacks",
+    "dapui_watches",
+    "dap-repl",
+    "dapui_console",
+}
+
 return {
     "beauwilliams/focus.nvim",
     opts = {
         enable = true,            -- Enable module
         commands = true,          -- Create Focus commands
         autoresize = {
-            enable = true,        -- Enable or disable auto-resizing of splits
+            enable = false,       -- Enable or disable auto-resizing of splits
             width = 0,            -- Force width for the focused window
             height = 0,           -- Force height for the focused window
             minwidth = 0,         -- Force minimum width for the unfocused window
@@ -16,25 +44,23 @@ return {
             tmux = false,   -- Create tmux splits instead of neovim splits
         },
         ui = {
-            number = false,                    -- Display line numbers in the focussed window only
+            number = true,                     -- Display line numbers in the focussed window only
             relativenumber = false,            -- Display relative line numbers in the focussed window only
-            hybridnumber = true,               -- Display hybrid line numbers in the focussed window only
+            hybridnumber = false,              -- Display hybrid line numbers in the focussed window only
             absolutenumber_unfocussed = false, -- Preserve absolute numbers in the unfocussed windows
 
             cursorline = true,                 -- Display a cursorline in the focussed window only
             cursorcolumn = false,              -- Display cursorcolumn in the focussed window only
             colorcolumn = {
-                enable = false,                -- Display colorcolumn in the foccused window only
+                enable = true,                 -- Display colorcolumn in the foccused window only
                 list = '+1',                   -- Set the comma-saperated list for the colorcolumn
             },
-            signcolumn = false,                -- Display signcolumn in the focussed window only
+            signcolumn = true,                 -- Display signcolumn in the focussed window only
             winhighlight = false,              -- Auto highlighting for focussed/unfocussed windows
         }
     },
-    config = function(_, opts)
-        require("focus").setup(opts)
-
-        local focus_common = require("user.focus_common")
+    config = function(_, config_opts)
+        require("focus").setup(config_opts)
 
         local augroup = vim.api.nvim_create_augroup('UserFocusRules', { clear = true })
 
@@ -42,13 +68,13 @@ return {
             group = augroup,
             callback = function(opts)
                 local bufnr = vim.api.nvim_get_current_buf()
-                local winid = vim.api.nvim_get_current_win()
 
                 require("ibl").setup_buffer(bufnr, { enabled = true })
 
-                if focus_common.should_ignore_win(winid, "focus") then
-                    vim.b.focus_disable = true
-                    return
+                if vim.tbl_contains(ignore_buftypes, vim.bo.buftype) then
+                    vim.w.focus_disable = true
+                else
+                    vim.w.focus_disable = false
                 end
             end,
         })
@@ -62,12 +88,11 @@ return {
 
         vim.api.nvim_create_autocmd('FileType', {
             group = augroup,
-            callback = function(_)
-                local winid = vim.api.nvim_get_current_win()
-
-                if focus_common.should_ignore_win(winid, "focus") then
+            callback = function(opts)
+                if vim.tbl_contains(ignore_filetypes, vim.bo.filetype) then
                     vim.b.focus_disable = true
-                    return
+                else
+                    vim.b.focus_disable = false
                 end
             end,
         })

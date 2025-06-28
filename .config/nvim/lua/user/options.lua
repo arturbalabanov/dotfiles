@@ -14,7 +14,7 @@ opt.showmode = false
 opt.ruler = false
 opt.cmdheight = 0
 opt.cursorline = true
-opt.colorcolumn = "130"
+opt.colorcolumn = "120"
 opt.signcolumn = "yes"
 opt.scrolloff = 15
 opt.splitbelow = true
@@ -34,7 +34,7 @@ opt.numberwidth = 4
 -- text
 opt.wrap = false
 opt.spell = false
-opt.textwidth = 130
+opt.textwidth = 120
 opt.iskeyword:append("-")                   -- treats words with `-` as single words
 opt.iskeyword:remove(":")                   -- make sure words seperated by `:` are treated as different words
 opt.formatoptions:remove({ "c", "r", "o" }) -- This is a sequence of letters which describes how automatic formatting is to be done
