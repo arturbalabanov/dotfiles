@@ -23,7 +23,9 @@ return {
         opts = {
             auto_install = true,
             ensure_installed = "all",
-            ignore_install = {},
+            ignore_install = {
+                "ipkg",           -- https://github.com/srghma/tree-sitter-ipkg doesn't exist anymore
+            },
             sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
             highlight = { enable = true },
             autopairs = { enable = true },

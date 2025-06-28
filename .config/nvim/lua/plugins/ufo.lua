@@ -103,12 +103,12 @@ return {
       local folds_per_ft = {
         zsh = 'marker',
         python = { 'treesitter' },
-        lua = { 'marker', 'treesitter' }, -- TODO: this breaks 'treesitter'
+        lua = { 'treesitter' },
         go = { 'treesitter' },
         markdown = { 'treesitter' },
       }
 
-      return folds_per_ft[filetype] or { 'marker', 'treesitter' }
+      return folds_per_ft[filetype] or { 'treesitter', 'indent' }
     end
   },
   keys = {
