@@ -16,20 +16,25 @@ opt.cmdheight = 0
 opt.cursorline = true
 opt.colorcolumn = "120"
 opt.signcolumn = "yes"
-opt.scrolloff = 15
 opt.splitbelow = true
 opt.splitright = true
 opt.completeopt = { 'menu', 'menuone', 'preview' }
 opt.updatetime = 300 -- faster completion (4000ms default)
 opt.laststatus = 3   -- Make the statusline global
 
--- Mouse mode
-opt.mouse = "a"
-opt.mousescroll = "ver:3,hor:0"
-
+-- line numbers
 opt.number = true
 opt.relativenumber = false
 opt.numberwidth = 4
+
+-- cursor scroll
+opt.scrolloff = 15     -- keep 15 lines visible above and below the cursor
+opt.sidescroll = 1     -- enable side scrolling
+opt.sidescrolloff = 15 -- keep 15 columns visible left and right of the cursor
+
+-- Mouse mode
+opt.mouse = "a"
+opt.mousescroll = "ver:3,hor:0"
 
 -- text
 opt.wrap = false
@@ -72,7 +77,3 @@ opt.wildignore:append('**/.pytest_cache/**')
 opt.wildignore:append('.ruff_cache')
 opt.wildignore:append('.pdm-build')
 opt.wildignore:append('**/.mypy_cache/**')
-
--- disable netrw because we use nvim-tree
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1

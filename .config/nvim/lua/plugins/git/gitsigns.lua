@@ -1,7 +1,7 @@
 return {
     {
         "lewis6991/gitsigns.nvim",
-        event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+        event = { "BufReadPost", "BufNewFile", "BufWritePre", "BufEnter" },
         opts = {
             signs                           = {
                 add          = { text = '│' },
@@ -43,21 +43,31 @@ return {
                 row = 0,
                 col = 1
             },
-            _on_attach_pre                  = function(_, callback)
-                require("gitsigns-yadm").yadm_signs(callback)
+            _on_attach_pre                  = function(bufnr, callback)
+                if vim.fn.executable("yadm") == 1 then
+                    require("gitsigns-yadm").yadm_signs(callback, { bufnr = bufnr })
+                else
+                    -- if optionally disabling the plugin, make sure to call
+                    -- 'callback' with no arguments
+                    callback()
+                end
             end,
         },
         keys = {
-            { '[g',         function() require("gitsigns").nav_hunk('prev') end,  desc = "Jump to previous git hunk" },
-            { ']g',         function() require("gitsigns").nav_hunk('next') end,  desc = "Jump to next git hunk" },
-            { '<leader>gs', function() require("gitsigns").toggle_signs() end,    desc = "Toggle git signs" },
-        }
-    },
-    {
-        "purarue/gitsigns-yadm.nvim",
-        event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+            { '[g',         function() require("gitsigns").nav_hunk('prev') end, desc = "Jump to previous git hunk" },
+            { ']g',         function() require("gitsigns").nav_hunk('next') end, desc = "Jump to next git hunk" },
+            { '<leader>gs', function() require("gitsigns").toggle_signs() end,   desc = "Toggle git signs" },
+        },
         dependencies = {
-            "lewis6991/gitsigns.nvim",
+            "nvim-lua/plenary.nvim",
+            {
+                "purarue/gitsigns-yadm.nvim",
+                opts = {
+                    yadm_repo_git = vim.fn.expand("~/.local/share/yadm/repo.git"),
+                    disable_inside_gitdir = false,
+                    shell_timeout_ms = 1000,
+                },
+            },
         },
     },
 }

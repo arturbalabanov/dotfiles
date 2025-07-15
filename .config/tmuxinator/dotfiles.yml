@@ -10,7 +10,7 @@ windows:
           - nvim +"Telescope find_files"
         - tests:
           -
-  - sesh:
+  - sessions:
       root: ~/.config/tmuxinator
       layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
       panes:
@@ -49,3 +49,11 @@ windows:
           - nvim +"Telescope find_files"
         - tests:
           - venv
+  - hammerspoon:
+      root: ~/.hammerspoon
+      layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
+      panes:
+        - editor:
+          - nvim init.lua
+        - tests:
+           - 

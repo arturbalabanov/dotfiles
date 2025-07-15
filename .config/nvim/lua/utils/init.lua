@@ -168,4 +168,48 @@ M.move_jump_to_new_tab = function(jump_func)
     vim.api.nvim_win_set_buf(orig_winnr, orig_bufnr)
 end
 
+function M.get_var_or_default(var_name, default_value, opts)
+    -- API modeled after vim.api.nvim_get_option_value
+    opts = opts or { scope = "global" }
+
+    if opts.win == nil and opts.buf == nil and opts.scope == "local" then
+        error("get_var_or_default: win or buf option is required for local scope")
+    end
+
+    if opts.win ~= nil and opts.buf ~= nil then
+        error("get_var_or_default: ambiguous options win and buf, please specify only one")
+    end
+
+    local get_var_func
+    if opts.win ~= nil then
+        if opts.scope == "global" then
+            error("get_var_or_default: win option is not supported for global scope")
+        end
+
+        get_var_func = function(name)
+            return vim.api.nvim_win_get_var(opts.win, name)
+        end
+    elseif opts.buf ~= nil then
+        if opts.scope ~= "local" then
+            error("get_var_or_default: buf option is only supported for local scope")
+        end
+
+        get_var_func = function(name)
+            return vim.api.nvim_buf_get_var(opts.buf, name)
+        end
+    elseif opts.scope == "global" then
+        get_var_func = vim.api.nvim_get_var
+    else
+        error("get_var_or_default: invalid opts: " .. vim.inspect(opts))
+    end
+
+    local found, value = pcall(get_var_func, var_name)
+
+    if not found then
+        return default_value
+    end
+
+    return value
+end
+
 return M

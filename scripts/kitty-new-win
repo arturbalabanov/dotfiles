@@ -1,12 +1,70 @@
 #!/bin/bash
 
-query="$*"
-zsh_cmd="source ~/.zprofile && source ~/.zshrc && eval $query"
+show_usage() {
+    echo "Usage: $0 \"<command>\""
+    echo "Opens a new Kitty terminal window with the specified command."
+    echo "IMPORTANT: the full command must be in quotes!."
+}
+
+hold=1
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help)
+            show_usage
+            exit 0
+            ;;
+        --title)
+            window_title="$2"
+            shift
+            shift
+            ;;
+        --no-hold)
+            hold=0
+            shift
+            ;;
+        -*|--*)
+            echo "Unknown option $1"
+            exit 1
+            ;;
+        *)
+            if [[ -z "$1" ]]; then
+                echo "Error: No command provided."
+                show_usage
+                exit 1
+            fi
+
+            if [[ -n "$command" ]]; then
+                echo "Error: Multiple commands provided. Only one command is allowed."
+                show_usage
+                exit 1
+            fi
+            
+            command="$1"
+            shift
+            ;;
+    esac
+done
+
+
+zsh_cmd="source ~/.zprofile && source ~/.zshrc && eval $command"
+
+extra_kitty_args=""
+
+if [[ $hold -eq 1 ]]; then
+    extra_kitty_args+=" --hold"
+fi
+
 
 /Applications/kitty.app/Contents/MacOS/kitty \
     -o "macos_quit_when_last_window_closed=yes" \
+    -o "confirm_os_window_close=0" \
+    -o "hide_window_decorations=false" \
+    -o "remember_window_size=no" \
+    -o "initial_window_width=120c" \
+    -o "initial_window_height=50c" \
     --start-as "normal" \
     --single-instance \
-    --title "$query" \
-    --hold \
+    --title "${window_title:-$command}" \
+    ${extra_kitty_args} \
     /bin/zsh -c "$zsh_cmd" &

@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+show_usage() {
+    echo "Usage: $0 <message> [--title <title>]"
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help)
+            show_usage
+            exit 0
+            ;;
+        --title)
+            title="$2"
+            shift
+            shift
+            ;;
+        --subtitle)
+            subtitle="$2"
+            shift
+            shift
+            ;;
+        *)
+            if [[ -n "$message" ]]; then
+                echo "Error: Multiple messages provided."
+                show_usage
+                exit 1
+            fi
+            message="$1"
+            shift
+            ;;
+    esac
+done
+
+if [[ -z "$message" ]]; then
+    echo "Error: No message provided."
+    show_usage
+    exit 1
+fi
+
+if [[ "$(uname)" != "Darwin" ]]; then
+    echo "Error: This script is intended for macOS only."
+    # TODO: Add support for Linux using notify-send
+    exit 1
+fi
+
+# If title is not set it will use "Script Editor" which is fucking annoying
+apple_script="display notification \"$message\" with title \"${title:-Notification}\""
+
+if [[ -n "$subtitle" ]]; then
+    apple_script+=" subtitle \"$subtitle\""
+fi
+
+osascript -e "$apple_script" || {
+    echo "Error: Failed to display notification."
+    exit 1
+}

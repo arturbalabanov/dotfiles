@@ -29,6 +29,12 @@ M.CommonFileBlock = {
         self.filepath = vim.api.nvim_buf_get_name(self.bufnr)
         self.filename = self.filepath == "" and "[No Name]" or vim.fn.fnamemodify(self.filepath, ":t")
         self.filetype = vim.api.nvim_buf_get_option(self.bufnr, 'filetype')
+
+        self.is_directory = (
+            (vim.fn.isdirectory(self.filepath) == 1)
+            or (self.filepath:match("^oil%-ssh://.*/$"))
+            or (self.filepath:match("^oil://.*/$"))
+        )
     end,
 }
 
@@ -42,8 +48,20 @@ M.CurrentTabFileBlock = {
 M.FileIcon = {
     init = function(self)
         local filename = self.filename
-        local extension = vim.fn.fnamemodify(filename, ":e")
-        self.icon, self.icon_color = require("nvim-web-devicons").get_icon_color(filename, extension, { default = true })
+        if self.is_directory then
+            self.icon = ""
+            self.icon_color = "blue"
+        else
+            local extension = vim.fn.fnamemodify(filename, ":e")
+
+            if extension == "" then
+                -- if the file has no extension, use the filetype as the extension (e.g. dockerfiles)
+                extension = self.filetype
+            end
+
+            self.icon, self.icon_color = require("nvim-web-devicons").get_icon_color(filename, extension,
+                { default = true })
+        end
     end,
     provider = function(self)
         return self.icon and (self.icon .. " ")
@@ -55,6 +73,9 @@ M.FileIcon = {
 
 M.FileName = {
     provider = function(self)
+        if self.filepath and self.is_directory then
+            return vim.fn.fnamemodify(self.filepath, ":h:t") .. "/"
+        end
         -- escape `%` characters in filenames (e.g. caused by jinja templates in the filename)
         return self.filename:gsub("%%", "%%%%")
     end,

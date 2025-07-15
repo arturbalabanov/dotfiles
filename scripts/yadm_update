@@ -32,6 +32,7 @@ yadm add ~/scripts
 yadm add ~/.config/nvim
 yadm add ~/.config/tmuxinator
 yadm add ~/dotfiles-ansible
+yadm add ~/.hammerspoon/
 
 yadm status
 

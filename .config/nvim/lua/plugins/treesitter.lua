@@ -1,5 +1,38 @@
 local my_utils = require("utils")
 
+-- local pytest_fixtures_ts_query = [[
+-- (decorated_definition
+--    (decorator
+--      [
+--       (call
+--        function: (
+--          attribute
+--             object: (identifier) @_obj_name
+--             attribute: (identifier) @_dec_name))
+--      (attribute
+--         object: (identifier) @_obj_name
+--         attribute: (identifier) @_dec_name)
+--     (#eq? @_obj_name "pytest")
+--     (#eq? @_dec_name "fixture")
+--      ]
+--      )
+--  definition: (
+--    function_definition) @capture)
+-- ]]
+--
+-- local pytest_fixtures_ast_grep_query = [[
+-- rule:
+--   pattern: def $FIXTURE_NAME
+--   kind: function_definition
+--   follows:
+--     kind: decorator
+--     has:
+--       kind: identifier
+--       regex: ^fixture$
+--       stopBy: end
+-- ]]
+
+
 return {
     {
         -- Config inspired by LazyVim

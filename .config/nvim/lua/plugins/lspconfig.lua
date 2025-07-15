@@ -11,10 +11,9 @@ local function setup_auto_format_autocmd(client, bufnr)
             end
 
             vim.lsp.buf.format()
-        end
+        end,
     })
 end
-
 
 return {
     "neovim/nvim-lspconfig",
@@ -54,7 +53,10 @@ return {
                             setup_auto_format_autocmd(client, bufnr)
                         end
 
-                        if client.supports_method("textDocument/inlayHint") or client.server_capabilities.inlayHintProvider then
+                        if
+                            client.supports_method("textDocument/inlayHint")
+                            or client.server_capabilities.inlayHintProvider
+                        then
                             vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
                         end
                     end,
@@ -65,16 +67,12 @@ return {
                 handlers = {
                     -- Disable all diagnostics from  pyright, use local tools like flake8, ruff etc. for that
                     -- We make an exception for reportUndefinedVariable as this is necesasry for stevanmilic/nvim-lspimport
-                    ["textDocument/publishDiagnostics"] = vim.lsp.with(
-                        function(err, result, ctx, config)
-                            result.diagnostics = vim.tbl_filter(
-                                function(diagnostic) return diagnostic.code == "reportUndefinedVariable" end,
-                                result.diagnostics
-                            )
-                            vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
-                        end,
-                        {}
-                    )
+                    ["textDocument/publishDiagnostics"] = vim.lsp.with(function(err, result, ctx, config)
+                        result.diagnostics = vim.tbl_filter(function(diagnostic)
+                            return diagnostic.code == "reportUndefinedVariable"
+                        end, result.diagnostics)
+                        vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+                    end, {}),
                 },
             },
             lua_ls = {
@@ -104,13 +102,14 @@ return {
                             checkThirdParty = false,
                             library = {
                                 vim.env.VIMRUNTIME,
+                                "/Applications/Hammerspoon.app/Contents/Resources/extensions/hs/",
                                 -- TODO: add these
-                                -- '${3rd}/luv/library'
-                                -- '${3rd}/busted/library'
-                            }
+                                -- '${3rd}/luv/library',
+                                -- '${3rd}/busted/library',
+                            },
                         },
                         diagnostics = {
-                            globals = { "vim" }
+                            globals = { "vim", "hs" },
                         },
                     },
                 },
@@ -128,8 +127,8 @@ return {
                         },
                         diagnostics = {
                             enable = true,
-                        }
-                    }
+                        },
+                    },
                 },
             },
             taplo = {},
@@ -167,5 +166,5 @@ return {
                 end
             end
         end
-    end
+    end,
 }

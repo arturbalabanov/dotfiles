@@ -80,6 +80,7 @@
   "scrollEOF.nvim": { "branch": "master", "commit": "2575109749b4bf3a0bf979a17947b3c1e8c5137e" },
   "search.nvim": { "branch": "main", "commit": "7b8f2315d031be73e14bc2d82386dfac15952614" },
   "substitute.nvim": { "branch": "main", "commit": "9db749a880e3dd3b0eb57f698aa8f1e1630e1f25" },
+  "telescope-emoji.nvim": { "branch": "master", "commit": "86248d97be84a1ce83f0541500ef9edc99ea2aa1" },
   "telescope-glyph.nvim": { "branch": "master", "commit": "f63f01e129e71cc25b79637610674bbf0be5ce9d" },
   "telescope-yadm.nvim": { "branch": "main", "commit": "23043463b0bb2529bb478eaf816b6445f788aae2" },
   "telescope.nvim": { "branch": "master", "commit": "a0bbec21143c7bc5f8bb02e0005fa0b982edc026" },

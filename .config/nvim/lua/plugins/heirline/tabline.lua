@@ -1,13 +1,12 @@
 -- ref: https://github.com/rebelot/heirline.nvim/blob/master/cookbook.md
 
-local common = require("plugins.heirline.common")
+local treesitter_hl = require("vim.treesitter.highlighter")
 
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 
-
-
-local treesitter_hl = require("vim.treesitter.highlighter")
+local common = require("plugins.heirline.common")
+local my_utils = require("utils")
 
 local WinSeparator = {
     provider = "│",
@@ -19,13 +18,15 @@ local TabLineOffset = {
     condition = function(self)
         local win = vim.api.nvim_tabpage_list_wins(0)[1]
         local bufnr = vim.api.nvim_win_get_buf(win)
-        local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+        local filetype = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
         self.winid = win
 
         if filetype == "NvimTree" then
             self.title = "NvimTree"
         elseif filetype == "OverseerList" then
             self.title = "Overseer"
+        elseif filetype == "oil" and my_utils.get_var_or_default("oil_ssh_tree", false, { win = win }) then
+            self.title = "Oil"
         else
             return false
         end

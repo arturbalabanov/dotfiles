@@ -22,6 +22,8 @@ info:
 	@echo "the following scripts will be installed in $(BINARIES_DIR):"
 	@$(foreach bin,$(BINARIES),echo "    $(bin)"; )
 
+# TODO: in install change the shebang to #!/usr/bin/env -S uv run --script
+#       as recommended by uv: https://docs.astral.sh/uv/guides/scripts/#using-a-shebang-to-create-an-executable-file
 .PHONY: install
 install:
 	mkdir -p $(BINARIES_DIR)

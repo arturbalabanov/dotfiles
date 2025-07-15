@@ -1,4 +1,6 @@
 local keymap = require("utils.keymap")
+local utils = require("utils")
+local plugin_utils = require("utils.plugin")
 
 -- Use Space as the leader key and comma as the localleader key
 vim.g.mapleader = ' '
@@ -21,16 +23,56 @@ keymap.set_v("L", "g_", { desc = "Move to end of line" })
 -- This just makes more sense - inspired by Helix :)
 keymap.set_n("U", vim.cmd.redo, { desc = "Redo" })
 
+local toggle_oil_ssh_tree = function()
+    local nvim_tree_opts = plugin_utils.get_opts("nvim-tree.lua")
+    local nvim_tree_width = utils.get(nvim_tree_opts, "view", "width")
+    local file_tree_width = nvim_tree_width or 30
+
+    local is_oil_ssh_tree = utils.get_var_or_default("oil_ssh_tree", false, { win = 0 })
+
+    if is_oil_ssh_tree then
+        -- If already in oil ssh tree, close it
+        vim.api.nvim_win_close(0, false) -- force: false
+        return
+    end
+
+    local filetype = vim.api.nvim_get_option_value("filetype", { buf = 0 })
+
+    if filetype == "oil" then
+        -- editing a directory with oil, so opening an oil filetree wouldn't make much sense here
+        -- default to nvim-tree
+
+        vim.cmd.NvimTreeToggle()
+        return
+    end
+
+    vim.cmd("vertical leftabove Oil")
+    local win = vim.api.nvim_get_current_win()
+
+    vim.api.nvim_win_set_var(win, "oil_ssh_tree", true)
+    -- TODO: some duplication with focus.nvim and similar plugins, see if we can reuse it by e.g. setting the buffer type,
+    --       filetype or just the window local variable we're using here
+    vim.api.nvim_win_set_width(win, file_tree_width)
+    vim.api.nvim_set_option_value("number", false, { win = win })
+    vim.api.nvim_set_option_value("relativenumber", false, { win = win })
+end
+
 local toggle_file_tree = function()
-    -- Toggle nvim-tree (or diffview if in diff mode)
+    -- Toggle nvim-tree (or diffview if in diff mode, or oil if editing a remote file using oil-ssh://)
     local diff_mode = vim.opt_local.diff:get()
 
     local win = vim.api.nvim_get_current_win()
     local bufnr = vim.api.nvim_win_get_buf(win)
-    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+    local filetype = vim.api.nvim_get_option_value("filetype", { buf = 0 })
 
     if diff_mode or filetype == "DiffviewFiles" then
         vim.cmd.DiffviewToggleFiles()
+        return
+    end
+
+    local filename = vim.api.nvim_buf_get_name(bufnr)
+    if filename:match("^oil%-ssh://") then
+        toggle_oil_ssh_tree()
         return
     end
 

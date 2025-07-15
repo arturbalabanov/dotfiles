@@ -11,11 +11,17 @@ vim.filetype.add {
         -- special case env.example too (don't make it too generic
         -- so that it doesn't match env.py for example)
         ["env%.example"] = 'sh',
+
         -- match Dockerfile.local, Dockerfile.dev, etc.
         ["Dockerfile%.%w+"] = 'dockerfile',
         -- match Dockerfile_local, Dockerfile_dev, etc.
         ["Dockerfile_%w+"] = 'dockerfile',
+
+        -- yaml linters configs
         ["%.yamllint"] = 'yaml',
         ["%.ansible%-lint"] = 'yaml',
+
+        -- ansible playbooks, roles etc
+        [".*/ansible/.*%.ya?ml"] = 'yaml.ansible',
     }
 }

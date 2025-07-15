@@ -1,5 +1,10 @@
 local my_utils = require("utils")
 
+-- TODO: maybe one simple and effective way to do this is to:
+--         * save the state into a new session
+--         * close vim
+--         * open that new session
+--         * delete the new session
 -- TODO: Use plenary.reload.reload_module  (maybe???)
 -- TODO: Remove all mappings
 -- TODO: Remove all autocommands and augroups
@@ -62,6 +67,10 @@ local function reload_nvim_config()
     end
 end
 
+local function simple_reload_nvim_file()
+    vim.cmd.source("%")
+end
+
 local function reload_tmux_config()
     if vim.env.TMUX == nil then
         return
@@ -82,6 +91,12 @@ local reload_configs = {
     --     files_pattern = "*.lua",
     --     project_name = "nvim",
     -- },
+    {
+        aliases = { "neovim", "nvim", "vim" },
+        reload_func = simple_reload_nvim_file,
+        files_pattern = "lua/user/keymaps.lua",
+        project_name = "nvim",
+    },
     {
         aliases = { "tmux" },
         reload_func = reload_tmux_config,

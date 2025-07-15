@@ -4,5 +4,11 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     ---@module 'oil'
     ---@type oil.SetupOpts
-    opts = {},
+    opts = {
+        keymaps = {
+            -- disable <C-h> and <C-l> as I use these to navigate between tabpages
+            ['<C-h>'] = false,
+            ['<C-l>'] = false,
+        },
+    },
 }
