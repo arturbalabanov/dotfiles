@@ -25,7 +25,8 @@ symbol = " "
 format = '[(${symbol}[$virtualenv](bold bright-green) )](bright-green)'
 
 [git_branch]
-format = "[$symbol$branch(:$remote_branch)]($style) "
+# the remote branch is shown only if it is different from the local branch
+format = "[$symbol$branch(:$remote_name/$remote_branch)]($style) "
 
 [git_metrics]
 disabled = false

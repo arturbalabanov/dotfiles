@@ -44,15 +44,20 @@ vagrant_menubar:setMenu(function(modifier_keys_pressed)
 end)
 
 kittyWindowCreatedWatcher = hs.application.watcher.new(function(appName, eventType, appObject)
-    if (eventType == hs.application.watcher.launched) then
-        if (appName == "kitty") then
+    if eventType == hs.application.watcher.launched then
+        if appName == "kitty" then
             hs.timer.doAfter(0.01, function()
                 local newWindow = appObject:focusedWindow()
 
-                if newWindow == nil or newWindow:isFullScreen() or newWindow:isMinimized() or not newWindow:isStandard() or not newWindow:isVisible() then
+                if
+                    newWindow == nil
+                    or newWindow:isFullScreen()
+                    or newWindow:isMinimized()
+                    or not newWindow:isStandard()
+                    or not newWindow:isVisible()
+                then
                     return
                 end
-
 
                 -- TODO: Check that the window is not maximized / "zoomed" / fullscreen
                 newWindow:centerOnScreen(newWindow:screen(), true) -- true: ensureInScreenBounds
@@ -62,16 +67,15 @@ kittyWindowCreatedWatcher = hs.application.watcher.new(function(appName, eventTy
 end)
 kittyWindowCreatedWatcher:start()
 
-
--- Bring all Finder windows forward when one gets activated
-activateAllFinderWinsTogether = hs.application.watcher.new(function(appName, eventType, appObject)
-    if (eventType == hs.application.watcher.activated) then
-        if (appName == "Finder") then
+-- Bring all Finder etc. windows forward when one gets activated
+activateAllAppWinsTogether = hs.application.watcher.new(function(appName, eventType, appObject)
+    if eventType == hs.application.watcher.activated then
+        if appName == "Finder" or appName == "Stickies" then
             appObject:selectMenuItem({ "Window", "Bring All to Front" })
         end
     end
 end)
-activateAllFinderWinsTogether:start()
+activateAllAppWinsTogether:start()
 
 -- TODO: Move this to the neovim's autoreload config to keep it all in one place
 function reloadConfig(files)

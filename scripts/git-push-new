@@ -1,3 +1,8 @@
 #!/bin/bash
 
-git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)
+# TODO: better default: use git remote -v | grep push | awk '{print $1}'
+#       if there are multiple ones, prompt user to select (if not set explicitly)
+#       if there is only one, use it (and check that $1 is the same as it)
+
+remote=${1:-origin}
+git push --set-upstream "$remote" $(git rev-parse --abbrev-ref HEAD)
