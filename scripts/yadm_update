@@ -33,7 +33,6 @@ yadm add ~/.gitignore
 
 # Add yadm any new files from these directories
 yadm add ~/scripts
-# yadm add ~/.tmux
 yadm add ~/.config/nvim
 yadm add ~/.config/tmuxinator
 yadm add ~/dotfiles-ansible
