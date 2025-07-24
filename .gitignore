@@ -3,4 +3,5 @@
 ~/dotfiles-ansible/.ansible/
 ~/.config/nvim/.mypy_cache/
 ~/.hammerspoon/Spoons/
+~/.tmux/plugins/
 .DS_Store
