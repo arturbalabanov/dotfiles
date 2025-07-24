@@ -27,6 +27,10 @@ uv run --directory ~/dotfiles-ansible ansible-lint ~/dotfiles-ansible
 # Apply ansible playbook
 uv run --directory ~/dotfiles-ansible ansible-playbook -i "localhost," -c local main_playbook.yaml
 
+# updating gitignore explicitly in case it contains files included in the directories below
+# (and thus producing a misleading git status)
+yadm add ~/.gitignore
+
 # Add yadm any new files from these directories
 yadm add ~/scripts
 yadm add ~/.config/nvim

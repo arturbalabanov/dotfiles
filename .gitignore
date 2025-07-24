@@ -2,5 +2,5 @@
 ~/dotfiles-ansible/.venv/
 ~/dotfiles-ansible/.ansible/
 ~/.config/nvim/.mypy_cache/
-~/.hammerspoon/Spoons
+~/.hammerspoon/Spoons/
 .DS_Store
