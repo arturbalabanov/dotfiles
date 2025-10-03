@@ -5,26 +5,28 @@ return {
     init = function()
         vim.g.netrw_nogx = 1 -- disable netrw gx
     end,
-    submodules = false,      -- not needed, submodules are required only for tests
+    submodules = false, -- not needed, submodules are required only for tests
     opts = {
         -- open_browser_app = "os_specific",       -- specify your browser app; default for macOS is "open", Linux "xdg-open" and Windows "powershell.exe"
         -- open_browser_args = { "--background" }, -- specify any arguments, such as --background for macOS' "open".
         handlers = {
-            plugin = true,       -- open plugin links in lua (e.g. packer, lazy, ..)
-            github = true,       -- open github issues
-            brewfile = true,     -- open Homebrew formulaes and casks
+            plugin = true, -- open plugin links in lua (e.g. packer, lazy, ..)
+            github = true, -- open github issues
+            brewfile = true, -- open Homebrew formulaes and casks
             package_json = true, -- open dependencies from package.json
-            search = false,      -- search the web/selection on the web if nothing else is found
-            go = true,           -- open pkg.go.dev from an import statement (uses treesitter)
-            jira = {             -- custom handler to open Jira tickets (these have higher precedence than builtin handlers)
-                name = "jira",   -- set name of handler
+            search = false, -- search the web/selection on the web if nothing else is found
+            go = true, -- open pkg.go.dev from an import statement (uses treesitter)
+            jira = { -- custom handler to open Jira tickets (these have higher precedence than builtin handlers)
+                name = "jira", -- set name of handler
                 handle = function(mode, line, _handler_opts) ---@diagnostic disable-line: unused-local
                     local ticket = require("gx.helper").find(line, mode, "(%u+-%d+)")
                     local jira_cli_config_path = vim.fn.expand("~/.config/.jira/.config.yml")
 
                     if not vim.fn.filereadable(jira_cli_config_path) then
-                        vim.notify("gx.nvim: Jira CLI config file not found: " .. jira_cli_config_path,
-                            vim.log.levels.ERROR)
+                        vim.notify(
+                            "gx.nvim: Jira CLI config file not found: " .. jira_cli_config_path,
+                            vim.log.levels.ERROR
+                        )
 
                         return nil
                     end
@@ -33,8 +35,10 @@ return {
                     local jira_server = vim.fn.system("yq eval '.server' " .. jira_cli_config_path)
 
                     if vim.v.shell_error ~= 0 then
-                        vim.notify("gx.nvim: Could not read Jira server from config file: " .. jira_cli_config_path,
-                            vim.log.levels.ERROR)
+                        vim.notify(
+                            "gx.nvim: Could not read Jira server from config file: " .. jira_cli_config_path,
+                            vim.log.levels.ERROR
+                        )
 
                         return nil
                     end
@@ -81,5 +85,5 @@ return {
         --         return fname:match("myproject")
         --     end,
         -- },
-    }
+    },
 }

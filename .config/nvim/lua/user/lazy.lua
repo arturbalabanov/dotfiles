@@ -8,7 +8,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     if vim.v.shell_error ~= 0 then
         vim.api.nvim_echo({
             { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-            { out,                            "WarningMsg" },
+            { out, "WarningMsg" },
             { "\nPress any key to exit..." },
         }, true, {})
 
@@ -19,6 +19,7 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 -- }}}
+-- lazy.nvim configuration {{{
 
 local status_ok, lazy = pcall(require, "lazy")
 if not status_ok then
@@ -32,11 +33,12 @@ local lazy_config = {
         ---@type string | fun(plugin: LazyPlugin): string
         path = "~/dev/side",
         ---@type string[] plugins that match these patterns will use your local versions instead of being fetched from GitHub
-        patterns = {},   -- For example {"folke"}
+        patterns = {}, -- For example {"folke"}
         fallback = true, -- Fallback to git when local plugin doesn't exist
     },
 }
 
+-- }}}
 -- Plugins {{{
 local plugin_specs = {
     { import = "plugins" },
@@ -55,13 +57,19 @@ local plugin_specs = {
             },
         },
         keys = {
-            { "<leader>R", function() require("live-rename").rename({ text = "", insert = true }) end, desc = "LSP rename" },
+            {
+                "<leader>R",
+                function()
+                    require("live-rename").rename({ text = "", insert = true })
+                end,
+                desc = "LSP rename",
+            },
         },
     },
 
     {
-        'nvim-tree/nvim-web-devicons',
-        tag = 'nerd-v2-compat',
+        "nvim-tree/nvim-web-devicons",
+        tag = "nerd-v2-compat",
         lazy = true,
     },
 
@@ -70,11 +78,17 @@ local plugin_specs = {
     {
         -- TODO: replace with stevanmilic/nvim-lspimport once #7 is merged:
         --       https://github.com/stevanmilic/nvim-lspimport/pull/7
-        'arturbalabanov/nvim-lspimport',
+        "arturbalabanov/nvim-lspimport",
         branch = "add-missing-imports",
         keys = {
-            { '<leader>i', function() require("lspimport").import() end, desc = "Import symbol under cursor" },
-        }
+            {
+                "<leader>i",
+                function()
+                    require("lspimport").import()
+                end,
+                desc = "Import symbol under cursor",
+            },
+        },
     },
 
     -- TODO: this is a fork of AckslD/nvim-pytrize.lua, replace with original once PR is merged
@@ -92,10 +106,12 @@ local plugin_specs = {
         keys = {
             {
                 "gf",
-                function() require("utils").move_jump_to_new_tab(vim.cmd.PytrizeJumpFixture) end,
+                function()
+                    require("utils").move_jump_to_new_tab(vim.cmd.PytrizeJumpFixture)
+                end,
                 desc = "Go To Pytest fixture defintion",
             },
-        }
+        },
     },
 
     -- TODO: Enable this plugin once you have time to configure it (smooth scrolling)
@@ -120,7 +136,7 @@ local plugin_specs = {
             { "<localleader>;", desc = "Toggle semicolon" },
         },
         opts = {
-            leader = '<localleader>',
+            leader = "<localleader>",
             keymaps = true,
             commands = true,
         },
@@ -131,7 +147,7 @@ local plugin_specs = {
     {
         "OXY2DEV/helpview.nvim",
         lazy = false,
-        dependencies = 'nvim-web-devicons',
+        dependencies = "nvim-web-devicons",
         opts = {
             preview = {
                 icon_provider = "devicons",
@@ -146,7 +162,9 @@ local plugin_specs = {
     },
 }
 -- }}}
-
+-- Run lazy.nvim setup {{{
 lazy_config.spec = plugin_specs
 
 return lazy.setup(lazy_config)
+-- }}}
+-- vim:foldmethod=marker

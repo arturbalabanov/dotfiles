@@ -1,12 +1,25 @@
 #!/bin/bash
 
-main_branch=$(git config init.defaultBranch)
+remote="${1:-origin}"
+
+valid_fetch_remotes=$(git remote -v | grep  '(fetch)$' | awk '{ print $1; }')
+
+if [[ $valid_fetch_remotes != *"$remote"* ]]; then
+    echo "Error: Invalid remote '$remote'."
+    echo "Valid remotes are:"
+    echo "$valid_fetch_remotes"
+    exit 1
+fi
+
+main_branch="$(git config init.defaultBranch)"
 
 if [[ -z $main_branch ]]; then
     main_branch="master"
 fi
 
-git checkout "$main_branch" && git pull && git checkout - && git rebase "$main_branch"
+main_branch_ref="$remote/$main_branch"
+
+git checkout "$main_branch_ref" && git pull && git checkout - && git rebase "$main_branch_ref"
 
 if [[ $? -eq 0 ]]; then
     git push --force
@@ -17,7 +30,8 @@ echo -e "\n\n\nMERGE CONFLICTS:"
 git --no-pager diff --name-only --diff-filter=U
 
 read -p "Do you want to resolve these conflicts? [Y/n] " -n 1 -r reply
-reply=${reply:-y}  # set the default value to 'y'
+# set the default value to 'y'
+reply="${reply:-y}"
 
 if [[ $reply =~ ^[Yy]$ ]]; then
     git mergetool

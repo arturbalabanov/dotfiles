@@ -8,15 +8,6 @@ return {
     event = { "BufReadPost", "BufNewFile", "BufWritePre" },
     opts = {
         lint_on_events = { "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" },
-        linters_by_ft = {
-            python = { "ruff", "flake8", "mypy", "bandit" },
-            yaml = { "yamllint" },
-            dockerfile = { "hadolint" },
-            sh = { "shellcheck" },
-            bash = { "shellcheck" },
-            zsh = { "shellcheck" },
-            proto = { "buf_lint" },
-        },
         py_venv_linters = {
             { name = "ruff" },
             { name = "flake8" },
@@ -30,15 +21,28 @@ return {
                     "--msg-template",
                     "{line}:{col}:{severity}:{test_id} {msg}",
                     "-c",
-                    function() return "pyproject.toml" end
-                }
+                    function()
+                        return "pyproject.toml"
+                    end,
+                },
             },
+            { name = "pycodestyle" },
+            { name = "pylint" },
+        },
+        linters_by_ft = {
+            python = { "ruff", "flake8", "mypy", "bandit", "pycodestyle", "pylint" },
+            yaml = { "yamllint" },
+            dockerfile = { "hadolint" },
+            sh = { "shellcheck" },
+            bash = { "shellcheck" },
+            zsh = { "shellcheck" },
+            proto = { "buf_lint" },
         },
     },
     config = function(_, opts)
-        local lint = require('lint')
+        local lint = require("lint")
         local plenary_tbl = require("plenary.tbl")
-        local py_venv = require('auto-venv')
+        local py_venv = require("auto-venv")
 
         local function make_py_venv_linter(linter_name, opts)
             opts = plenary_tbl.apply_defaults(opts, { cmd = linter_name, fallback_to_global = false, args = nil })
@@ -77,5 +81,5 @@ return {
                 lint.try_lint(nil, { ignore_errors = true }) -- nil: all linters
             end,
         })
-    end
+    end,
 }

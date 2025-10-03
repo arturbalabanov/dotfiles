@@ -13,7 +13,6 @@ local WinSeparator = {
     hl = "WinSeparator",
 }
 
-
 local TabLineOffset = {
     condition = function(self)
         local win = vim.api.nvim_tabpage_list_wins(0)[1]
@@ -58,17 +57,16 @@ local TabLineOffset = {
     WinSeparator,
 }
 
-
+-- TODO: rename to AutoVenvInfo and move some of it into the plugin's contrib
 local PyVenvInfo = {
-    update    = { 'LspAttach', 'LspDetach', "BufEnter" },
+    update = { "LspAttach", "LspDetach", "BufEnter" },
     condition = conditions.lsp_attached,
 
-    init      = function(self)
-        self.py_venv = require('auto-venv').get_python_venv(self.bufnr,
-            { disable_notifications = true, full_version = true })
+    init = function(self)
+        self.py_venv = require("auto-venv").get_python_venv(self.bufnr, { full_version = true })
     end,
 
-    hl        = function(self)
+    hl = function(self)
         local is_builtin = self.py_venv == nil or self.py_venv.name == "<system>"
         return {
             fg = is_builtin and "red" or "green",
@@ -76,17 +74,41 @@ local PyVenvInfo = {
         }
     end,
 
-    provider  = function(self)
-        return self.py_venv ~= nil and ' ' .. (self.py_venv.name)
+    provider = function(self)
+        return self.py_venv ~= nil and " " .. self.py_venv.name
     end,
+
+    on_click = {
+        name = "py_venv_info_on_click",
+        update = true,
+        callback = function(self)
+            if self.py_venv == nil then
+                require("utils.markdown").notify(
+                    "No Python virtual environment found for buffer " .. self.bufnr,
+                    { "This buffer is not associated with any Python virtual environment." }
+                )
+            end
+
+            local info_strings = {}
+
+            for key, value in pairs(self.py_venv) do
+                table.insert(info_strings, key .. ": `" .. tostring(value) .. "`")
+                -- if key ~= "name" and key ~= "venv_manager_name" and key ~= "python_version" then
+                --     info_string = info_string .. "\n" .. key .. ": `" .. tostring(value) .. "`"
+                -- end
+            end
+
+            require("utils.markdown").notify("venv selected for buffer " .. self.bufnr, info_strings)
+        end,
+    },
 }
 
 local LSPActive = {
-    update   = { 'LspAttach', 'LspDetach', "BufEnter" },
+    update = { "LspAttach", "LspDetach", "BufEnter" },
 
-    init     = function(self)
-        self.py_venv = require('auto-venv').get_python_venv(self.bufnr,
-            { disable_notifications = true, full_version = true })
+    init = function(self)
+        self.py_venv =
+            require("auto-venv").get_python_venv(self.bufnr, { disable_notifications = true, full_version = true })
         self.clients = {}
 
         for _, client in pairs(vim.lsp.get_clients({ bufnr = self.bufnr })) do
@@ -98,11 +120,11 @@ local LSPActive = {
             table.insert(self.clients, client_info)
         end
 
-        self.conform_formatters = require('conform').list_formatters(self.bufnr)
-        self.linter_names = require('lint')._resolve_linter_by_ft(self.filetype)
+        self.conform_formatters = require("conform").list_formatters(self.bufnr)
+        self.linter_names = require("lint")._resolve_linter_by_ft(self.filetype)
     end,
     provider = " ",
-    hl       = function(self)
+    hl = function(self)
         return {
             fg = #self.clients > 0 and "green" or "red",
             bold = true,
@@ -114,13 +136,13 @@ local LSPActive = {
             local info_strings = {}
 
             for _, client in pairs(self.clients) do
-                local info_string = "* `" .. client.name .. '`'
+                local info_string = "* `" .. client.name .. "`"
 
                 for _, source in pairs(client.sources) do
                     local source_string = "`" .. source.name .. "`"
 
                     if #source.methods >= 1 then
-                        local methods_string = table.concat(source.methods, ', ')
+                        local methods_string = table.concat(source.methods, ", ")
 
                         source_string = source_string .. " (" .. methods_string .. ")"
                     end
@@ -143,7 +165,7 @@ local LSPActive = {
                 table.insert(info_strings, "\nLinters:\n")
 
                 for _, linter_name in pairs(self.linter_names) do
-                    local linter = require('lint').linters[linter_name]
+                    local linter = require("lint").linters[linter_name]
 
                     local linter_cmd
                     if type(linter.cmd) == "function" then
@@ -181,7 +203,7 @@ local LSPActive = {
             end
 
             if self.py_venv ~= nil then
-                local info_string = 'venv: `' .. self.py_venv.name .. '`'
+                local info_string = "venv: `" .. self.py_venv.name .. "`"
 
                 if self.py_venv.venv_manager_name ~= nil then
                     info_string = info_string .. " via **" .. self.py_venv.venv_manager_name .. "**"
@@ -195,10 +217,10 @@ local LSPActive = {
                 table.insert(info_strings, info_string)
             end
 
-            require("utils.markdown").notify('Running LSP Clients for buffer ' .. self.bufnr, info_strings)
+            require("utils.markdown").notify("Running LSP Clients for buffer " .. self.bufnr, info_strings)
         end,
         update = true,
-        name = 'lsp_active_on_click',
+        name = "lsp_active_on_click",
     },
 }
 
@@ -219,7 +241,7 @@ local function OverseerTasksForStatus(status)
 end
 
 local Overseer = {
-    static    = {
+    static = {
         symbols = {
             ["CANCELED"] = "",
             ["FAILURE"] = "󰅚",
@@ -232,16 +254,16 @@ local Overseer = {
         return package.loaded.overseer
     end,
 
-    init      = function(self)
+    init = function(self)
         local tasks = require("overseer.task_list").list_tasks({ unique = true })
         local tasks_by_status = require("overseer.util").tbl_group_by(tasks, "status")
         self.tasks = tasks_by_status
     end,
 
-    provider  = " ",
-    hl        = { fg = "aqua" },
+    provider = " ",
+    hl = { fg = "aqua" },
 
-    on_click  = {
+    on_click = {
         callback = function(_, minwid)
             vim.schedule(vim.cmd.OverseerToggle)
         end,
@@ -302,24 +324,18 @@ local CloseTabBtnBlock = {
                 end,
                 name = "heirline_tabline_close_tab_callback",
             },
-        }
-    }
+        },
+    },
 }
 
-local TabPageBlock = utils.insert(common.CommonFileBlock,
-    TabPageName,
-    common.FileFlags,
-    CloseTabBtnBlock
-)
-
+local TabPageBlock = utils.insert(common.CommonFileBlock, TabPageName, common.FileFlags, CloseTabBtnBlock)
 
 local TabPages = {
     utils.make_tablist(utils.surround({ " ", " " }, "bg", { TabPageBlock })),
 }
 
-
 local TreeSitterBlock = {
-    init      = function(self)
+    init = function(self)
         local win = vim.api.nvim_tabpage_list_wins(0)[1]
         local bufnr = vim.api.nvim_win_get_buf(win)
         self.is_active = treesitter_hl.active[bufnr] ~= nil
@@ -327,10 +343,10 @@ local TreeSitterBlock = {
     condition = function(self)
         return not self.is_active
     end,
-    provider  = " ",
-    hl        = {
+    provider = " ",
+    hl = {
         fg = "red",
-    }
+    },
 }
 
 return {
@@ -341,5 +357,5 @@ return {
     common.Rpad(utils.insert(common.CurrentTabFileBlock, PyVenvInfo)),
     utils.insert(common.CurrentTabFileBlock, LSPActive),
     TreeSitterBlock,
-    hl = { bg = "bg" }
+    hl = { bg = "bg" },
 }

@@ -588,12 +588,25 @@ function venv {
 }
 
 function ssh {
+    if [[ $# -eq 0 ]]; then
+        hosts=$(cat \
+            <(cat ~/.ssh/known_hosts | awk '{ print $1 }') \
+            <(cat ~/.ssh/config | grep -i '^Host \w' | awk '{ print $2 }') \
+            | grep -i -v '127\.0\.0\.1\|0\.0\.0\.\0\|localhost' \
+            | sort -u \
+        )
+
+        ssh_args=$(echo "$hosts" | fzf --info inline-right --layout reverse --preview 'dig {}' --height 15 --no-sort)
+    else
+        ssh_args="$@"
+    fi
+    
     if [[ $TERM == "xterm-kitty" ]]; then
         TERM="xterm-256color"
-        command ssh $@
+        command ssh $ssh_args
         TERM="xterm-kitty"
     else
-        command ssh $@
+        command ssh $ssh_args
     fi
 }
 # }}}

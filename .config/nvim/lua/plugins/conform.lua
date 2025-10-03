@@ -30,6 +30,8 @@ return {
     opts = function()
         return {
             format_on_save = function(bufnr)
+                -- TODO: Use utils.get_var_or_default
+
                 if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
                     return
                 end

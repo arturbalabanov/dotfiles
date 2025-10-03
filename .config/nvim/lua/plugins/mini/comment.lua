@@ -17,5 +17,10 @@ return {
             comment_line = keymap,
             comment_visual = keymap,
         },
+        options = {
+            custom_commentstring = function()
+                return vim.bo.commentstring
+            end,
+        },
     },
 }

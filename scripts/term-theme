@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ -z "${1:-}" ]]; then
+    echo "Usage: $0 <theme_name>"
+    exit 1
+fi
+
+theme_name="$1"
+
+# IMPORTANT: investigate existing tools first
+# https://github.com/misterio77/flavours
+# https://github.com/tinted-theming/home
+# https://github.com/cultab/themr
+# https://github.com/dylanaraps/pywal
+# https://codeberg.org/explosion-mental/wallust
+# https://github.com/deviantfero/wpgtk
+
+# Checklist
+# - Save the current theme to a file, so that it's accessable by other tools
+# - kitty
+# - neovim
+# - tmux
+# - zsh
+# - vivid / dircolors
+# - starship
+# - lsd
+# - bat
+# - zellij (?)
+# - heirline (in heirline/init.lua: colors = vim.tbl_deep_extend("keep", themes[vim.g.colors_name](), themes["common"]), also dependencies and other themes setup)
+# - incline (neovim plugin)
+# - .gitconfig
+# - fzf
+
+# The tricky part is updating these env vars for already existing & running shells (even in background like zsh -> nvim)
+# 
+# if _exists vivid; then
+#     export LS_COLORS="$(vivid generate tokyonight-night)"
+# elif test -r ~/.dircolors; then
+#     if _exists gdircolors; then
+#         alias dircolors=gdircolors
+#     fi
+#
+#     if _exists dircolors; then
+#         eval $(dircolors ~/.dircolors)
+#     fi
+# fi

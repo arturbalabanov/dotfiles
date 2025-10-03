@@ -26,7 +26,8 @@
     keepBackup = false
 
 [mergetool "nvim"]
-    cmd = "nvim -d \"$MERGED\" \"$REMOTE\" \"$LOCAL\"  -c 'wincmd J' -c 'resize +15' -c 'norm ]c'" -c 'silent! /^\\s*[<=>|]\\{7\\}\\(\\s.*\\)\\?$'
+    ; cmd = "nvim -d \"$MERGED\" \"$REMOTE\" \"$LOCAL\"  -c 'wincmd J' -c 'resize +15' -c 'norm ]c'" -c 'silent! /^\\s*[<=>|]\\{7\\}\\(\\s.*\\)\\?$'
+    cmd = "nvim -c 'DiffviewOpen' -c 'silent! /^\\s*[<=>|]\\{7\\}\\(\\s.*\\)\\?$'"
 
 [log]
     decorate = short

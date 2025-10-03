@@ -28,7 +28,7 @@ M.CommonFileBlock = {
         self.bufnr = vim.api.nvim_win_get_buf(self.winnr)
         self.filepath = vim.api.nvim_buf_get_name(self.bufnr)
         self.filename = self.filepath == "" and "[No Name]" or vim.fn.fnamemodify(self.filepath, ":t")
-        self.filetype = vim.api.nvim_buf_get_option(self.bufnr, 'filetype')
+        self.filetype = vim.api.nvim_buf_get_option(self.bufnr, "filetype")
 
         self.is_directory = (
             (vim.fn.isdirectory(self.filepath) == 1)
@@ -51,24 +51,49 @@ M.FileIcon = {
         if self.is_directory then
             self.icon = ""
             self.icon_color = "blue"
-        else
-            local extension = vim.fn.fnamemodify(filename, ":e")
-
-            if extension == "" then
-                -- if the file has no extension, use the filetype as the extension (e.g. dockerfiles)
-                extension = self.filetype
-            end
-
-            self.icon, self.icon_color = require("nvim-web-devicons").get_icon_color(filename, extension,
-                { default = true })
+            return
         end
+
+        local extension = vim.fn.fnamemodify(filename, ":e")
+
+        if extension == "" then
+            -- if the file has no extension, use the filetype as the extension (e.g. dockerfiles)
+            extension = self.filetype
+        end
+
+        local ok, icon, icon_color =
+            pcall(require("nvim-web-devicons").get_icon_color, filename, extension, { default = true })
+
+        if ok then
+            self.icon = icon
+            self.icon_color = icon_color
+        else
+            self.icon = require("nvim-web-devicons").get_icon_by_filetype(self.filetype)
+            self.icon_color = "fg"
+        end
+
+        --
+        -- if icon_data[1] == nil then
+        --     self.icon = ""
+        --     self.icon_color = "fg"
+        -- else
+        --     self.icon, self.icon_color = unpack(icon_data)
+        -- end
+        -- local icon_data = { require("nvim-web-devicons").get_icon_colors(filename, extension, { default = true }) }
+        --
+        -- if icon_data[1] == nil then
+        --     self.icon = ""
+        --     self.icon_color = "fg"
+        -- else
+        --     self.icon, self.icon_color = unpack(icon_data)
+        -- end
     end,
     provider = function(self)
         return self.icon and (self.icon .. " ")
     end,
     hl = function(self)
         return { fg = self.icon_color }
-    end
+    end,
 }
 
 M.FileName = {
@@ -135,14 +160,113 @@ M.FileFlags = {
 }
 
 M.Arrow = {
-    conditions = function(self)
-        return require('arrow.statusline').is_on_arrow_file() ~= nil
+    condition = function(self)
+        return require("arrow.statusline").is_on_arrow_file() ~= nil
     end,
 
     provider = function(self)
-        return " " .. require('arrow.statusline').text_for_statusline()
+        return " " .. require("arrow.statusline").text_for_statusline()
     end,
     hl = { fg = "green", bold = true },
+}
+
+M.GitInfo = {
+    condition = conditions.is_git_repo,
+
+    init = function(self)
+        local bufnr = vim.api.nvim_get_current_buf()
+        self.status_dict = vim.api.nvim_buf_get_var(bufnr, "gitsigns_status_dict")
+        self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
+    end,
+
+    M.Space,
+    {
+        provider = function(self)
+            return " " .. self.status_dict.head
+        end,
+        hl = { fg = "orange", bold = true },
+    },
+    {
+        condition = function(self)
+            return self.has_changes
+        end,
+        provider = "",
+    },
+    {
+        provider = function(self)
+            local count = self.status_dict.added or 0
+            return count > 0 and ("  " .. count)
+        end,
+        hl = { fg = "git_add" },
+    },
+    {
+        provider = function(self)
+            local count = self.status_dict.removed or 0
+            return count > 0 and ("  " .. count)
+        end,
+        hl = { fg = "git_del" },
+    },
+    {
+        provider = function(self)
+            local count = self.status_dict.changed or 0
+            return count > 0 and ("  " .. count)
+        end,
+        hl = { fg = "git_change" },
+    },
+    {
+        condition = function(self)
+            return self.has_changes
+        end,
+        provider = "",
+    },
+    hl = { bg = "git_info_bg" },
+}
+
+local diagnostics_sign_config = vim.diagnostic.config().signs
+
+M.CurrentBufferDiagnostics = {
+    condition = conditions.has_diagnostics,
+
+    static = {
+        error_icon = diagnostics_sign_config.text[vim.diagnostic.severity.ERROR],
+        warn_icon = diagnostics_sign_config.text[vim.diagnostic.severity.WARN],
+        info_icon = diagnostics_sign_config.text[vim.diagnostic.severity.INFO],
+        hint_icon = diagnostics_sign_config.text[vim.diagnostic.severity.HINT],
+    },
+
+    init = function(self)
+        self.errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+        self.warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+        self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
+        self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
+    end,
+
+    update = { "DiagnosticChanged", "BufEnter" },
+
+    {
+        provider = function(self)
+            return self.errors > 0 and (" " .. self.error_icon .. " " .. self.errors)
+        end,
+        hl = { fg = "diag_error" },
+    },
+    {
+        provider = function(self)
+            return self.warnings > 0 and (" " .. self.warn_icon .. " " .. self.warnings)
+        end,
+        hl = { fg = "diag_warn" },
+    },
+    {
+        provider = function(self)
+            return self.info > 0 and (" " .. self.info_icon .. " " .. self.info)
+        end,
+        hl = { fg = "diag_info" },
+    },
+    {
+        provider = function(self)
+            return self.hints > 0 and (" " .. self.hint_icon .. " " .. self.hints)
+        end,
+        hl = { fg = "diag_hint" },
+    },
 }
 
 return M

@@ -58,14 +58,14 @@ local VimMode = {
             r = "orange",
             ["!"] = "red",
             t = "red",
-        }
+        },
     },
     provider = function(self)
         return "  " .. self.mode_names[self.mode] .. " "
     end,
     hl = function(self)
         local mode = self.mode:sub(1, 1) -- get only the first mode character
-        return { fg = self.mode_colors[mode], bold = true, }
+        return { fg = self.mode_colors[mode], bold = true }
     end,
     update = {
         "ModeChanged",
@@ -73,59 +73,13 @@ local VimMode = {
     },
 }
 
-local diagnostics_sign_config = vim.diagnostic.config().signs
-
-local Diagnostics = {
-    condition = conditions.has_diagnostics,
-
-    static = {
-        error_icon = diagnostics_sign_config.text[vim.diagnostic.severity.ERROR],
-        warn_icon = diagnostics_sign_config.text[vim.diagnostic.severity.WARN],
-        info_icon = diagnostics_sign_config.text[vim.diagnostic.severity.INFO],
-        hint_icon = diagnostics_sign_config.text[vim.diagnostic.severity.HINT],
-    },
-
-    init = function(self)
-        self.errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-        self.warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-        self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
-        self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
-    end,
-
-    update = { "DiagnosticChanged", "BufEnter" },
-
-    {
-        provider = function(self)
-            return self.errors > 0 and (" " .. self.error_icon .. " " .. self.errors)
-        end,
-        hl = { fg = "diag_error" },
-    },
-    {
-        provider = function(self)
-            return self.warnings > 0 and (" " .. self.warn_icon .. " " .. self.warnings)
-        end,
-        hl = { fg = "diag_warn" },
-    },
-    {
-        provider = function(self)
-            return self.info > 0 and (" " .. self.info_icon .. " " .. self.info)
-        end,
-        hl = { fg = "diag_info" },
-    },
-    {
-        provider = function(self)
-            return self.hints > 0 and (" " .. self.hint_icon .. " " .. self.hints)
-        end,
-        hl = { fg = "diag_hint" },
-    },
-}
-
-RelativeFilePathBlock = utils.insert(common.CurrentTabFileBlock,
+RelativeFilePathBlock = utils.insert(
+    common.CurrentTabFileBlock,
     common.Space,
     common.FileIcon,
     common.RelativeFilePath,
     common.FileFlags,
-    { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
+    { provider = "%<" } -- this means that the statusline is cut here when there's not enough space
 )
 
 local Ruler = {
@@ -139,7 +93,7 @@ local Ruler = {
 
 local ScrollBar = {
     static = {
-        sbar = { '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█' }
+        sbar = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" },
         -- Another variant, because the more choice the better.
         -- sbar = { '🭶', '🭷', '🭸', '🭹', '🭺', '🭻' }
     },
@@ -157,7 +111,7 @@ local FileType = {
     provider = function()
         return vim.bo.filetype
     end,
-    hl = { fg = 'green' },
+    hl = { fg = "green" },
 }
 
 local BufferType = {
@@ -165,120 +119,68 @@ local BufferType = {
     provider = function()
         return vim.bo.buftype
     end,
-    hl = { fg = 'blue' },
+    hl = { fg = "blue" },
 }
 
 local BufferNumber = {
     provider = function()
-        return 'b:' .. vim.api.nvim_get_current_buf()
+        return "b:" .. vim.api.nvim_get_current_buf()
     end,
-    hl = { fg = 'blue' },
+    hl = { fg = "blue" },
 }
 
 local WindowNumber = {
     provider = function()
-        return 'w:' .. vim.api.nvim_get_current_win()
+        return "w:" .. vim.api.nvim_get_current_win()
     end,
-    hl = { fg = 'yellow' },
+    hl = { fg = "yellow" },
 }
-
-
 
 local FileEncoding = {
     provider = function()
-        local encoding = (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc
-        return encoding ~= 'utf-8' and encoding
+        local encoding = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
+        return encoding ~= "utf-8" and encoding
     end,
-    hl = { fg = 'red', bold = true },
+    hl = { fg = "red", bold = true },
 }
 local FileFormat = {
     provider = function()
         -- TODO: Replace with icon
         local file_format = vim.bo.fileformat
-        return file_format ~= 'unix' and file_format
+        return file_format ~= "unix" and file_format
     end,
-    hl = { fg = 'red', bold = true },
+    hl = { fg = "red", bold = true },
 }
 
 local Project = {
     -- NOTE: If not working, project_nvim uses this event specifically: VimEnter,BufEnter * ++nested
-    update   = { 'VimEnter', 'BufEnter' },
-    init     = function(self)
+    update = { "VimEnter", "BufEnter" },
+    init = function(self)
         self.project_root = require("project_nvim.project").get_project_root()
     end,
-    hl       = { fg = "blue", bold = true },
+    hl = { fg = "blue", bold = true },
 
     flexible = true,
 
     {
-        condition = function(self) return self.project_root ~= nil end,
+        condition = function(self)
+            return self.project_root ~= nil
+        end,
 
         provider = function(self)
             return vim.fn.fnamemodify(self.project_root, ":~")
         end,
     },
     {
-        condition = function(self) return self.project_root ~= nil end,
+        condition = function(self)
+            return self.project_root ~= nil
+        end,
 
         provider = function(self)
             return vim.fn.fnamemodify(self.project_root, ":t")
         end,
-    }
+    },
 }
-
-local GitInfo = {
-    condition = conditions.is_git_repo,
-
-    init = function(self)
-        local bufnr = vim.api.nvim_get_current_buf()
-        self.status_dict = vim.api.nvim_buf_get_var(bufnr, "gitsigns_status_dict")
-        self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
-    end,
-
-    common.Space,
-    {
-        provider = function(self)
-            return " " .. self.status_dict.head
-        end,
-        hl = { fg = "orange", bold = true },
-    },
-    {
-        condition = function(self)
-            return self.has_changes
-        end,
-        provider = ""
-    },
-    {
-        provider = function(self)
-            local count = self.status_dict.added or 0
-            return count > 0 and ("  " .. count)
-        end,
-        hl = { fg = "git_add" },
-    },
-    {
-        provider = function(self)
-            local count = self.status_dict.removed or 0
-            return count > 0 and ("  " .. count)
-        end,
-        hl = { fg = "git_del" },
-    },
-    {
-        provider = function(self)
-            local count = self.status_dict.changed or 0
-            return count > 0 and ("  " .. count)
-        end,
-        hl = { fg = "git_change" },
-    },
-    {
-        condition = function(self)
-            return self.has_changes
-        end,
-        provider = "",
-    },
-    common.Space,
-    hl = { bg = "git_info_bg" },
-}
-
 
 local MacroRecording = {
     condition = function()
@@ -291,16 +193,15 @@ local MacroRecording = {
     update = {
         "RecordingEnter",
         "RecordingLeave",
-    }
+    },
 }
-
 
 return {
     hl = { bg = "bg" },
 
     VimMode,
-    GitInfo,
-    Diagnostics,
+    common.GitInfo,
+    common.CurrentBufferDiagnostics,
     common.Lpad(MacroRecording),
     common.Lpad(common.Arrow),
     RelativeFilePathBlock,

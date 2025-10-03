@@ -6,6 +6,8 @@ local function setup_auto_format_autocmd(client, bufnr)
         group = vim.api.nvim_create_augroup("LspFormatting", { clear = true }),
         buffer = bufnr,
         callback = function(event)
+            -- TODO: Use utils.get_var_or_default
+
             if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
                 return
             end
@@ -135,6 +137,7 @@ return {
             dockerls = {},
             yamlls = {},
             jsonls = {},
+            helm_ls = {},
             -- tmux_language_server = {},
         },
     },

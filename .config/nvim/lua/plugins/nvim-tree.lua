@@ -2,8 +2,8 @@
 -- diff view file history depending on whether in diff mode or not)
 
 return {
-    'nvim-tree/nvim-tree.lua',
-    tag = 'nvim-tree-v1.2.0',
+    "nvim-tree/nvim-tree.lua",
+    tag = "nvim-tree-v1.2.0",
     init = function()
         -- disable netrw at the very start of your init.lua
         vim.g.loaded_netrw = 1
@@ -35,7 +35,6 @@ return {
             end
 
             local api = require("nvim-tree.api")
-
 
             -- addapted from: https://github.com/nvim-tree/nvim-tree.lua/blob/master/lua/nvim-tree/keymap.lua
             nkeymap("<C-]>", api.tree.change_root_to_node, "CD")
@@ -70,7 +69,7 @@ return {
             nkeymap("[e", api.node.navigate.diagnostics.prev, "Prev Diagnostic")
             nkeymap("F", api.live_filter.clear, "Live Filter: Clear")
             nkeymap("f", api.live_filter.start, "Live Filter: Start")
-            nkeymap("g?", api.tree.toggle_help, "Help")
+            nkeymap("?", api.tree.toggle_help, "Help")
             nkeymap("gy", api.fs.copy.absolute_path, "Copy Absolute Path")
             nkeymap("ge", api.fs.copy.basename, "Copy Basename")
             nkeymap("H", api.tree.toggle_hidden_filter, "Toggle Filter: Dotfiles")
@@ -101,6 +100,6 @@ return {
         end,
         view = {
             signcolumn = "auto",
-        }
-    }
+        },
+    },
 }

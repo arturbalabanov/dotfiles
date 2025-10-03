@@ -3,15 +3,42 @@ local utils = require("utils")
 local plugin_utils = require("utils.plugin")
 
 -- Use Space as the leader key and comma as the localleader key
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ','
+vim.g.mapleader = " "
+vim.g.maplocalleader = ","
 
 keymap.set_n(";", ":", { silent = false }, { desc = "Enter command mode" })
 
 keymap.set_n("vv", "^vg_", { desc = "Select current line (excl. leading whitespace)" })
 
+local temp_disable_smart_indent = function(callback)
+    if type(callback) == "string" then
+        -- NOTE: Need to save `callback` to a local variable to avoid recursion in the function bellow
+        local keys = callback
+        callback = function()
+            vim.cmd.normal({ keys, bang = true })
+        end
+    end
+
+    if type(callback) ~= "function" then
+        error("temp_disable_smart_indent: callback must be a function or a string")
+    end
+
+    return function()
+        local orig_smartindent = vim.api.nvim_get_option_value("smartindent", { buf = 0 })
+        if orig_smartindent then
+            vim.api.nvim_set_option_value("smartindent", false, { buf = 0 })
+            vim.bo.smartindent = false
+        end
+
+        callback()
+
+        vim.api.nvim_set_option_value("smartindent", orig_smartindent, { buf = 0 })
+    end
+end
+
+keymap.set_n(">>", temp_disable_smart_indent(">>"), { desc = "Indent line" })
 keymap.set_v("<", "<gv", { desc = "Reselect visual block after indent" })
-keymap.set_v(">", ">gv", { desc = "Reselect visual block after dedent" })
+keymap.set_v(">", temp_disable_smart_indent(">gv"), { desc = "Reselect visual block after dedent" })
 
 -- Easily go to the beginning/end of the line
 keymap.set_n("H", "^", { desc = "Move to beginning of line" })
@@ -84,7 +111,6 @@ keymap.set_i("<F2>", function()
     toggle_file_tree()
 end, { desc = "Toggle file tree" })
 
-
 keymap.set_n("<F6>", function()
     local ignore_fts = { "NvimTree", "OverseerList", "neotest-summary", "toggleterm" }
 
@@ -132,7 +158,6 @@ keymap.set_n("<C-w>l", function()
     vim.api.nvim_win_set_width(0, 60)
 end, { desc = "Move window to split right" })
 
-
 keymap.set_n("gV", "`[V`]", { desc = "Select last pasted text" })
 
 -- TODO: Refactor this to use treesitter and move to after/plugin/python (as a buffer-local keymap too)
@@ -145,8 +170,11 @@ keymap.set_n("gV", "`[V`]", { desc = "Select last pasted text" })
 --     "some text "
 --     "|some more text"
 -- )
-keymap.set_i("<S-Enter>", "\"\"<Esc>m`2F\"i(<Esc>4f\"a)<Esc>``a<CR><Esc>la",
-    { desc = "Break python string into multiple lines" })
+keymap.set_i(
+    "<S-Enter>",
+    '""<Esc>m`2F"i(<Esc>4f"a)<Esc>``a<CR><Esc>la',
+    { desc = "Break python string into multiple lines" }
+)
 
 keymap.set_n("[b", vim.cmd.bprev, { desc = "Previous buffer" })
 keymap.set_n("]b", vim.cmd.bnext, { desc = "Next buffer" })
@@ -171,5 +199,5 @@ end, { desc = "Toggle quickfix window" })
 keymap.set_n("[q", vim.cmd.cprev, { desc = "Previous quickfix item" })
 keymap.set_n("]q", vim.cmd.cnext, { desc = "Next quickfix item" })
 
-keymap.set_x('/', '<C-\\><C-n>`</\\%V', { desc = 'Search forward within visual selection' })
-keymap.set_x('?', '<C-\\><C-n>`>?\\%V', { desc = 'Search backward within visual selection' })
+keymap.set_x("/", "<C-\\><C-n>`</\\%V", { desc = "Search forward within visual selection" })
+keymap.set_x("?", "<C-\\><C-n>`>?\\%V", { desc = "Search backward within visual selection" })

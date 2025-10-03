@@ -1,27 +1,37 @@
-vim.filetype.add {
+vim.filetype.add({
     extension = {
-        fountain = 'fountain',
-        jinja = 'jinja2',
-        jinja2 = 'jinja2',
+        fountain = "fountain",
+        jinja = "jinja2",
+        jinja2 = "jinja2",
         service = "systemd",
     },
     pattern = {
         -- match .env, .env.local, etc.
-        ["%.env%.%w+"] = 'sh',
+        ["%.env%.%w+"] = "sh",
         -- special case env.example too (don't make it too generic
         -- so that it doesn't match env.py for example)
-        ["env%.example"] = 'sh',
+        ["env%.example"] = "sh",
 
         -- match Dockerfile.local, Dockerfile.dev, etc.
-        ["Dockerfile%.%w+"] = 'dockerfile',
+        ["Dockerfile%.%w+"] = "dockerfile",
         -- match Dockerfile_local, Dockerfile_dev, etc.
-        ["Dockerfile_%w+"] = 'dockerfile',
+        ["Dockerfile_%w+"] = "dockerfile",
 
         -- yaml linters configs
-        ["%.yamllint"] = 'yaml',
-        ["%.ansible%-lint"] = 'yaml',
+        ["%.yamllint"] = "yaml",
+        ["%.ansible%-lint"] = "yaml",
 
         -- ansible playbooks, roles etc
-        [".*/ansible/.*%.ya?ml"] = 'yaml.ansible',
-    }
-}
+        [".*/ansible/.*%.ya?ml"] = "yaml.ansible",
+
+        -- Helm charts
+        -- TODO: Maybe check if there is a Chart.yaml somewhere in the file's parents? Esp. for values.yaml
+        ["Chart%.ya?ml"] = "helm",
+        [".*/templates/.*%.ya?ml"] = "helm",
+        [".*/templates/.*%.tpl"] = "helm",
+        [".*/templates/.*%.txt"] = "helm",
+        ["helmfile.*%.ya?ml"] = "helm",
+        ["helmfile.*%.ya?ml.gotmpl"] = "helm",
+        ["values.*%.ya?ml"] = "yaml.helm-values",
+    },
+})
