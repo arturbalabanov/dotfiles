@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# TODO: merge this script with git-merge-main and git-rebase-main as they serve the same purpose
+
+function confirm_push() {
+    read -p "Do you want to push the changes (git push --force)? [Y/n] " -n 1 -r reply
+    echo
+    reply="${reply:-y}"
+
+    if [[ $reply =~ ^[Yy]$ ]]; then
+        git push --force
+    else
+        echo "Changes not pushed."
+    fi
+}
+
+remote="${1:-origin}"
+
+valid_fetch_remotes=$(git remote -v | grep '(fetch)$' | awk '{ print $1; }')
+
+found=false
+
+for valid_remote in $valid_fetch_remotes; do
+    if [[ "$remote" == "$valid_remote" ]]; then
+        found=true
+    fi
+done
+
+if [[ "$found" == false ]]; then
+    echo "Error: Invalid remote '$remote'."
+    echo "Valid remotes are:"
+    echo "$valid_fetch_remotes" | sed 's/^/    /'
+    exit 1
+fi
+
+sync_branch="${2:-$(git config init.defaultBranch)}"
+
+if [[ -z $sync_branch ]]; then
+    sync_branch="master"
+fi
+
+sync_branch_ref="$remote/$sync_branch"
+
+sync_method="${3}"
+
+if [[ -z "$sync_method" ]]; then
+    git_config_pull_rebase="$(git config pull.rebase)"
+    if [[ -z "$git_config_pull_rebase" ]] || [[ "$git_config_pull_rebase" == "false" ]]; then
+        sync_method="merge"
+    else
+        sync_method="rebase"
+    fi
+fi
+
+echo "remote: $remote"
+echo "sync branch: $sync_branch"
+echo "sync method: $sync_method"
+
+read -p "Confirm? [Y/n] " -n 1 -r reply
+reply="${reply:-y}"
+
+echo
+
+if [[ ! $reply =~ ^[Yy]$ ]]; then
+    echo "abort"
+    exit 1
+fi
+
+git checkout "$sync_branch_ref" \
+    && git pull "$remote" "$sync_branch" \
+    && git checkout - \
+    && git "$sync_method" "$sync_branch_ref"
+
+if [[ $? -eq 0 ]]; then
+    confirm_push
+    exit 0
+fi
+
+# TODO: Update lock files automatically -- maybe show a prompt first
+
+echo -e "\n\n\nMERGE CONFLICTS:"
+git --no-pager diff --name-only --diff-filter=U
+
+read -p "Do you want to resolve these conflicts? [Y/n] " -n 1 -r reply
+# set the default value to 'y'
+reply="${reply:-y}"
+
+if [[ $reply =~ ^[Yy]$ ]]; then
+    git mergetool
+fi
+
+# TODO: add a loop with git rebase --continue (if rebasing) and finally git push [--force if rebasing]

@@ -52,6 +52,7 @@ return {
                 python = { "ruff_fix", "ruff_format", "isort", "black" },
                 markdown = { "inject" },
                 proto = { "buf" },
+                just = { "just" },
                 lua = { "stylua" },
                 ["*"] = { "codespell" },
             },

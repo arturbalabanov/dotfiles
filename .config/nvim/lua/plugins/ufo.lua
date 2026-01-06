@@ -1,158 +1,175 @@
 local virtTextHandler = function(virtText, lnum, endLnum, width, truncate, ctx)
-	-- Skip decorators (hacky but it works)
-	-- TODO: Only implement this for python
+    -- Skip decorators in python (hacky but it works)
 
-	local inMultiLineDecorator = false
-	for i = lnum, endLnum do
-		local lineVirtText = ctx.get_fold_virt_text(i)
+    -- TODO: Implement something similar for Justfiles, e.g. this recipe:
+    --
+    -- # Docstring line 1
+    -- # Docstring line 2
+    -- [script]
+    -- [working-directory: 'some directory']
+    -- recipe *args:
+    --    echo "do stuff"
+    --    echo "do more stuff"
+    --
+    -- should fold to simply:
+    -- recipe *args: 󰁂 2
 
-		local firstNonWhitespaceChunk = nil
+    if vim.bo[ctx.bufnr].filetype ~= "python" then
+        return virtText
+    end
 
-		for chunkIndex, chunk in ipairs(lineVirtText) do ---@diagnostic disable-line: unused-local
-			local chunkText = chunk[1]
+    local inMultiLineDecorator = false
+    for i = lnum, endLnum do
+        local lineVirtText = ctx.get_fold_virt_text(i)
 
-			-- if it's only whitespace
-			if not chunkText:match("^%s*$") then
-				firstNonWhitespaceChunk = chunk
-				break
-			end
-		end
+        local firstNonWhitespaceChunk = nil
 
-		local firstChar = nil
-		if firstNonWhitespaceChunk ~= nil then
-			firstChar = firstNonWhitespaceChunk[1]:sub(1, 1)
-		end
+        for chunkIndex, chunk in ipairs(lineVirtText) do ---@diagnostic disable-line: unused-local
+            local chunkText = chunk[1]
 
-		if firstChar ~= nil then
-			local lastChunk = lineVirtText[#lineVirtText]
+            -- if it's only whitespace
+            if not chunkText:match("^%s*$") then
+                firstNonWhitespaceChunk = chunk
+                break
+            end
+        end
 
-			if firstChar == "@" then
-				if lastChunk[1] == "(" then
-					inMultiLineDecorator = true
-				end
-			else
-				if not inMultiLineDecorator then
-					virtText = lineVirtText
-					break
-				end
-			end
+        local firstChar = nil
+        if firstNonWhitespaceChunk ~= nil then
+            firstChar = firstNonWhitespaceChunk[1]:sub(1, 1)
+        end
 
-			if inMultiLineDecorator then
-				-- if #lineVirtText == 1 and lastChunk[1] == ')' then
-				if firstChar == ")" then
-					inMultiLineDecorator = false
-				end
-			end
-		end
-	end
+        if firstChar ~= nil then
+            local lastChunk = lineVirtText[#lineVirtText]
 
-	-- Add folded lines number
-	local newVirtText = {}
-	local suffix = (" 󰁂 %d "):format(endLnum - lnum)
-	local sufWidth = vim.fn.strdisplaywidth(suffix)
-	local targetWidth = width - sufWidth
-	local curWidth = 0
+            if firstChar == "@" then
+                if lastChunk[1] == "(" then
+                    inMultiLineDecorator = true
+                end
+            else
+                if not inMultiLineDecorator then
+                    virtText = lineVirtText
+                    break
+                end
+            end
 
-	for _, chunk in ipairs(virtText) do
-		local chunkText = chunk[1]
-		local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+            if inMultiLineDecorator then
+                -- if #lineVirtText == 1 and lastChunk[1] == ')' then
+                if firstChar == ")" then
+                    inMultiLineDecorator = false
+                end
+            end
+        end
+    end
 
-		if targetWidth > curWidth + chunkWidth then
-			table.insert(newVirtText, chunk)
-		else
-			chunkText = truncate(chunkText, targetWidth - curWidth)
-			local hlGroup = chunk[2]
+    -- Add folded lines number
+    local newVirtText = {}
+    local suffix = (" 󰁂 %d "):format(endLnum - lnum)
+    local sufWidth = vim.fn.strdisplaywidth(suffix)
+    local targetWidth = width - sufWidth
+    local curWidth = 0
 
-			table.insert(newVirtText, { chunkText, hlGroup })
-			chunkWidth = vim.fn.strdisplaywidth(chunkText)
+    for _, chunk in ipairs(virtText) do
+        local chunkText = chunk[1]
+        local chunkWidth = vim.fn.strdisplaywidth(chunkText)
 
-			-- str width returned from truncate() may less than 2nd argument, need padding
-			if curWidth + chunkWidth < targetWidth then
-				suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
-			end
+        if targetWidth > curWidth + chunkWidth then
+            table.insert(newVirtText, chunk)
+        else
+            chunkText = truncate(chunkText, targetWidth - curWidth)
+            local hlGroup = chunk[2]
 
-			break
-		end
+            table.insert(newVirtText, { chunkText, hlGroup })
+            chunkWidth = vim.fn.strdisplaywidth(chunkText)
 
-		curWidth = curWidth + chunkWidth
-	end
+            -- str width returned from truncate() may less than 2nd argument, need padding
+            if curWidth + chunkWidth < targetWidth then
+                suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
+            end
 
-	table.insert(newVirtText, { suffix, "MoreMsg" })
+            break
+        end
 
-	return newVirtText
+        curWidth = curWidth + chunkWidth
+    end
+
+    table.insert(newVirtText, { suffix, "MoreMsg" })
+
+    return newVirtText
 end
 
 return {
-	"kevinhwang91/nvim-ufo",
-	dependencies = { "kevinhwang91/promise-async" },
-	init = function()
-		vim.o.foldcolumn = "0" -- '1' is not bad
-		vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
-		vim.o.foldlevelstart = 99
-		vim.o.foldenable = true
-	end,
-	lazy = false,
-	opts = {
-		open_fold_hl_timeout = 0, -- disable highlighting on opening folds
-		enable_get_fold_virt_text = true,
-		fold_virt_text_handler = virtTextHandler,
-		close_fold_kinds_for_ft = {
-			zsh = { "marker" },
-		},
-		provider_selector = function(bufnr, filetype, buftype)
-			local folds_per_ft = {
-				zsh = "marker",
-				python = { "treesitter" },
-				lua = { "treesitter" },
-				go = { "treesitter" },
-				markdown = { "treesitter" },
-			}
+    "kevinhwang91/nvim-ufo",
+    dependencies = { "kevinhwang91/promise-async" },
+    init = function()
+        vim.o.foldcolumn = "0" -- '1' is not bad
+        vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+        vim.o.foldlevelstart = 99
+        vim.o.foldenable = true
+    end,
+    lazy = false,
+    opts = {
+        open_fold_hl_timeout = 0, -- disable highlighting on opening folds
+        enable_get_fold_virt_text = true,
+        fold_virt_text_handler = virtTextHandler,
+        close_fold_kinds_for_ft = {
+            zsh = { "marker" },
+        },
+        provider_selector = function(bufnr, filetype, buftype)
+            local folds_per_ft = {
+                zsh = "marker",
+                python = { "treesitter" },
+                lua = { "treesitter" },
+                go = { "treesitter" },
+                just = { "treesitter" },
+                markdown = { "treesitter" },
+            }
 
-			return folds_per_ft[filetype] or { "treesitter", "marker" }
-		end,
-	},
-	keys = {
-		{
-			"zR",
-			function()
-				require("ufo").openAllFolds()
-			end,
-			desc = "open all folds",
-		},
-		{
-			"zM",
-			function()
-				require("ufo").closeAllFolds()
-			end,
-			desc = "close all folds",
-		},
-		{
-			"zr",
-			function()
-				require("ufo").openFoldsExceptKinds()
-			end,
-			desc = "open folds except kinds",
-		},
-		{
-			"zm",
-			function()
-				require("ufo").closeFoldsWith()
-			end,
-			desc = "close folds with",
-		},
-		{
-			"<S-Tab>",
-			function()
-				local winid = require("ufo").peekFoldedLinesUnderCursor()
+            return folds_per_ft[filetype] or { "treesitter", "marker" }
+        end,
+    },
+    keys = {
+        {
+            "zR",
+            function()
+                require("ufo").openAllFolds()
+            end,
+            desc = "open all folds",
+        },
+        {
+            "zM",
+            function()
+                require("ufo").closeAllFolds()
+            end,
+            desc = "close all folds",
+        },
+        {
+            "zr",
+            function()
+                require("ufo").openFoldsExceptKinds()
+            end,
+            desc = "open folds except kinds",
+        },
+        {
+            "zm",
+            function()
+                require("ufo").closeFoldsWith()
+            end,
+            desc = "close folds with",
+        },
+        {
+            "<S-Tab>",
+            function()
+                local winid = require("ufo").peekFoldedLinesUnderCursor()
 
-				if not winid then
-					vim.lsp.buf.hover()
-				end
-			end,
-			desc = "Peek a fold",
-		},
-		{ "<Tab>", "za", desc = "Toggle fold" },
-	},
+                if not winid then
+                    vim.lsp.buf.hover()
+                end
+            end,
+            desc = "Peek a fold",
+        },
+        { "<Tab>", "za", desc = "Toggle fold" },
+    },
 }
 
 -- peek a fold with <Shift+Tab>

@@ -17,7 +17,6 @@ M.apply_defaults = function(original, defaults)
     return original
 end
 
-
 -- TODO: replace with plenary partial function ONLY IF CAN LOAD THAT MODULE
 M.partial = function(fun, ...)
     local function bind_n(fn, n, a, ...)
@@ -84,7 +83,7 @@ function M.show_in_split(str, opts)
 
     local buf = vim.api.nvim_create_buf(false, true) -- args: listed, scratch
 
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(str, '\n', { plain = true }))
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(str, "\n", { plain = true }))
     vim.api.nvim_buf_set_option(buf, "filetype", opts_with_defaults.filetype)
     vim.api.nvim_buf_set_option(buf, "modified", false)
 
@@ -92,6 +91,31 @@ function M.show_in_split(str, opts)
     vim.api.nvim_win_set_buf(0, buf)
 end
 
+function M.warn_with_caller_info(title, opts)
+    opts = M.apply_defaults(opts, { stack_level = 2, notification_timeout_ms = 10 * 1000 })
+
+    -- `n´	selects fields name and namewhat
+    -- `f´	selects field func
+    -- `S´	selects fields source, short_src, what, and linedefined
+    -- `l´	selects field currentline
+    -- `u´	selects field nup
+    --
+    -- ref: https://www.lua.org/pil/23.1.html
+    local caller_info = debug.getinfo(opts.stack_level, "Slf")
+
+    local detail_lines = {
+        "### Caller Info",
+        "",
+        string.format("File: `%s`", caller_info.source),
+        string.format("Line: %d", caller_info.currentline),
+        string.format("Function: %s", vim.inspect(caller_info.func)),
+        "",
+    }
+
+    require("utils.markdown").notify(title, detail_lines, "warn", { timeout = opts.notification_timeout_ms })
+end
+
+-- TODO: use warn_with_caller_info internally
 function M.opt_require(module_path)
     local status_ok, module = pcall(require, module_path)
     if not status_ok then
@@ -108,10 +132,7 @@ function M.opt_require(module_path)
 
         local caller_info = debug.getinfo(caller_stack_level, "Slf")
 
-        local title = string.format(
-            "opt_require: Failed loading `%s`, skipping",
-            module_path
-        )
+        local title = string.format("opt_require: Failed loading `%s`, skipping", module_path)
 
         local detail_lines = {
             "# Error",

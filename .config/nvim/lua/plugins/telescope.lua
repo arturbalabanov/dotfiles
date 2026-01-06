@@ -200,6 +200,10 @@ return {
                         end
                     },
                     {
+                        name = "Buffers",
+                        tele_func = telescope_builtin.buffers,
+                    },
+                    {
                         name = "Live Grep",
                         tele_func = telescope_builtin.live_grep,
                     },
@@ -220,6 +224,7 @@ return {
         end,
         keys = {
             { "<leader>p", function() require('search').open() end,                           desc = "Search: Open files" },
+            { "<leader>b", function() require('search').open({ tab_name = "Buffers" }) end,   desc = "Search: Open buffers" },
             { "<leader>f", function() require('search').open({ tab_name = "Live Grep" }) end, desc = "Search: Live Grep" },
             { "<leader>h", function() require('search').open({ tab_name = "Help" }) end,      desc = "Search: Help" },
         },

@@ -596,19 +596,34 @@ function ssh {
             | sort -u \
         )
 
-        ssh_args=$(echo "$hosts" | fzf --info inline-right --layout reverse --preview 'dig {}' --height 15 --no-sort)
+        host=$(echo "$hosts" | fzf --info inline-right --layout reverse --preview 'dig {}' --height 15 --no-sort)
+        
+        if [[ $TERM == "xterm-kitty" ]]; then
+            TERM="xterm-256color" command ssh "$host"
+        else
+            command ssh "$host"
+        fi
     else
-        ssh_args="$@"
+        if [[ $TERM == "xterm-kitty" ]]; then
+            TERM="xterm-256color" command ssh $@
+        else
+            command ssh $@
+        fi
     fi
     
-    if [[ $TERM == "xterm-kitty" ]]; then
-        TERM="xterm-256color"
-        command ssh $ssh_args
-        TERM="xterm-kitty"
-    else
-        command ssh $ssh_args
-    fi
 }
+
+if _exists tmux && _exists sesh; then
+    function tmux {
+        # if running tmux with arguments, just pass them through to the original tmux command
+        if [[ $# -gt 0 ]]; then
+            command tmux $@
+            return
+        fi
+
+        $HOME/scripts/tmux-select-session.sh
+    }
+fi
 # }}}
 # Source other configs {{{
 if [[ -f "$HOME/.zshrc_local" ]]; then

@@ -11,20 +11,15 @@ local my_utils = require("utils")
 -- TODO: Improve based on NvChad's reload mechanism
 -- ref: https://github.com/NvChad/NvChad/blob/v2.0/lua/core/init.lua#L74
 
-
 -- lazy.nvim has a reload function, use with caution as it doesn't work for all plugins (ref: https://github.com/folke/lazy.nvim/issues/445)
 -- I defined a wrapper for it in utils.plugin.reload. Create an autocmd to reload the relevant plugin(s) when
 -- the config file is saved. Can be a bit tricky when multiple are defined but maybe lazy.nvim already stores the file where
 -- they are defined in the plugin spec somewhere. but that way you can reload only one plugin at a time :)
 -- For the time being this will do
-vim.api.nvim_create_user_command(
-    'ReloadPlugin',
-    function(ctx)
-        require("utils.plugin").reload(ctx.args)
-        vim.notify("Reloaded plugin " .. ctx.args, vim.log.levels.INFO)
-    end,
-    { nargs = 1 }
-)
+vim.api.nvim_create_user_command("ReloadPlugin", function(ctx)
+    require("utils.plugin").reload(ctx.args)
+    vim.notify("Reloaded plugin " .. ctx.args, vim.log.levels.INFO)
+end, { nargs = 1 })
 
 --- Reload the entire configuration (disabled for now)
 local function reload_nvim_config()
@@ -42,7 +37,7 @@ local function reload_nvim_config()
     local luacache = (_G.__luacache or {}).cache
 
     for name, _ in pairs(package.loaded) do
-        if name:match('^user') or name == "treesitter" then
+        if name:match("^user") or name == "treesitter" then
             package.loaded[name] = nil
 
             if luacache then
@@ -59,7 +54,7 @@ local function reload_nvim_config()
     dofile(vim.env.MYVIMRC)
 
     -- Reload after/ directory
-    local glob = vim.fn.stdpath('config') .. '/after/**/*.lua'
+    local glob = vim.fn.stdpath("config") .. "/after/**/*.lua"
     local after_lua_filepaths = vim.fn.glob(glob, true, true)
 
     for _, filepath in ipairs(after_lua_filepaths) do
@@ -98,6 +93,12 @@ local reload_configs = {
         project_name = "nvim",
     },
     {
+        aliases = { "neovim", "nvim", "vim" },
+        reload_func = simple_reload_nvim_file,
+        files_pattern = "lua/user/diagnostic.lua",
+        project_name = "nvim",
+    },
+    {
         aliases = { "tmux" },
         reload_func = reload_tmux_config,
         files_pattern = ".tmux.conf",
@@ -123,7 +124,7 @@ local function reload_config(opts)
     end
 end
 
-vim.api.nvim_create_user_command('ReloadConfig', reload_config, { nargs = '?' })
+vim.api.nvim_create_user_command("ReloadConfig", reload_config, { nargs = "?" })
 
 local function create_autocmd_callback(autoreload_config)
     return function(event)
@@ -158,12 +159,12 @@ local function create_autocmd_callback(autoreload_config)
     end
 end
 
-local autoreload_augroup = vim.api.nvim_create_augroup('UserAutoReloadConfigs', { clear = true })
+local autoreload_augroup = vim.api.nvim_create_augroup("UserAutoReloadConfigs", { clear = true })
 
 for _, config in ipairs(reload_configs) do
     vim.api.nvim_create_autocmd("BufWritePost", {
         group = autoreload_augroup,
         pattern = config.files_pattern,
-        callback = create_autocmd_callback(config)
+        callback = create_autocmd_callback(config),
     })
 end

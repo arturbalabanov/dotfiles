@@ -162,8 +162,9 @@ return {
             if server_name ~= "*" then
                 server_opts = vim.tbl_deep_extend("keep", server_opts, default_server_opts)
 
-                if require("lspconfig")[server_name] then
-                    require("lspconfig")[server_name].setup(server_opts)
+                if vim.lsp.config[server_name] then
+                    vim.lsp.config(server_name, server_opts)
+                    vim.lsp.enable(server_name)
                 else
                     require("utils").error_fmt("LSP server '%s' not found in lspconfig", server_name)
                 end

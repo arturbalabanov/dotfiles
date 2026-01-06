@@ -75,22 +75,6 @@ local plugin_specs = {
 
     "onsails/lspkind.nvim",
 
-    {
-        -- TODO: replace with stevanmilic/nvim-lspimport once #7 is merged:
-        --       https://github.com/stevanmilic/nvim-lspimport/pull/7
-        "arturbalabanov/nvim-lspimport",
-        branch = "add-missing-imports",
-        keys = {
-            {
-                "<leader>i",
-                function()
-                    require("lspimport").import()
-                end,
-                desc = "Import symbol under cursor",
-            },
-        },
-    },
-
     -- TODO: this is a fork of AckslD/nvim-pytrize.lua, replace with original once PR is merged
     --       https://github.com/AckslD/nvim-pytrize.lua/pull/10
     {

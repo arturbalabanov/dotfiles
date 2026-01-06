@@ -60,3 +60,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     end,
     desc = "Restore last cursor position when opening the file again",
 })
+
+vim.api.nvim_create_autocmd("Filetype", {
+    group = augroup("help_vertical_split"),
+    pattern = "help",
+    command = "wincmd L",
+    desc = "Open help files in a vertical split instead of horizontal",
+})

@@ -8,22 +8,24 @@ else
 end
 
 if vim.g.vscode then
-    opt_require "user.vscode"
+    opt_require("user.vscode")
     return
 end
 
 if vim.g.neovide then
-    opt_require "user.neovide"
+    opt_require("user.neovide")
 end
 
 -- Enable the experimental vim loader for faster startup (a replacement of impatient.nvim)
 vim.loader.enable()
 
-opt_require "user.options"
-opt_require "user.diagnostic"
-opt_require "user.keymaps"
-opt_require "user.commands"
-opt_require "user.autocmds"
-opt_require "user.autoreload_config"
+require("utils.plugin").delay_notifications_until_patched({ timeout_ms = 500 })
 
-opt_require "user.lazy"
+opt_require("user.options")
+opt_require("user.keymaps")
+opt_require("user.diagnostic")
+opt_require("user.commands")
+opt_require("user.autocmds")
+opt_require("user.autoreload_config")
+
+opt_require("user.lazy")

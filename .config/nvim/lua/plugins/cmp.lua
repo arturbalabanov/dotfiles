@@ -15,6 +15,7 @@ end
 
 return {
     "hrsh7th/nvim-cmp",
+    enabled = true,
     event = "InsertEnter",
     dependencies = {
         "hrsh7th/cmp-nvim-lsp",
@@ -26,8 +27,8 @@ return {
     },
     config = function()
         local luasnip = require("luasnip")
-        local cmp_context = require('cmp.config.context')
-        local cmp = require('cmp')
+        local cmp_context = require("cmp.config.context")
+        local cmp = require("cmp")
 
         cmp.setup({
             snippet = {
@@ -53,9 +54,9 @@ return {
                 },
             },
             mapping = cmp.mapping.preset.insert({
-                ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-                ['<C-f>'] = cmp.mapping.scroll_docs(4),
-                ['<Esc>'] = cmp.mapping.abort(),
+                ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+                ["<C-f>"] = cmp.mapping.scroll_docs(4),
+                ["<Esc>"] = cmp.mapping.abort(),
                 -- If nothing is selected (including preselections) add a newline as usual.
                 -- If something has explicitly been selected by the user, select it.
                 ["<CR>"] = cmp.mapping({
@@ -97,7 +98,7 @@ return {
                     end
                 end, { "i", "s" }),
 
-                ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+                ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
             }),
             sources = cmp.config.sources({
                 {
@@ -113,40 +114,40 @@ return {
                     --         )
                     --     end,
                     -- },
-                    name = 'luasnip',
-                    group_index = 2
+                    name = "luasnip",
+                    group_index = 2,
                 },
-                { name = 'nvim_lsp', group_index = 2 },
+                { name = "nvim_lsp", group_index = 2 },
                 {
-                    name = 'buffer', -- only enable buffer completion in comments
+                    name = "buffer", -- only enable buffer completion in comments
                     entry_filter = function(entry, ctx)
-                        return cmp_context.in_treesitter_capture('comment')
+                        return cmp_context.in_treesitter_capture("comment")
                     end,
                     group_index = 3,
                 },
-            })
+            }),
         })
 
-        cmp.setup.cmdline('/', {
+        cmp.setup.cmdline("/", {
             mapping = cmp.mapping.preset.cmdline(),
             sources = {
-                { name = 'buffer' },
+                { name = "buffer" },
             },
         })
 
-        cmp.setup.cmdline(':', {
+        cmp.setup.cmdline(":", {
             mapping = cmp.mapping.preset.cmdline(),
-            sources = cmp.config.sources {
+            sources = cmp.config.sources({
                 {
-                    { name = 'path' },
+                    { name = "path" },
                 },
                 {
-                    name = 'cmdline',
+                    name = "cmdline",
                     option = {
-                        ignore_cmds = { 'Man', '!' },
+                        ignore_cmds = { "Man", "!" },
                     },
                 },
-            }
+            }),
         })
-    end
+    end,
 }

@@ -2,11 +2,13 @@ local keymap = require("utils.keymap")
 local utils = require("utils")
 local plugin_utils = require("utils.plugin")
 
+-- NOTE: Diagnostics keymaps are now in user/diagnostic.lua
+
 -- Use Space as the leader key and comma as the localleader key
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
-keymap.set_n(";", ":", { silent = false }, { desc = "Enter command mode" })
+keymap.set_n(";", ":", { silent = false, desc = "Enter command mode" })
 
 keymap.set_n("vv", "^vg_", { desc = "Select current line (excl. leading whitespace)" })
 
@@ -142,21 +144,21 @@ keymap.set_n("<C-e>", vim.cmd.Inspect, { desc = "Inspect word under cursor" })
 
 keymap.set_n("<C-t>", "<C-w>T", { desc = "Move window to new tab" })
 
-keymap.set_n("<C-w>j", function()
-    local winnr = vim.api.nvim_get_current_win()
-    vim.cmd.split()
-    vim.api.nvim_win_close(winnr, false)
-
-    vim.api.nvim_win_set_height(0, 20)
-end, { desc = "Move window to split below" })
-
-keymap.set_n("<C-w>l", function()
-    local winnr = vim.api.nvim_get_current_win()
-    vim.cmd.vsplit()
-    vim.api.nvim_win_close(winnr, false)
-
-    vim.api.nvim_win_set_width(0, 60)
-end, { desc = "Move window to split right" })
+-- keymap.set_n("<C-w>j", function()
+--     local winnr = vim.api.nvim_get_current_win()
+--     vim.cmd.split()
+--     vim.api.nvim_win_close(winnr, false)
+--
+--     vim.api.nvim_win_set_height(0, 20)
+-- end, { desc = "Move window to split below" })
+--
+-- keymap.set_n("<C-w>l", function()
+--     local winnr = vim.api.nvim_get_current_win()
+--     vim.cmd.vsplit()
+--     vim.api.nvim_win_close(winnr, false)
+--
+--     vim.api.nvim_win_set_width(0, 60)
+-- end, { desc = "Move window to split right" })
 
 keymap.set_n("gV", "`[V`]", { desc = "Select last pasted text" })
 
@@ -178,10 +180,6 @@ keymap.set_i(
 
 keymap.set_n("[b", vim.cmd.bprev, { desc = "Previous buffer" })
 keymap.set_n("]b", vim.cmd.bnext, { desc = "Next buffer" })
-
-keymap.set_n("<leader>e", vim.diagnostic.open_float, { desc = "Open diagnostic float" })
-keymap.set_n("[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-keymap.set_n("]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 
 keymap.set_n("<C-q>", function()
     local buf_filetype = vim.api.nvim_buf_get_option(0, "filetype")
