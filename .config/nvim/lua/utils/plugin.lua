@@ -45,6 +45,9 @@ function M.delay_notifications_until_patched(opts)
 end
 
 M.is_loaded = function(plugin_name)
+    -- TODO: this doesn't return a boolean value!
+    -- TODO: If the plugin name is misspelled (e.g. heirline instead of heirline.nvim), this returns nil instead of an
+    -- error
     local Config = require("lazy.core.config")
     return Config.plugins[plugin_name] and Config.plugins[plugin_name]._.loaded
 end
@@ -52,6 +55,7 @@ end
 M.get_opts = function(plugin_name)
     local plugin = require("lazy.core.config").spec.plugins[plugin_name]
     if not plugin then
+        error("Plugin '" .. plugin_name .. "' not found", vim.log.levels.ERROR)
         return {}
     end
 
@@ -77,16 +81,22 @@ M.on_load = function(plugin_name, callback_func)
 end
 
 M.reload = function(plugin_name)
-    local plugin = require("lazy.core.config").plugins[plugin_name]
+    -- ref: https://github.com/MaximilianLloyd/lazy-reload.nvim/blob/main/lua/lazy-reload/init.lua
 
-    if not plugin then
-        error("Plugin '" .. plugin_name .. "' not found", vim.log.levels.ERROR)
-    end
+    local plugins = require("lazy.core.config").plugins
+    local plugin = plugins[plugin_name]
 
-    if plugin._.loaded then
-        require("lazy.core.loader").reload(plugin)
+    if plugin == nil then
+        error("Cannot reload plugin '" .. plugin_name .. "': plugin not found", vim.log.levels.ERROR)
         return
     end
+
+    if not plugin._.loaded then
+        error("Cannot reload plugin '" .. plugin_name .. "': plugin is not loaded", vim.log.levels.ERROR)
+        return
+    end
+
+    require("lazy.core.loader").reload(plugin)
 end
 
 return M

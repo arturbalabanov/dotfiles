@@ -32,13 +32,12 @@ local my_utils = require("utils")
 --       stopBy: end
 -- ]]
 
-
 return {
     {
         -- Config inspired by LazyVim
         -- ref: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/treesitter.lua
 
-        'nvim-treesitter/nvim-treesitter',
+        "nvim-treesitter/nvim-treesitter",
         -- TODO: switch to main branch: https://github.com/nvim-treesitter/nvim-treesitter/tree/main
         event = { "BufReadPost", "BufNewFile", "BufWritePre", "VeryLazy" },
         cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
@@ -56,9 +55,9 @@ return {
         ---@type TSConfig
         opts = {
             auto_install = true,
-            ensure_installed = "all",
+            ensure_installed = {},
             ignore_install = {
-                "ipkg",           -- https://github.com/srghma/tree-sitter-ipkg doesn't exist anymore
+                "ipkg", -- https://github.com/srghma/tree-sitter-ipkg doesn't exist anymore
             },
             sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
             highlight = { enable = true },

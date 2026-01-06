@@ -408,6 +408,10 @@ if _exists docker; then
     eval "$(docker completion zsh)"
 fi
 
+if _exists ngrok; then
+    eval "$(ngrok completion)"
+fi
+
 # make & remake {{{
 
 # Enable autocomplete for dynamic make targes

@@ -48,6 +48,7 @@ M.CurrentTabFileBlock = {
 M.FileIcon = {
     init = function(self)
         local filename = self.filename
+
         if self.is_directory then
             self.icon = ""
             self.icon_color = "blue"

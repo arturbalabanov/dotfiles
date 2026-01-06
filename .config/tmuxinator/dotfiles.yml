@@ -22,7 +22,7 @@ windows:
       layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
       panes:
         - editor:
-          - nvim -p .zshrc .zprofile .zshrc_local
+          - nvim -p .zshrc .zprofile .zshrc_local .config/starship.toml
         - tests:
           -
   - tmux:
