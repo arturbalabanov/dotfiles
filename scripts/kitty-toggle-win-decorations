@@ -1,0 +1,42 @@
+#!/bin/bash
+
+kitty_config_file="$HOME/.config/kitty/kitty.conf"
+
+# TODO: Use the reload config kitten and refactor the whole thing to instead:
+# 1. copy the existing kitty config file to a temp file
+# 2. modify the temp file
+# 3. use the reload config kitten to load the temp file
+#    This would avoid having to modify the main config file directly which is not only messy but is also tracked on git
+
+reload_config() {
+    kill -SIGUSR1 $(pgrep -a kitty)
+}
+
+set_kitty_config_value_from_to() {
+    key="$1"
+    from_value="$2"
+    to_value="$3"
+
+    # NOTE: seems that on linux you should write it as `sed -i 's/...' <filename>` instead
+    sed -i '' "s/$key $from_value/$key $to_value/" $kitty_config_file
+}
+
+get_kitty_config_value() {
+    key="$1"
+    grep "^$key " "$kitty_config_file" | awk '{print $2}'
+}
+
+toggle_titlebar() {
+    current_value=$(get_kitty_config_value 'hide_window_decorations')
+    if [[ "$current_value" == "titlebar-and-corners" ]]; then
+        set_kitty_config_value_from_to 'hide_window_decorations' 'titlebar-and-corners' 'false'
+    elif [[ "$current_value" == "false" ]]; then
+        set_kitty_config_value_from_to 'hide_window_decorations' 'false' 'titlebar-and-corners'
+    else
+        echo "Unexpected current value for hide_window_decorations: $current_value"
+        exit 1
+    fi
+}
+
+toggle_titlebar
+reload_config

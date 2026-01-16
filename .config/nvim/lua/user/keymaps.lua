@@ -199,3 +199,20 @@ keymap.set_n("]q", vim.cmd.cnext, { desc = "Next quickfix item" })
 
 keymap.set_x("/", "<C-\\><C-n>`</\\%V", { desc = "Search forward within visual selection" })
 keymap.set_x("?", "<C-\\><C-n>`>?\\%V", { desc = "Search backward within visual selection" })
+
+keymap.set_n("<leader><leader>t", function()
+    vim.cmd.tabnew()
+    vim.cmd.Telescope("buffers")
+end, { desc = "open new tab " })
+
+keymap.set_n("<leader><leader>y", function()
+    local filepath = vim.api.nvim_buf_get_name(0)
+    -- replace $HOME with ~ for better readability
+    filepath = filepath:gsub(vim.env.HOME, "~")
+    vim.fn.setreg("+", filepath)
+    require("notify").notify(
+        filepath,
+        vim.log.levels.INFO,
+        { title = "copied", render = "compact", stages = "slide_in_slide_out" }
+    )
+end, { desc = "copy the filepath of the current buffer" })

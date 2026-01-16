@@ -6,9 +6,9 @@
 
 # Based on: https://github.com/joshmedeski/sesh?tab=readme-ov-file#tmux--fzf
 
-debug_mode=false
+# TODO: unify with the tmux-new-session-template.py script
 
-if [[ "$debug_mode" = true ]]; then
+if [[ -n "${DEBUG:-}" ]]; then
     if tmux info &> /dev/null; then 
         echo "tmux server running"
     else
@@ -30,6 +30,11 @@ fi
 # awk command to filter out duplicates based on the second column (the session name). Also that way we don't need to
 # rely on the path being unique as this is not the case for some dotfile sessions
 
+# NOTE: awk '!seen[$2]++' removes duplicate session names based on the second column -- session name,
+#       the first one is the icon
+
+
+# --bind 'enter:transform:[[ -n {} ]] && echo accept || echo "execute(tmux new -s {q} -d && sesh connect {q})+abort"' \
 
 selected_session=$(sesh list --tmux --tmuxinator --config --icons \
     | awk '!seen[$2]++' \
@@ -40,7 +45,7 @@ selected_session=$(sesh list --tmux --tmuxinator --config --icons \
         --bind 'start,change:change-header(^a all ^g configs ^x zoxide ^d kill ^f find)' \
         --bind 'zero:change-header(Session not found, press Enter to create it and switch to it)' \
         --bind 'tab:down,btab:up' \
-        --bind 'enter:transform:[[ -n {} ]] && echo accept || echo "execute(tmux new -s {q} -d && sesh connect {q})+abort"' \
+        --bind "enter:transform:[[ -n {} ]] && echo accept || echo \"execute(~/.local/bin/tmux-new-session-template {q} && sesh connect {q})+abort\"" \
         --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
         --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list --icons --config --tmuxinator)' \
         --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list --icons --zoxide)' \
@@ -50,4 +55,15 @@ selected_session=$(sesh list --tmux --tmuxinator --config --icons \
         --preview 'sesh preview {}' \
 )
 
-sesh connect "$selected_session"
+if [[ -n "${DEBUG:-}" ]]; then
+    echo "selected session: $selected_session"
+    read -n 1 -s -r -p "Press any key to continue"
+    echo
+fi
+
+if [[ -n "$selected_session" ]]; then
+    sesh connect "$selected_session"
+fi
+
+
+

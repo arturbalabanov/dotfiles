@@ -8,8 +8,8 @@ local telescope_extensions_to_load = {
 
 return {
     {
-        'nvim-telescope/telescope.nvim',
-        version = '0.1.8',
+        "nvim-telescope/telescope.nvim",
+        version = "0.1.8",
         opts = function()
             local actions = require("telescope.actions")
             local actions_layout = require("telescope.actions.layout")
@@ -56,7 +56,7 @@ return {
                             ["v"] = actions.file_vsplit,
                             ["<C-t>"] = trouble.open,
                         },
-                    }
+                    },
                 },
                 pickers = {
                     find_files = {
@@ -64,14 +64,19 @@ return {
                         find_command = { "rg", "--files", "--sortr=modified" },
                     },
                     live_grep = {
-                        layout_strategy = 'vertical',
+                        layout_strategy = "vertical",
                         disable_coordinates = true,
-                        additional_args = { '--trim', "--sortr=modified" },
+                        additional_args = { "--trim", "--sortr=modified" },
                     },
                     grep_string = {
-                        layout_strategy = 'vertical',
+                        layout_strategy = "vertical",
                         disable_coordinates = true,
-                        additional_args = { '--trim', "--sortr=modified" },
+                        additional_args = { "--trim", "--sortr=modified" },
+                    },
+                    buffers = {
+                        theme = "dropdown",
+                        previewer = false,
+                        prompt_position = "top",
                     },
                     colorscheme = {
                         theme = "dropdown",
@@ -82,10 +87,10 @@ return {
                         include_extensions = true,
                         previewer = false,
                         border = true,
-                        layout_strategy = 'vertical',
+                        layout_strategy = "vertical",
                     },
                     lsp_document_symbols = {
-                        layout_strategy = 'vertical',
+                        layout_strategy = "vertical",
                         symbol_width = 80,
                     },
                 },
@@ -102,7 +107,7 @@ return {
                         -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
                         show_builtin_git_pickers = false,
                     },
-                }
+                },
             }
         end,
         config = function(_, opts)
@@ -114,10 +119,34 @@ return {
             telescope.setup(opts)
         end,
         keys = {
-            { "<leader>*",        function() require("telescope.builtin").grep_string() end,              desc = "Telescope: Grep word under cursor" },
-            { "<leader>c",        function() require("telescope").extensions.yadm_files.yadm_files() end, desc = "Telescope: YADM files" },
-            { "<leader>C",        function() require("telescope.builtin").commands() end,                 desc = "Telescope: Commands" },
-            { "<leader><leader>", function() require("telescope.builtin").builtin() end,                  desc = "Telescope: Pickers" },
+            {
+                "<leader>*",
+                function()
+                    require("telescope.builtin").grep_string()
+                end,
+                desc = "Telescope: Grep word under cursor",
+            },
+            {
+                "<leader>c",
+                function()
+                    require("telescope").extensions.yadm_files.yadm_files()
+                end,
+                desc = "Telescope: YADM files",
+            },
+            {
+                "<leader>C",
+                function()
+                    require("telescope.builtin").commands()
+                end,
+                desc = "Telescope: Commands",
+            },
+            {
+                "<leader><leader>",
+                function()
+                    require("telescope.builtin").builtin()
+                end,
+                desc = "Telescope: Pickers",
+            },
             {
                 "<leader>l",
                 function()
@@ -158,7 +187,7 @@ return {
         dependencies = {
             "nvim-telescope/telescope.nvim",
             "tpope/vim-fugitive", -- to show diff splits and open commits in browser
-            "tpope/vim-rhubarb",  -- to open commits in browser with fugitive
+            "tpope/vim-rhubarb", -- to open commits in browser with fugitive
             -- optional: to replace the diff from fugitive with diffview.nvim
             -- (fugitive is still needed to open in browser)
             "sindrets/diffview.nvim",
@@ -169,12 +198,12 @@ return {
         dependencies = { "nvim-telescope/telescope.nvim" },
         opts = function()
             local telescope = require("telescope")
-            local telescope_builtin = require('telescope.builtin')
+            local telescope_builtin = require("telescope.builtin")
 
             return {
                 mappings = { -- NOTE: will be set in normal and insert mode(!)
                     next = "<Tab>",
-                    prev = "<S-Tab>"
+                    prev = "<S-Tab>",
                 },
                 append_tabs = { -- These will always be added to every tab group
                     {
@@ -193,11 +222,11 @@ return {
                             local winnr = vim.api.nvim_tabpage_get_win(tabpage)
 
                             if vim.fn.getcwd(winnr, tabnr) == vim.fn.expand("$HOME") then
-                                opts.cwd = '~/.config/nvim'
+                                opts.cwd = "~/.config/nvim"
                             end
 
                             telescope_builtin.find_files(opts)
-                        end
+                        end,
                     },
                     {
                         name = "Buffers",
@@ -219,14 +248,42 @@ return {
                         name = "Help",
                         tele_func = telescope_builtin.help_tags,
                     },
+                    {
+                        name = "New tab",
+                        tele_func = telescope_builtin.buffers,
+                    },
                 },
             }
         end,
         keys = {
-            { "<leader>p", function() require('search').open() end,                           desc = "Search: Open files" },
-            { "<leader>b", function() require('search').open({ tab_name = "Buffers" }) end,   desc = "Search: Open buffers" },
-            { "<leader>f", function() require('search').open({ tab_name = "Live Grep" }) end, desc = "Search: Live Grep" },
-            { "<leader>h", function() require('search').open({ tab_name = "Help" }) end,      desc = "Search: Help" },
+            {
+                "<leader>p",
+                function()
+                    require("search").open()
+                end,
+                desc = "Search: Open files",
+            },
+            {
+                "<leader>b",
+                function()
+                    require("search").open({ tab_name = "Buffers" })
+                end,
+                desc = "Search: Open buffers",
+            },
+            {
+                "<leader>f",
+                function()
+                    require("search").open({ tab_name = "Live Grep" })
+                end,
+                desc = "Search: Live Grep",
+            },
+            {
+                "<leader>h",
+                function()
+                    require("search").open({ tab_name = "Help" })
+                end,
+                desc = "Search: Help",
+            },
         },
     },
 }

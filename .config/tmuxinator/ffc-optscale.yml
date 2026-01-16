@@ -1,10 +1,9 @@
 name: ffc-optscale
 root: ~/dev/software-one/optscale
-pre_window: venv
 
 windows:
-  - rest_api:
-      root: rest_api
+  - main:
+      root: .
       layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
       panes:
         - editor:
@@ -13,13 +12,25 @@ windows:
           -
         - git:
           -
+  - rest_api:
+      root: rest_api
+      layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
+      panes:
+        - editor:
+          - venv
+          - nvim +"Telescope find_files"
+        - tests:
+          - venv
+        - git:
+          -
   - deploy:
       root: optscale-deploy
       layout: '97a9,211x65,0,0[211x57,0,0{140x57,0,0,44,70x57,141,0,46},211x7,0,58,45]'
       panes:
         - editor:
+          - venv
           - nvim +"Telescope find_files"
         - tests:
-          -
+          - venv
         - git:
           -

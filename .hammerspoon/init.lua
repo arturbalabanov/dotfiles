@@ -160,8 +160,14 @@
 -- end)
 
 kittyWindowCreatedWatcher = hs.application.watcher.new(function(appName, eventType, appObject)
+    -- TODO: this only works for the first window -- launching subsequent windows won't trigger the launched event
+    --       and there doesn't seem to be a seperate event for opening a new OS window (only activated is triggered
+    --       but that will also trigger when switching between apps)
+    --       Maybe handle this in the kitty config if avaiable?
+
     if eventType == hs.application.watcher.launched then
         if appName == "kitty" then
+            hs.notify.show("Hammerspoon", "kitty", "outside timer")
             hs.timer.doAfter(0.01, function()
                 local newWindow = appObject:focusedWindow()
 
