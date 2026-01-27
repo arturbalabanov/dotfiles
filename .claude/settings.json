@@ -1,6 +1,9 @@
 {
-    "statusLine": {
-        "type": "command",
-        "command": "ccusage statusline"
-    }
+  "statusLine": {
+    "type": "command",
+    "command": "ccusage statusline"
+  },
+  "enabledPlugins": {
+    "pyright-lsp@claude-plugins-official": true
+  }
 }
