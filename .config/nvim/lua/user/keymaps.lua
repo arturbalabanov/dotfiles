@@ -205,14 +205,68 @@ keymap.set_n("<leader><leader>t", function()
     vim.cmd.Telescope("buffers")
 end, { desc = "open new tab " })
 
+local get_current_position = function(opts)
+    opts = utils.apply_defaults(opts, {
+        winnr = 0,
+        include_line = false,
+        include_column = false,
+        substitute_home = true,
+    })
+
+    local bufnr = vim.api.nvim_win_get_buf(opts.winnr)
+    local position = vim.api.nvim_buf_get_name(bufnr)
+
+    if opts.substitute_home then
+        position = position:gsub(vim.env.HOME, "~")
+    end
+
+    local row, col = unpack(vim.api.nvim_win_get_cursor(opts.winnr))
+
+    if opts.include_line then
+        position = string.format("%s:%d", position, row)
+    end
+
+    if opts.include_column then
+        position = string.format("%s:%d", position, col + 1)
+    end
+
+    return position
+end
+
 keymap.set_n("<leader><leader>y", function()
-    local filepath = vim.api.nvim_buf_get_name(0)
-    -- replace $HOME with ~ for better readability
-    filepath = filepath:gsub(vim.env.HOME, "~")
-    vim.fn.setreg("+", filepath)
+    local position = get_current_position()
+    vim.fn.setreg("+", position)
     require("notify").notify(
-        filepath,
+        position,
         vim.log.levels.INFO,
         { title = "copied", render = "compact", stages = "slide_in_slide_out" }
     )
 end, { desc = "copy the filepath of the current buffer" })
+
+keymap.set_n("<leader><leader>Y", function()
+    local position = get_current_position({ include_line = true, include_column = true })
+    vim.fn.setreg("+", position)
+    require("notify").notify(
+        position,
+        vim.log.levels.INFO,
+        { title = "copied", render = "compact", stages = "slide_in_slide_out" }
+    )
+end, { desc = "copy the filepath of the current buffer and cursor position" })
+
+keymap.set_n("<leader>lh", function()
+    local buf = vim.api.nvim_get_current_buf()
+    local lsp_clients = vim.lsp.get_clients({ bufnr = buf })
+
+    local success = false
+
+    for _, client in pairs(lsp_clients) do
+        if client.server_capabilities.inlayHintProvider or client:supports_method("textDocument/inlayHint", buf) then
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = buf }), { bufnr = buf })
+            success = true
+        end
+    end
+
+    if not success then
+        utils.simple_notify("No LSP client with inlay hint support found", "warn")
+    end
+end, { desc = "LSP: Toggle Inlay Hints" })

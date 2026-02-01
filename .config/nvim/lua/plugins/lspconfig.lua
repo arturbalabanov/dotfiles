@@ -54,13 +54,6 @@ return {
                         if client.supports_method("textDocument/formatting") then
                             setup_auto_format_autocmd(client, bufnr)
                         end
-
-                        if
-                            client.supports_method("textDocument/inlayHint")
-                            or client.server_capabilities.inlayHintProvider
-                        then
-                            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-                        end
                     end,
                     capabilities = require("cmp_nvim_lsp").default_capabilities(),
                 }

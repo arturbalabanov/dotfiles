@@ -148,7 +148,7 @@ return {
                 desc = "Telescope: Pickers",
             },
             {
-                "<leader>l",
+                "<leader>ls",
                 function()
                     local ft = vim.bo.filetype
 
