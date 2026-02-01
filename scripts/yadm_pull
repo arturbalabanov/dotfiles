@@ -47,7 +47,7 @@ echo "Installing scripts..."
 (cd "$HOME/scripts" && make install)
 
 echo "Installing brew packages..."
-HOMEBREW_NO_AUTO_UPDATE=1 brew bundle install --global
+HOMEBREW_NO_AUTO_UPDATE=1 brew bundle install --global --no-upgrade
 
 echo "Updating bat's cache..."
 bat cache --build
