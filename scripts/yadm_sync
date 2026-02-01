@@ -5,103 +5,131 @@ set -euo pipefail
 SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
 source "$SCRIPTS_DIR/common.sh"
 
-# Check if we're resuming from a merge conflict
-merge_conflicts=$(yadm ls-files -u | wc -l)
-if [[ $merge_conflicts -gt 0 ]]; then
-    echo "Detected $merge_conflicts unresolved merge conflicts."
-    echo "Please resolve them before continuing."
-    exit 1
-fi
-
-echo -n "Updating brew packages list... "
-HOMEBREW_NO_AUTO_UPDATE=1 brew bundle dump --force --global --no-upgrade
-echo "Done"
-
-# Apply linters
-uv run --directory ~/dotfiles-ansible yamllint ~/dotfiles-ansible
-uv run --directory ~/dotfiles-ansible ansible-lint ~/dotfiles-ansible
-
-# Apply ansible playbook
-uv run --directory ~/dotfiles-ansible ansible-playbook -i "localhost," -c local main_playbook.yaml
-
-# updating gitignore explicitly in case it contains files included in the directories below
-# (and thus producing a misleading git status)
-yadm add ~/.gitignore
-
-# Add yadm any new files from these directories
-yadm add ~/scripts
-yadm add ~/.config/nvim
-yadm add ~/.config/tmuxinator
-yadm add ~/dotfiles-ansible
-yadm add ~/.hammerspoon/
-
-yadm status
-
-# Check if there are any changes to commit
-uncommited_changes=$(yadm status --porcelain)
-if [[ -n $uncommited_changes ]]; then
-    if (confirm "Do you want to see the diff?"); then
-        yadm diff HEAD
-    fi
-
-    confirm "Are you sure you want to commit these changes?" "y"
-
-    commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
-    yadm commit -am "$commit_msg"
-else
-    echo "No changes to commit."
-fi
-
-# Pull changes from remote
-echo "Pulling changes from remote..."
-if ! yadm pull; then
+check_for_conflicts() {
+    local merge_conflicts
     merge_conflicts=$(yadm ls-files -u | wc -l)
     if [[ $merge_conflicts -gt 0 ]]; then
-        echo "Merge conflicts detected. Launching mergetool..."
-        yadm mergetool
-
-        # Check if conflicts are resolved
-        remaining_conflicts=$(yadm ls-files -u | wc -l)
-        if [[ $remaining_conflicts -gt 0 ]]; then
-            echo "There are still $remaining_conflicts unresolved conflicts."
-            echo "Please resolve them and run this script again."
-            exit 1
-        fi
-
-        echo "Conflicts resolved. Committing merge..."
-        yadm commit --no-edit
-    else
-        echo "Failed to pull changes from the remote repository."
+        echo "Detected $merge_conflicts unresolved merge conflicts."
+        echo "Please resolve them before continuing."
         exit 1
     fi
-fi
+}
 
-# Run post-pull actions
-echo "Creating alt files..."
-yadm alt
+update_brew_packages() {
+    echo -n "Updating brew packages list... "
+    HOMEBREW_NO_AUTO_UPDATE=1 brew bundle dump --force --global --no-upgrade
+    echo "Done"
+}
 
-echo "Running ansible playbook..."
-uv run --directory ~/dotfiles-ansible ansible-playbook -i "localhost," -c local main_playbook.yaml
+apply_linters() {
+    uv run --directory ~/dotfiles-ansible yamllint ~/dotfiles-ansible
+    uv run --directory ~/dotfiles-ansible ansible-lint ~/dotfiles-ansible
+}
 
-echo "Installing scripts..."
-(cd "$HOME/scripts" && make install)
+apply_ansible_playbook() {
+    uv run --directory ~/dotfiles-ansible ansible-playbook -i "localhost," -c local main_playbook.yaml
+}
 
-echo "Installing brew packages..."
-HOMEBREW_NO_AUTO_UPDATE=1 brew bundle install --global --no-upgrade
+stage_changes() {
+    # updating gitignore explicitly in case it contains files included in the directories below
+    # (and thus producing a misleading git status)
+    yadm add ~/.gitignore
 
-echo "Updating bat's cache..."
-bat cache --build
+    # Add yadm any new files from these directories
+    yadm add ~/scripts
+    yadm add ~/.config/nvim
+    yadm add ~/.config/tmuxinator
+    yadm add ~/dotfiles-ansible
+    yadm add ~/.hammerspoon/
 
-# Check if there are unpushed commits and push them
-# ref: https://stackoverflow.com/a/66538954
-# shellcheck disable=1083
-unpushed_commits=$(yadm rev-list --count @{upstream}..HEAD)
+    yadm status
+}
 
-if [[ $unpushed_commits -gt 0 ]]; then
-    echo "Pushing $unpushed_commits unpushed commit(s)..."
-    yadm push
-else
-    echo "No commits to push."
-fi
+commit_changes() {
+    local uncommited_changes
+    uncommited_changes=$(yadm status --porcelain)
 
-echo "Sync completed successfully!"
+    if [[ -n $uncommited_changes ]]; then
+        if (confirm "Do you want to see the diff?"); then
+            yadm diff HEAD
+        fi
+
+        confirm "Are you sure you want to commit these changes?" "y"
+
+        local commit_msg
+        commit_msg="Updated dotfiles $(date +'%Y-%m-%d %H:%M %Z') from $(yadm config local.class)"
+        yadm commit -am "$commit_msg"
+    else
+        echo "No changes to commit."
+    fi
+}
+
+pull_changes() {
+    echo "Pulling changes from remote..."
+
+    if ! yadm pull; then
+        local merge_conflicts
+        merge_conflicts=$(yadm ls-files -u | wc -l)
+
+        if [[ $merge_conflicts -gt 0 ]]; then
+            echo "Merge conflicts detected. Launching mergetool..."
+            yadm mergetool
+
+            # Check if conflicts are resolved
+            local remaining_conflicts
+            remaining_conflicts=$(yadm ls-files -u | wc -l)
+            if [[ $remaining_conflicts -gt 0 ]]; then
+                echo "There are still $remaining_conflicts unresolved conflicts."
+                echo "Please resolve them and run this script again."
+                exit 1
+            fi
+
+            echo "Conflicts resolved. Committing merge..."
+            yadm commit --no-edit
+        else
+            echo "Failed to pull changes from the remote repository."
+            exit 1
+        fi
+    fi
+}
+
+post_pull_actions() {
+    echo "Creating alt files..."
+    yadm alt
+
+    echo "Running ansible playbook..."
+    apply_ansible_playbook
+
+    echo "Installing scripts..."
+    (cd "$HOME/scripts" && make install)
+
+    echo "Installing brew packages..."
+    HOMEBREW_NO_AUTO_UPDATE=1 brew bundle install --global --no-upgrade
+
+    echo "Updating bat's cache..."
+    bat cache --build
+}
+
+push_changes() {
+    # ref: https://stackoverflow.com/a/66538954
+    # shellcheck disable=1083
+    local unpushed_commits
+    unpushed_commits=$(yadm rev-list --count @{upstream}..HEAD)
+
+    if [[ $unpushed_commits -gt 0 ]]; then
+        echo "Pushing $unpushed_commits unpushed commit(s)..."
+        yadm push
+    else
+        echo "No commits to push."
+    fi
+}
+
+check_for_conflicts
+update_brew_packages
+apply_linters
+apply_ansible_playbook
+stage_changes
+commit_changes
+pull_changes
+post_pull_actions
+push_changes
