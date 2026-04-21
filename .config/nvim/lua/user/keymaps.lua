@@ -274,3 +274,17 @@ end, { desc = "LSP: Toggle Inlay Hints" })
 keymap.set_n("gD", function()
     require("user.smart_goto").smart_goto()
 end, { desc = "Custom Go To Defintion" })
+
+keymap.set_n("gf", function()
+    local file = vim.fn.expand("<cfile>")
+
+    -- expand to full path incl. expanding ~
+    local full_path = vim.fn.fnamemodify(file, ":p")
+
+    -- Check if file exists
+    if vim.fn.filereadable(full_path) == 1 then
+        vim.cmd("tabedit " .. vim.fn.fnameescape(full_path))
+    else
+        vim.notify("File not found: " .. file, vim.log.levels.ERROR)
+    end
+end, { desc = "Open file under cursor in new tab" })

@@ -20,9 +20,9 @@ return {
                 name = "jira", -- set name of handler
                 handle = function(mode, line, _handler_opts) ---@diagnostic disable-line: unused-local
                     local ticket = require("gx.helper").find(line, mode, "(%u+-%d+)")
-                    local jira_cli_config_path = vim.fn.expand("~/.config/.jira/.config.yml")
+                    local jira_cli_config_path = vim.fn.fnamemodify("~/.config/.jira/.config.yml", ":p")
 
-                    if not vim.fn.filereadable(jira_cli_config_path) then
+                    if vim.fn.filereadable(jira_cli_config_path) == 0 then
                         vim.notify(
                             "gx.nvim: Jira CLI config file not found: " .. jira_cli_config_path,
                             vim.log.levels.ERROR
@@ -49,6 +49,18 @@ return {
                     -- TODO: Match the jira issue key with the configured project keys (yq eval '.project.key' ...)
                     if ticket and #ticket < 20 then
                         return jira_server .. "/browse/" .. ticket
+                    end
+                end,
+            },
+            tpm_plugin = {
+                name = "tpm_plugin",
+                filetype = { "tmux" },
+                filename = ".tmux.conf",
+                handle = function(mode, line, handler_opts)
+                    local pattern = "set%s+-g%s+@plugin%s+[\"']([^%s~/]*/[^%s~/]*)[\"']"
+                    local username_repo = require("gx.helper").find(line, mode, pattern)
+                    if username_repo then
+                        return "https://github.com/" .. username_repo
                     end
                 end,
             },
