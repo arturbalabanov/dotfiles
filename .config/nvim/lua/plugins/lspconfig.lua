@@ -51,7 +51,7 @@ return {
                     on_attach = function(client, bufnr)
                         require("auto-venv.contrib.lspconfig").on_attach(client, bufnr)
 
-                        if client.supports_method("textDocument/formatting") then
+                        if client:supports_method("textDocument/formatting") then
                             setup_auto_format_autocmd(client, bufnr)
                         end
                     end,
@@ -59,16 +59,17 @@ return {
                 }
             end,
             pyright = {
-                handlers = {
-                    -- Disable all diagnostics from  pyright, use local tools like flake8, ruff etc. for that
-                    -- We make an exception for reportUndefinedVariable as this is necesasry for stevanmilic/nvim-lspimport
-                    ["textDocument/publishDiagnostics"] = vim.lsp.with(function(err, result, ctx, config)
-                        result.diagnostics = vim.tbl_filter(function(diagnostic)
-                            return diagnostic.code == "reportUndefinedVariable"
-                        end, result.diagnostics)
-                        vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
-                    end, {}),
-                },
+                -- TODO: Re-enable this (need to get nvim-lspimport working too)
+                -- handlers = {
+                --     -- Disable all diagnostics from  pyright, use local tools like flake8, ruff etc. for that
+                --     -- We make an exception for reportUndefinedVariable as this is necesasry for stevanmilic/nvim-lspimport
+                --     ["textDocument/publishDiagnostics"] = vim.lsp.with(function(err, result, ctx, config)
+                --         result.diagnostics = vim.tbl_filter(function(diagnostic)
+                --             return diagnostic.code == "reportUndefinedVariable"
+                --         end, result.diagnostics)
+                --         vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+                --     end, {}),
+                -- },
             },
             lua_ls = {
                 settings = {

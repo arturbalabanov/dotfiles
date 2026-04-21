@@ -349,13 +349,42 @@ local TreeSitterBlock = {
     },
 }
 
+local AutoFormatStatusBlock = {
+    init = function(self)
+        self.local_is_disabled =
+            my_utils.get_var_or_default("disable_autoformat", false, { scope = "local", buf = self.bufnr })
+        self.global_is_disabled = my_utils.get_var_or_default("disable_autoformat", false)
+        self.is_enabled = not self.local_is_disabled and not self.global_is_disabled
+    end,
+    provider = " ",
+    hl = function(self)
+        return {
+            fg = self.is_enabled and "green" or "red",
+        }
+    end,
+    on_click = {
+        name = "auto_format_status_on_click",
+        update = true,
+        callback = function(self)
+            require("utils.markdown").notify("autoformat status", {
+                string.format(
+                    "* enabled locally:  %s _(buffer: %s)_",
+                    self.local_is_disabled and "❌" or "✅",
+                    self.bufnr
+                ),
+                string.format("* enabled globally: %s", self.global_is_disabled and "❌" or "✅"),
+            })
+        end,
+    },
+}
+
 return {
     TabLineOffset,
     common.Lpad(Overseer),
     TabPages,
     common.Align,
     common.Rpad(utils.insert(common.CurrentTabFileBlock, PyVenvInfo)),
-    utils.insert(common.CurrentTabFileBlock, LSPActive),
+    utils.insert(common.CurrentTabFileBlock, AutoFormatStatusBlock, LSPActive),
     TreeSitterBlock,
     hl = { bg = "bg" },
 }

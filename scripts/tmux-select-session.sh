@@ -32,15 +32,18 @@ fi
 
 # NOTE: awk '!seen[$2]++' removes duplicate session names based on the second column -- session name,
 #       the first one is the icon
-
+#
+# NOTE: grep -v '^.*[ \t]\+tpad_' removes tpad session (popup panes in tmux using the tpad plugin). Popups
+#       in tmux are implemented as seperate sessions and we don't want them to be listed in the session switcher.
 
 # --bind 'enter:transform:[[ -n {} ]] && echo accept || echo "execute(tmux new -s {q} -d && sesh connect {q})+abort"' \
 
 selected_session=$(sesh list --tmux --tmuxinator --config --icons \
+    | grep -v '^.*[ \t]\+tpad_' \
     | awk '!seen[$2]++' \
     | fzf-tmux -p 80%,70% \
         --no-sort --ansi --reverse \
-        --border-label ' sesh ' \
+        --border-label ' Select Session ' \
         --prompt '⚡  ' \
         --bind 'start,change:change-header(^a all ^g configs ^x zoxide ^d kill ^f find)' \
         --bind 'zero:change-header(Session not found, press Enter to create it and switch to it)' \

@@ -111,8 +111,6 @@ local plugin_specs = {
     --     },
     -- },
 
-    "RRethy/nvim-treesitter-endwise",
-
     {
         "saifulapm/commasemi.nvim",
         keys = {

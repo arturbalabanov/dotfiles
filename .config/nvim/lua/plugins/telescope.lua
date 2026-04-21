@@ -9,7 +9,7 @@ local telescope_extensions_to_load = {
 return {
     {
         "nvim-telescope/telescope.nvim",
-        version = "0.1.8",
+        version = "0.2.1",
         opts = function()
             local actions = require("telescope.actions")
             local actions_layout = require("telescope.actions.layout")

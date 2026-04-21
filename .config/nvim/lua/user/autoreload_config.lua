@@ -1,69 +1,37 @@
 local my_utils = require("utils")
 
--- TODO: maybe one simple and effective way to do this is to:
---         * save the state into a new session
---         * close vim
---         * open that new session
---         * delete the new session
--- TODO: Use plenary.reload.reload_module  (maybe???)
--- TODO: Remove all mappings
--- TODO: Remove all autocommands and augroups
--- TODO: Improve based on NvChad's reload mechanism
--- ref: https://github.com/NvChad/NvChad/blob/v2.0/lua/core/init.lua#L74
+-- TODO: add a command to toggle the automatic reload (similar to how I have ToggleFormatting), very useful when making
+--       very minor changes code I don't need to reload for
+-- TODO: Also, add an indicator in heirline about the status of this (enabled or disabled autoreload with an option to click
+--       on it and run it manually)
+-- TODO: Maybe it's worth adding a similar indicator for the autoformat too (maybe before that too as the functionality is
+--       already there and then i can quickly add this feature to the autoreload :))
 
--- lazy.nvim has a reload function, use with caution as it doesn't work for all plugins (ref: https://github.com/folke/lazy.nvim/issues/445)
--- I defined a wrapper for it in utils.plugin.reload. Create an autocmd to reload the relevant plugin(s) when
--- the config file is saved. Can be a bit tricky when multiple are defined but maybe lazy.nvim already stores the file where
--- they are defined in the plugin spec somewhere. but that way you can reload only one plugin at a time :)
--- For the time being this will do
-vim.api.nvim_create_user_command("ReloadPlugin", function(ctx)
-    require("utils.plugin").reload(ctx.args)
-    vim.notify("Reloaded plugin " .. ctx.args, vim.log.levels.INFO)
-end, { nargs = 1 })
-
---- Reload the entire configuration (disabled for now)
 local function reload_nvim_config()
-    -- stop all lsp clients
-    for _, client in pairs(vim.lsp.get_clients()) do
-        client.stop(true) -- force: true
+    -- TODO: Add option to restart all other servers
 
-        -- local client_fts = my_utils.get(client, "conf", "filetypes") or {}
-        --
-        -- if not vim.tbl_contains(client_fts, "lua") then
-        --     client.stop(true) -- force: true
-        -- end
+    -- returned as nvim.123.0
+    local server_name = vim.fs.basename(vim.v.servername)
+
+    local server_pid = server_name:match("nvim%.(%d+)%.%d+")
+    if server_pid == nil then
+        my_utils.simple_notify("not reloading neovim config: failed to extract PID from server name")
+        return
     end
 
-    local luacache = (_G.__luacache or {}).cache
+    local fallback_session_path = vim.fn.stdpath("state") .. "/restart_session_" .. server_pid .. ".vim"
+    local session_path = vim.v.this_session ~= "" and vim.v.this_session or fallback_session_path
+    session_path = vim.fn.fnameescape(session_path)
 
-    for name, _ in pairs(package.loaded) do
-        if name:match("^user") or name == "treesitter" then
-            package.loaded[name] = nil
+    local show_notification_cmd = [[ require('utils').simple_notify("neovim configuration reloaded!") ]]
 
-            if luacache then
-                luacache[name] = nil
-            end
-        end
-    end
-
-    -- Clear all autocommands as some of them are (intentionally) set with clear = false in the config
-    -- so we want them to update on config reload too
-    vim.cmd([[autocmd!]])
-
-    -- vim.treesitter.start()
-    dofile(vim.env.MYVIMRC)
-
-    -- Reload after/ directory
-    local glob = vim.fn.stdpath("config") .. "/after/**/*.lua"
-    local after_lua_filepaths = vim.fn.glob(glob, true, true)
-
-    for _, filepath in ipairs(after_lua_filepaths) do
-        dofile(filepath)
-    end
-end
-
-local function simple_reload_nvim_file()
-    vim.cmd.source("%")
+    -- NOTE: Bang to overwrite existing session file if it exists
+    local restart_cmd = ("mksession! %s | restart source %s | lua %s "):format(
+        session_path,
+        session_path,
+        show_notification_cmd
+    )
+    vim.cmd(restart_cmd)
 end
 
 local function reload_tmux_config()
@@ -79,23 +47,10 @@ local function reload_kitty_config()
 end
 
 local reload_configs = {
-    -- TODO: Re-enable
-    -- {
-    --     aliases = { "neovim", "nvim", "vim" },
-    --     reload_func = reload_nvim_config,
-    --     files_pattern = "*.lua",
-    --     project_name = "nvim",
-    -- },
     {
         aliases = { "neovim", "nvim", "vim" },
-        reload_func = simple_reload_nvim_file,
-        files_pattern = "lua/user/keymaps.lua",
-        project_name = "nvim",
-    },
-    {
-        aliases = { "neovim", "nvim", "vim" },
-        reload_func = simple_reload_nvim_file,
-        files_pattern = "lua/user/diagnostic.lua",
+        reload_func = reload_nvim_config,
+        files_pattern = "*.lua",
         project_name = "nvim",
     },
     {

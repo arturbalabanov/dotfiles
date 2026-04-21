@@ -22,10 +22,17 @@ info:
 	@echo "the following scripts will be installed in $(BINARIES_DIR):"
 	@$(foreach bin,$(BINARIES),echo "    $(bin)"; )
 
+# detect and remove broken symlinks in the binaries directory (e.g. if we delete a script from the repo but forget to remove the symlink)
+# ref: https://unix.stackexchange.com/a/604006
+.PHONY: clean
+clean:
+	find -L $(BINARIES_DIR) -type l -print
+	find -L $(BINARIES_DIR) -type l -exec rm {} \;
+
 # TODO: in install change the shebang to #!/usr/bin/env -S uv run --script
 #       as recommended by uv: https://docs.astral.sh/uv/guides/scripts/#using-a-shebang-to-create-an-executable-file
 .PHONY: install
-install:
+install: clean
 	mkdir -p $(BINARIES_DIR)
 	$(foreach bin,$(BINARIES),ln -sf $(shell realpath $(bin)) $(BINARIES_DIR)/; )
 	$(foreach script,$(PYTHON_SCRIPTS),echo '#!/usr/bin/env bash\nuv run --no-project "$(shell realpath $(script))" $$@' > $(BINARIES_DIR)/$(shell basename $(script) .py); )

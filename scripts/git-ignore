@@ -1,0 +1,39 @@
+#!/bin/bash
+
+GITIGNORE=$(git rev-parse --show-toplevel)/.gitignore
+PREVIEWER=bat
+
+if ! command -v $PREVIEWER &> /dev/null; then
+    PREVIEWER=cat
+fi
+
+FILE=$1
+if [[ -z "$FILE" ]]; then
+    echo "Usage: $0 <file-to-ignore> [<comment>]"
+    exit 1
+fi
+
+COMMENT=$2
+
+if [[ ! -f "$GITIGNORE" ]]; then
+    touch "$GITIGNORE"
+    echo "Created .gitignore file: $GITIGNORE"
+fi
+
+if ! grep -Fxq "$FILE" $GITIGNORE; then
+    if [[ -n "$COMMENT" ]]; then
+        echo "" >> $GITIGNORE
+        echo "# $COMMENT" >> $GITIGNORE
+    fi
+    
+    echo "$FILE" >> $GITIGNORE
+    echo "Added $FILE to $GITIGNORE"
+    
+    echo
+    $PREVIEWER "$GITIGNORE"
+else
+    echo "$FILE is already in $GITIGNORE"
+
+    echo
+    $PREVIEWER "$GITIGNORE"
+fi

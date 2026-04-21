@@ -5,7 +5,6 @@ return {
     dependencies = {
         "nvim-neotest/nvim-nio",
         "nvim-lua/plenary.nvim",
-        "nvim-treesitter/nvim-treesitter",
         "antoinemadec/FixCursorHold.nvim",
         "nvim-neotest/neotest-python",
     },
@@ -41,9 +40,9 @@ return {
                     short = "O",
                     stop = "c",
                     target = "t",
-                    watch = "w"
+                    watch = "w",
                 },
-                open = "botright vsplit | vertical resize 50"
+                open = "botright vsplit | vertical resize 50",
             },
             adapters = {
                 require("neotest-python")({
@@ -62,16 +61,40 @@ return {
 
                         return filename:match("test_.*%.py$") or filename:match(".*_test%.py$")
                     end,
-                })
+                }),
             },
         }
     end,
     keys = {
-        { "<F4>",  function() require("neotest").summary.toggle() end,              desc = "Neotest: Toggle summary pannel" },
-        { "<F5>",  function() require("neotest").run.run() end,                     desc = "Neotest: Run test under cursor" },
+        {
+            "<F4>",
+            function()
+                require("neotest").summary.toggle()
+            end,
+            desc = "Neotest: Toggle summary pannel",
+        },
+        {
+            "<F5>",
+            function()
+                require("neotest").run.run()
+            end,
+            desc = "Neotest: Run test under cursor",
+        },
         -- Ctrl + F5
-        { "<F29>", function() require("neotest").output.open { enter = true } end,  desc = "Neotest: Open test output" },
+        {
+            "<F29>",
+            function()
+                require("neotest").output.open({ enter = true })
+            end,
+            desc = "Neotest: Open test output",
+        },
         -- Shift + F5
-        { "<F17>", function() require("neotest").run.run({ strategy = "dap" }) end, desc = "Neotest: Run test with DAP" },
-    }
+        {
+            "<F17>",
+            function()
+                require("neotest").run.run({ strategy = "dap" })
+            end,
+            desc = "Neotest: Run test with DAP",
+        },
+    },
 }

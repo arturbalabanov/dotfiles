@@ -270,3 +270,7 @@ keymap.set_n("<leader>lh", function()
         utils.simple_notify("No LSP client with inlay hint support found", "warn")
     end
 end, { desc = "LSP: Toggle Inlay Hints" })
+
+keymap.set_n("gD", function()
+    require("user.smart_goto").smart_goto()
+end, { desc = "Custom Go To Defintion" })

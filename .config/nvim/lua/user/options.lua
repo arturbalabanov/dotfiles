@@ -29,8 +29,7 @@ opt.numberwidth = 4
 
 -- cursor scroll
 opt.scrolloff = 15 -- keep 15 lines visible above and below the cursor
-opt.sidescroll = 1 -- enable side scrolling
-opt.sidescrolloff = 15 -- keep 15 columns visible left and right of the cursor
+opt.sidescroll = 0 -- disable side scrolling
 
 -- Mouse mode
 opt.mouse = "a"

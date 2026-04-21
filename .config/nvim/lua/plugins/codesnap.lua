@@ -1,6 +1,7 @@
 return {
-    'mistricky/codesnap.nvim',
-    build = 'make',
+    "mistricky/codesnap.nvim",
+    enabled = false,
+    build = "make",
     opts = {
         -- The save_path must be ends with .png, unless when you specified a directory path,
         -- CodeSnap will append an auto-generated filename to the specified directory path

@@ -1,4 +1,4 @@
-local status_ok, my_utils = pcall(require, "user.utils")
+local status_ok, my_utils = pcall(require, "utils")
 
 local opt_require
 if status_ok then
@@ -25,6 +25,7 @@ opt_require("user.options")
 opt_require("user.keymaps")
 opt_require("user.diagnostic")
 opt_require("user.commands")
+opt_require("user.menu")
 opt_require("user.autocmds")
 opt_require("user.autoreload_config")
 
