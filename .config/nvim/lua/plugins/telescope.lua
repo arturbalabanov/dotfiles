@@ -6,6 +6,41 @@ local telescope_extensions_to_load = {
     "emoji",
 }
 
+local function is_in_yadm_repo(bufnr)
+    local ok, gitsigns_status_dict = pcall(vim.api.nvim_buf_get_var, bufnr, "gitsigns_status_dict")
+
+    if not ok then
+        return false
+    end
+
+    if gitsigns_status_dict == nil then
+        return false
+    end
+
+    local gitdir = gitsigns_status_dict.gitdir
+
+    if gitdir == nil then
+        return false
+    end
+
+    return gitdir == vim.fn.expand("~/.local/share/yadm/repo.git")
+end
+
+local function get_search_dirs_for_yadm(timeout)
+    local files_to_search_str =
+        vim.system({ "yadm", "ls-files", "--recurse-submodules", "--full-name" }, { cwd = vim.fn.expand("~") })
+            :wait(timeout).stdout
+
+    local files = {}
+    if files_to_search_str ~= nil then
+        for s in files_to_search_str:gmatch("[^\r\n]+") do
+            table.insert(files, s)
+        end
+    end
+
+    return files
+end
+
 return {
     {
         "nvim-telescope/telescope.nvim",
@@ -220,8 +255,12 @@ return {
                             local tabpage = vim.api.nvim_get_current_tabpage()
                             local tabnr = vim.api.nvim_tabpage_get_number(tabpage)
                             local winnr = vim.api.nvim_tabpage_get_win(tabpage)
+                            local bufnr = vim.api.nvim_win_get_buf(winnr)
 
-                            if vim.fn.getcwd(winnr, tabnr) == vim.fn.expand("$HOME") then
+                            if is_in_yadm_repo(bufnr) then
+                                opts.search_dirs = get_search_dirs_for_yadm()
+                                opts.cwd = "~"
+                            elseif vim.fn.getcwd(winnr, tabnr) == vim.fn.expand("$HOME") then
                                 opts.cwd = "~/.config/nvim"
                             end
 
@@ -234,14 +273,24 @@ return {
                     },
                     {
                         name = "Live Grep",
-                        tele_func = telescope_builtin.live_grep,
+                        tele_func = function(opts)
+                            opts = opts or {}
+
+                            local bufnr = vim.api.nvim_get_current_buf()
+
+                            if is_in_yadm_repo(bufnr) then
+                                opts.search_dirs = get_search_dirs_for_yadm()
+                                opts.cwd = "~"
+                            end
+
+                            telescope_builtin.live_grep(opts)
+                        end,
                     },
                     {
                         name = "Commits",
                         tele_func = telescope_builtin.git_commits,
                         available = function()
-                            -- TODO: make this work with yadm_files too
-                            return vim.fn.isdirectory(".git") == 1
+                            return (vim.fn.isdirectory(".git") == 1) or is_in_yadm_repo(0)
                         end,
                     },
                     {
