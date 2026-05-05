@@ -23,7 +23,8 @@ local function reload_nvim_config()
     local session_path = vim.v.this_session ~= "" and vim.v.this_session or fallback_session_path
     session_path = vim.fn.fnameescape(session_path)
 
-    local show_notification_cmd = [[ require('utils').simple_notify("neovim configuration reloaded!") ]]
+    local show_notification_cmd =
+        [[ vim.defer_fn(function() require('utils').simple_notify("neovim configuration reloaded!") end, 300) ]]
 
     -- NOTE: Bang to overwrite existing session file if it exists
     local restart_cmd = ("mksession! %s | restart source %s | lua %s "):format(

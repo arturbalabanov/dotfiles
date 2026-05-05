@@ -7,6 +7,7 @@ local treesitter_utils = require("utils.treesitter")
 local ENSURE_INSTALLED = {
     "bash",
     "c",
+    "css",
     "diff",
     "html",
     "javascript",

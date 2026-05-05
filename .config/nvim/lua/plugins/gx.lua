@@ -64,6 +64,26 @@ return {
                     end
                 end,
             },
+            python_library = {
+                name = "python_library",
+                filetype = { "python" },
+                handle = function(mode, line, handler_opts)
+                    local import_pattern = "import%s+([%w_%.]+)"
+                    local from_import_pattern = "from%s+([%w_%.]+)%s+import"
+
+                    local module_name = require("gx.helper").find(line, mode, import_pattern)
+
+                    if not module_name then
+                        module_name = require("gx.helper").find(line, mode, from_import_pattern)
+                    end
+
+                    if module_name then
+                        -- get the top-level module name (e.g. "requests" from "requests.api")
+                        local package_name = module_name:match("^[^%.]+")
+                        return "https://pypi.org/project/" .. package_name
+                    end
+                end,
+            },
             -- TODO: Use this recepie but for pyproject.toml / requirements.txt etc. (excl. lockfiles as that's unnecessary)
             --       Including the uv scripts' requirements in the comment section at the very top
             -- rust = {                     -- custom handler to open rust's cargo packages
